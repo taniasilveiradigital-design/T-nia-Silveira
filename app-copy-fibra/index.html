@@ -132,10 +132,20 @@ tr:last-child td { border-bottom: 0; }
   </header>
 
   <nav class="tabs" role="tablist" aria-label="Secções">
-    <button role="tab" id="t-copy" data-tab="copy" aria-selected="true">Copy</button>
+    <button role="tab" id="t-plano" data-tab="plano" aria-selected="true">Plano</button>
+    <button role="tab" id="t-copy" data-tab="copy" aria-selected="false">Copy livre</button>
     <button role="tab" id="t-conteudos" data-tab="conteudos" aria-selected="false">Conteúdos</button>
     <button role="tab" id="t-dados" data-tab="dados" aria-selected="false">Dados</button>
   </nav>
+
+  <section id="tab-plano" class="panel" aria-label="Plano">
+    <div class="filters">
+      <div class="field"><label class="label" for="p-mes">Mês</label><select id="p-mes"></select></div>
+      <div class="field"><label class="label" for="p-est">Estado</label><select id="p-est"></select></div>
+    </div>
+    <p class="note">Cada dia é um cartão como no Trello. Abre o dia, cola a descrição da Sarah, a inspiração e os stories, escolhe o formato e carrega em <b>Fazer copy</b>. Os comentários da Sarah ficam por baixo do copy. Quando ela aprovar, passa para Conteúdos.</p>
+    <div id="p-list"></div>
+  </section>
 
   <section id="tab-conteudos" class="panel" hidden aria-label="Conteúdos">
     <div class="filters">
@@ -143,7 +153,6 @@ tr:last-child td { border-bottom: 0; }
       <div class="field"><label class="label" for="c-mes">Mês</label><select id="c-mes"></select></div>
       <div class="field"><label class="label" for="c-fmt">Formato</label><select id="c-fmt"></select></div>
       <div class="field"><label class="label" for="c-est">Estado</label><select id="c-est"></select></div>
-      <div class="field" style="flex:0 0 auto"><span class="label">&nbsp;</span><button id="c-novo">Novo conteúdo</button></div>
     </div>
     <p class="note" id="c-info"></p>
     <div id="c-list"></div>
@@ -152,18 +161,22 @@ tr:last-child td { border-bottom: 0; }
   <section id="tab-dados" class="panel" hidden aria-label="Dados">
     <div class="filters">
       <div class="field"><label class="label" for="d-mes">Período</label><select id="d-mes"></select></div>
-      <div class="field"><label class="label" for="d-met">Ordenar e comparar por</label><select id="d-met"></select></div>
-      <div class="field" style="flex:0 0 auto"><span class="label">&nbsp;</span><button id="d-import-btn">Colar métricas do Instagram</button></div>
+      <div class="field"><label class="label" for="d-met">Comparar por</label><select id="d-met"></select></div>
+      <div class="field" style="flex:0 0 auto"><span class="label">&nbsp;</span><button id="d-import-btn">Importar exportação da Meta</button></div>
     </div>
     <div id="d-import" hidden class="panel" style="padding:14px">
-      <p class="note">Cola aqui a exportação do Meta Business Suite ou do Instagram (CSV ou copiado de uma folha de cálculo, com cabeçalho). A app junta cada linha ao conteúdo com a mesma data de publicação. Reconhece colunas como Data, Alcance, Visualizações, Gostos, Comentários, Partilhas, Guardados, Seguidores, Visitas ao perfil, Cliques no link e Mensagens.</p>
-      <textarea id="d-csv" rows="6" placeholder="Data de publicação;Alcance;Gostos;Comentários;Partilhas;Guardados&#10;2026-09-21;1240;56;8;12;31"></textarea>
-      <div class="row"><button class="primary" id="d-csv-go">Juntar métricas</button><span class="note" id="d-csv-note"></span></div>
+      <div class="filters">
+        <div class="field"><label class="label" for="d-plat">O que estás a importar</label><select id="d-plat"><option value="ig">Instagram · publicações e Reels</option><option value="st">Instagram · stories</option><option value="fb">Facebook · publicações</option></select></div>
+        <div class="field"><label class="label" for="d-dfmt">Datas na exportação</label><select id="d-dfmt"><option value="auto">Detetar</option><option value="md">mês/dia/ano (padrão da Meta)</option><option value="dm">dia/mês/ano</option></select></div>
+      </div>
+      <p class="note">No Meta Business Suite: Estatísticas → Conteúdo → escolhe Instagram ou Facebook, publicações ou stories, o período, e Exportar dados (CSV). Abre o ficheiro, copia tudo (com o cabeçalho) e cola aqui. Cada linha junta-se ao conteúdo com a mesma data. Nos stories, os do mesmo dia somam-se.</p>
+      <textarea id="d-csv" rows="6" placeholder="Cola aqui a exportação, com a linha do cabeçalho"></textarea>
+      <div class="row"><button class="primary" id="d-csv-go">Juntar aos conteúdos</button><span class="note" id="d-csv-note"></span></div>
     </div>
     <div id="d-body"></div>
   </section>
 
-  <div class="cols" id="tab-copy">
+  <div class="cols" id="tab-copy" hidden>
     <section class="panel" aria-label="Pedido">
       <div class="field">
         <span class="label">O que queres</span>
@@ -232,7 +245,7 @@ tr:last-child td { border-bottom: 0; }
     <section class="panel" aria-label="Copy" aria-live="polite">
       <div class="row" style="justify-content:space-between">
         <span class="label">Copy pronto</span>
-        <span class="row"><button class="copy" id="savecontent" hidden>Guardar nos conteúdos</button><button class="copy" id="copyall" hidden>Copiar tudo</button></span>
+        <span class="row"><button class="copy" id="copyall" hidden>Copiar tudo</button></span>
       </div>
       <div id="out">
         <div class="out-empty">
@@ -509,7 +522,6 @@ ${ESTRUTURA}`;
       turns = input.concat([{ role: "assistant", content: text }]);
       render(text, true);
       $("copyall").hidden = false;
-      $("savecontent").hidden = false;
       $("refine-box").hidden = false;
       if (truncated) $("status").textContent = "O copy ficou cortado. Pede uma parte de cada vez (só carrossel, ou só stories).";
       saveHist(label, text);
@@ -592,6 +604,10 @@ ${ESTRUTURA}`;
   }
 
   window.CF = {
+    guia: GUIA,
+    regras: () => rules.map(r => r.texto),
+    estrutura: ESTRUTURA,
+    addRegra: (t) => { $("newrule").value = t; addRule(); },
     last: () => lastText,
     brief: () => $("brief").value,
     insp: () => $("insp").value,
@@ -630,262 +646,479 @@ ${ESTRUTURA}`;
 (() => {
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const md = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/(^|\s)_([^_\n]+)_(?=\s|$)/g, "$1<em>$2</em>").replace(/!\[[^\]]*\]\([^)]*\)/g, "[imagem]");
+  const HOJE = new Date().toISOString().slice(0, 10);
   const MESES = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
-  const FORMATOS = ["Carrossel", "Reels", "Só stories", "Live", "Estático", "Por definir"];
-  const ESTADOS = ["Publicado", "Planeado", "Não publicado"];
-  const MET = [["alcance","Alcance"],["visualizacoes","Visualizações"],["gostos","Gostos"],["comentarios","Comentários"],["partilhas","Partilhas"],["guardados","Guardados"],["seguidores","Novos seguidores"],["visitas","Visitas ao perfil"],["cliques","Cliques no link"],["mensagens","Mensagens / DMs"]];
-  const DERIV = [["interacoes","Interações (gostos+coment.+partilhas+guardados)"],["taxa","Taxa de interação (% do alcance)"],["taxaGuard","Taxa de guardados (% do alcance)"]];
-  const fmtD = (s) => { if (!s) return "sem data"; const [y,m,d] = s.split("-").map(Number); return `${d} ${MESES[m-1].slice(0,3)}`; };
+  const DIAS = ["Segunda","Terça","Quarta","Quinta","Sexta","Sábado","Domingo"];
+  const FORMATOS = ["Reels", "Carrossel", "Só stories", "Estático", "Live", "Por definir"];
+  const EST_CONT = ["Publicado", "Agendado", "Não publicado"];
+  const EST_PLANO = ["Por fazer", "Rascunho", "Para a Sarah", "Aprovado", "Em conteúdos"];
+  const fmtD = (s) => { if (!s) return "sem data"; const [, m, d] = s.split("-").map(Number); return `${d} ${MESES[m-1].slice(0,3)}`; };
   const fmtN = (v, dec) => v == null || isNaN(v) ? "—" : Number(v).toLocaleString("pt-PT", { maximumFractionDigits: dec ?? 0 });
-  let db = null, sample = null, docs = [], loaded = false, openId = null, aiCtl = null;
+  const nowIso = () => new Date().toISOString();
+
+  // ---------- métricas ----------
+  const MET = {
+    ig: { nome: "Instagram · publicação", campos: [["alcance","Alcance"],["visualizacoes","Visualizações"],["gostos","Gostos"],["comentarios","Comentários"],["comentariosRespondidos","Comentários a que respondeste"],["partilhas","Partilhas"],["guardados","Guardados"],["seguidores","Novos seguidores"],["visitas","Visitas ao perfil"],["cliques","Cliques no link"],["mensagens","Mensagens / DMs"],["tempoMedio","Tempo médio de visualização (s)"],["retencao","Retenção (%)"]] },
+    st: { nome: "Instagram · stories do dia", campos: [["n","Nº de stories"],["alcance","Alcance"],["visualizacoes","Visualizações"],["respostas","Respostas"],["partilhas","Partilhas"],["stickers","Respostas a enquetes / caixinhas"],["cliques","Cliques no link"],["avancos","Toques para avançar"],["recuos","Toques para recuar"],["saidas","Saídas"],["seguidores","Novos seguidores"]] },
+    fb: { nome: "Facebook", campos: [["alcance","Alcance"],["visualizacoes","Visualizações"],["reacoes","Reações"],["comentarios","Comentários"],["partilhas","Partilhas"],["cliques","Cliques"],["seguidores","Novos seguidores"]] }
+  };
+  const num = (v) => v === "" || v == null || isNaN(Number(v)) ? null : Number(v);
+  const M = (c, p, k) => num(((c.metricas || {})[p] || {})[k]);
+  const temP = (c, p) => Object.values((c.metricas || {})[p] || {}).some(v => num(v) != null);
+  const ehFeed = (c) => c.formato !== "Só stories";
+  function deriv(c) {
+    const g = (k) => M(c, "ig", k);
+    const inter = ["gostos","comentarios","partilhas","guardados"].map(g);
+    const i = inter.every(v => v == null) ? null : inter.reduce((a, v) => a + (v || 0), 0);
+    return {
+      interacoes: i, taxa: g("alcance") ? (i || 0) / g("alcance") * 100 : null,
+      taxaGuard: g("alcance") && g("guardados") != null ? g("guardados") / g("alcance") * 100 : null,
+      respComent: g("comentarios") ? (g("comentariosRespondidos") || 0) / g("comentarios") * 100 : null,
+      stSaida: M(c, "st", "visualizacoes") && M(c, "st", "saidas") != null ? M(c, "st", "saidas") / M(c, "st", "visualizacoes") * 100 : null
+    };
+  }
+  const METSEL = [
+    ...MET.ig.campos.map(([k, l]) => ["ig." + k, "Instagram · " + l]),
+    ["d.interacoes", "Instagram · Interações"], ["d.taxa", "Instagram · Taxa de interação (%)"], ["d.taxaGuard", "Instagram · Taxa de guardados (%)"], ["d.respComent", "Instagram · % de comentários respondidos"],
+    ...MET.st.campos.map(([k, l]) => ["st." + k, "Stories · " + l]), ["d.stSaida", "Stories · Taxa de saída (%)"],
+    ...MET.fb.campos.map(([k, l]) => ["fb." + k, "Facebook · " + l])
+  ];
+  const getSel = (c, key) => { const [p, k] = key.split("."); return p === "d" ? deriv(c)[k] : M(c, p, k); };
+  const isPct = (key) => /taxa|resp|Saida|retencao/i.test(key);
+
+  // ---------- secções do cartão (igual à leitura do Trello) ----------
+  const HEAD = [["Feed","feed"],["Objetivo","objetivo"],["Estratégia","estrat[ée]gia"],["Tema","tema|inspira[çc][ãa]o de tema"],["Gancho","gancho|ideia de in[ií]cio"],
+    ["Como fazer","como fazer|como criar|como trazer|direcionamento|o que trazer|o que fazer|o que precisa ser abordado|poss[ií]veis ideias|sugest[ãa]o de pilares.*|trazer os pontos"],
+    ["Copy retificado","copp?y retificado|novo copp?y|copp?y atualizado"],["Copy","copp?y"],["Template","template|tamplate|templete|template capa|capa reels|capa|atualizado"],
+    ["Inspiração","inspira[çc][ãa]o,?( de formato| de conte[úu]do)?|an[aá]lise desse v[ií]deo|reels"],["Observações","observa[çc][õo]es"],["Prints","prints"]];
+  const HRE = new RegExp("^\\s*(?:#+\\s*)?[\\*_]*\\s*(" + HEAD.map(h => h[1]).join("|") + ")\\s*[\\*_]*\\s*:?\\s*[\\*_]*\\s*:?\\s*$", "i");
+  function secoes(desc) {
+    if (!desc) return [];
+    const out = []; let cur = null, buf = [];
+    const flush = () => { const t = buf.join("\n").replace(/^\s*-+\s*$/gm, "").replace(/\n{3,}/g, "\n\n").trim(); if (t || cur) out.push({ titulo: cur || "Descrição", texto: t }); };
+    for (const ln of desc.split("\n")) {
+      const m = ln.match(HRE);
+      if (m) { flush(); cur = (HEAD.find(h => new RegExp("^(" + h[1] + ")$", "i").test(m[1].trim())) || [m[1]])[0]; buf = []; }
+      else buf.push(ln);
+    }
+    flush();
+    return out.filter(s => s.texto || s.titulo !== "Descrição");
+  }
+  function secoesHtml(arr) {
+    return (arr || []).map(s => `<div class="field"><span class="label">${esc(s.titulo)}</span><div class="pre">${md(s.texto) || '<span class="note">vazio</span>'}</div></div>`).join("");
+  }
+
+  let db = null, sample = null, conts = [], plano = [], loaded = { c: false, p: false }, openId = null, aiCtl = null;
 
   // ---------- tabs ----------
-  const TABS = ["copy", "conteudos", "dados"];
+  const TABS = ["plano", "copy", "conteudos", "dados"];
   function show(t) {
     TABS.forEach(k => { $("t-" + k).setAttribute("aria-selected", k === t); $("tab-" + k).hidden = k !== t; });
-    try { localStorage.setItem("cf_tab", t); } catch {}
-    if (t === "conteudos") renderList(); if (t === "dados") renderDados();
+    try { localStorage.setItem("cf_tab2", t); } catch {}
+    renderAll();
   }
   document.querySelectorAll("nav.tabs button").forEach(b => b.addEventListener("click", () => show(b.dataset.tab)));
-  try { const t = localStorage.getItem("cf_tab"); if (TABS.includes(t)) show(t); } catch {}
+  function renderAll() { if (!$("tab-plano").hidden) renderPlano(); if (!$("tab-conteudos").hidden) renderList(); if (!$("tab-dados").hidden) renderDados(); }
 
-  // ---------- derivadas ----------
-  function mets(c) {
-    const m = c.metricas || {};
-    const n = (k) => (m[k] === "" || m[k] == null) ? null : Number(m[k]);
-    const o = {}; MET.forEach(([k]) => o[k] = n(k));
-    const parts = ["gostos","comentarios","partilhas","guardados"].map(k => o[k]);
-    o.interacoes = parts.every(v => v == null) ? null : parts.reduce((a, v) => a + (v || 0), 0);
-    o.taxa = o.alcance ? (o.interacoes || 0) / o.alcance * 100 : null;
-    o.taxaGuard = o.alcance && o.guardados != null ? o.guardados / o.alcance * 100 : null;
-    return o;
-  }
-  const temMet = (c) => MET.some(([k]) => c.metricas && c.metricas[k] !== "" && c.metricas[k] != null);
-  const ehFeed = (c) => c.formato !== "Só stories";
-
-  // ---------- filtros ----------
-  function meses() { return [...new Set(docs.map(c => (c.data || "").slice(0, 7)).filter(Boolean))].sort(); }
-  function fillSelect(el, opts, keep) { const v = el.value; el.innerHTML = opts.map(([v2, l]) => `<option value="${esc(v2)}">${esc(l)}</option>`).join(""); if (keep && [...el.options].some(o => o.value === v)) el.value = v; }
+  function fillSelect(el, opts) { const v = el.value; el.innerHTML = opts.map(([a, b]) => `<option value="${esc(a)}">${esc(b)}</option>`).join(""); if ([...el.options].some(o => o.value === v)) el.value = v; }
   function fillFilters() {
-    const ms = meses().map(m => [m, MESES[Number(m.slice(5)) - 1] + " " + m.slice(0, 4)]);
-    fillSelect($("c-mes"), [["", "Todos"], ...ms], true);
-    fillSelect($("c-fmt"), [["", "Todos"], ...FORMATOS.map(f => [f, f])], true);
-    fillSelect($("c-est"), [["", "Todos"], ...ESTADOS.map(f => [f, f])], true);
-    fillSelect($("d-mes"), [["", "Desde o início"], ...ms], true);
-    fillSelect($("d-met"), [...MET, ...DERIV], true);
-    if (!$("d-met").dataset.init) { $("d-met").value = "alcance"; $("d-met").dataset.init = 1; }
+    const mesesOf = (arr) => [...new Set(arr.map(c => (c.data || "").slice(0, 7)).filter(Boolean))].sort().map(m => [m, MESES[Number(m.slice(5)) - 1] + " " + m.slice(0, 4)]);
+    const pm = mesesOf(plano);
+    fillSelect($("p-mes"), pm);
+    if (!$("p-mes").dataset.init && pm.length) { $("p-mes").value = (pm.find(x => x[0] >= HOJE.slice(0, 7)) || pm[0])[0]; $("p-mes").dataset.init = 1; }
+    fillSelect($("p-est"), [["", "Todos"], ...EST_PLANO.map(e => [e, e])]);
+    fillSelect($("c-mes"), [["", "Todos"], ...mesesOf(conts)]);
+    fillSelect($("c-fmt"), [["", "Todos"], ...FORMATOS.map(f => [f, f])]);
+    fillSelect($("c-est"), [["", "Todos"], ...EST_CONT.map(f => [f, f])]);
+    fillSelect($("d-mes"), [["", "Desde o início"], ...mesesOf(conts)]);
+    fillSelect($("d-met"), METSEL);
+    if (!$("d-met").dataset.init) { $("d-met").value = "ig.alcance"; $("d-met").dataset.init = 1; }
   }
+  ["p-mes", "p-est"].forEach(id => $(id).addEventListener("input", renderPlano));
   ["c-q", "c-mes", "c-fmt", "c-est"].forEach(id => $(id).addEventListener("input", renderList));
   ["d-mes", "d-met"].forEach(id => $(id).addEventListener("input", renderDados));
 
-  // ---------- lista ----------
+  const pillEst = (e) => `<span class="pill ${e === "Aprovado" || e === "Em conteúdos" || e === "Publicado" ? "ok" : e === "Por fazer" || e === "Não publicado" ? "muted" : ""}">${esc(e)}</span>`;
+  const semanaLabel = (mon) => { const a = new Date(mon + "T12:00:00"), b = new Date(a); b.setDate(a.getDate() + 5); return `${a.getDate()} a ${b.getDate()} de ${MESES[b.getMonth()]}`; };
+
+  // ---------- PLANO ----------
+  function renderPlano() {
+    const box = $("p-list");
+    if (!db) { box.innerHTML = '<div class="empty">Abre esta página no claude.ai com a tua conta.</div>'; return; }
+    if (!loaded.p) { box.innerHTML = '<div class="empty">A carregar o plano…</div>'; return; }
+    const mes = $("p-mes").value, est = $("p-est").value;
+    const f = plano.filter(d => (!mes || d.mes === mes) && (!est || d.estado === est)).sort((a, b) => a.data.localeCompare(b.data));
+    const weeks = new Map(); f.forEach(d => { if (!weeks.has(d.semana)) weeks.set(d.semana, []); weeks.get(d.semana).push(d); });
+    box.innerHTML = [...weeks.entries()].map(([w, arr]) => `<div class="week"><h3>${esc(semanaLabel(w))}<span>${arr.filter(d => d.estado === "Aprovado" || d.estado === "Em conteúdos").length}/${arr.length} aprovados</span></h3><div class="items">${arr.map(d => `
+      <button class="item f-${esc((d.formato || "").replace(/\s/g, "-"))}" data-plano="${esc(d.id)}">
+        <span class="m"><span>${esc(d.dia)} ${esc(fmtD(d.data))}</span>${d.formato ? `<span class="pill muted">${esc(d.formato)}</span>` : ""}${pillEst(d.estado)}${(d.comentarios || []).length ? `<span>💬 ${d.comentarios.length}</span>` : ""}</span>
+        <span class="t">${esc(d.titulo || (d.cartao ? "Cartão colado" : "Por preencher"))}</span></button>`).join("")}</div></div>`).join("") || '<div class="empty">Nada neste filtro.</div>';
+  }
+  $("p-list").addEventListener("click", (e) => { const b = e.target.closest("[data-plano]"); if (b) openDia(b.dataset.plano); });
+
+  function exemplos(fmt, txt) {
+    const words = new Set((txt || "").toLowerCase().match(/[a-zà-ú]{5,}/g) || []);
+    const cand = conts.filter(c => (c.copy || "").length > 300 && (!fmt || fmt === "Só stories" || c.formato === fmt));
+    cand.forEach(c => { const w = ((c.titulo || "") + " " + (c.copy || "").slice(0, 600)).toLowerCase().match(/[a-zà-ú]{5,}/g) || []; c._s = w.filter(x => words.has(x)).length + ((c.comentarios || []).some(x => /aprovad/i.test(x.texto)) ? 3 : 0) + (c.data > "2026-07-20" ? 2 : 0); });
+    return cand.sort((a, b) => b._s - a._s).slice(0, 3);
+  }
+  function promptDia(d, modo) {
+    const CF = window.CF || {};
+    const regras = (CF.regras ? CF.regras() : []);
+    const fmt = d.formato || "Por definir";
+    const ex = exemplos(fmt, (d.titulo || "") + " " + d.cartao);
+    const coms = (d.comentarios || []).map(c => `- ${c.autor}: ${c.texto}`).join("\n");
+    let tarefa;
+    if (modo === "refazer") {
+      tarefa = `TAREFA: Reescreve o copy abaixo aplicando os comentários. Os comentários da Sarah aplicam-se à letra; os da Tânia também. Mantém o que não foi comentado. Devolve a versão completa, na mesma estrutura.
+
+COPY ATUAL:
+${d.copy}
+
+COMENTÁRIOS:
+${coms}`;
+    } else {
+      tarefa = `TAREFA: Escreve o copy deste dia.
+Formato do feed: ${fmt === "Só stories" ? "não há post no feed, é só stories" : fmt === "Por definir" ? "decide pela inspiração (reel/tiktok = Reels; /p/ = Carrossel)" : fmt}.
+Depois do feed, escreve os stories do dia a partir do que a Sarah pediu para os stories (um story por linha, com o tipo e o texto exato).${coms ? "\n\nCOMENTÁRIOS JÁ FEITOS A ESTE CARTÃO (cumpre-os):\n" + coms : ""}${d.notas ? "\n\nDADOS REAIS DA TÂNIA (usa-os; não inventes outros):\n" + d.notas : "\n\nSe faltar um caso ou número real, usa [parêntesis retos]."}`;
+    }
+    return `${CF.guia || ""}${regras.length ? "\n\nCORREÇÕES RECENTES DA SARAH (prioridade máxima):\n" + regras.map(r => "- " + r).join("\n") : ""}
+
+COPIES REAIS JÁ PUBLICADOS DA TÂNIA (referência de tom e estrutura; não copies o conteúdo):
+${ex.map(c => `--- ${c.formato} · ${c.titulo}\n${(c.copy || "").slice(0, 1500)}`).join("\n\n")}
+
+${tarefa}
+
+DIA: ${d.dia}, ${fmtD(d.data)}
+CARTÃO DA SARAH (descrição):
+${d.cartao || "(vazio)"}
+${(d.inspiracao || []).length ? "\nINSPIRAÇÃO (não consegues abrir; usa só o tipo de link): " + d.inspiracao.join(" ") : ""}${d.inspDesc ? "\nO QUE ACONTECE NA INSPIRAÇÃO: " + d.inspDesc : ""}
+
+O QUE A SARAH PEDE PARA OS STORIES:
+${d.stories || "(não colado)"}
+
+${CF.estrutura || ""}
+- Depois do bloco do feed (ou só isto, se for dia só de stories): "## Stories · Manhã", "## Stories · Tarde", "## Stories · Noite".`;
+  }
+
+  function renderCopyBlocks(text, el) {
+    el.innerHTML = "";
+    if (!text) { el.innerHTML = '<div class="empty">Ainda sem copy. Preenche o cartão e carrega em <b>Fazer copy</b>.</div>'; return; }
+    const parts = text.split(/^##\s+/m); const intro = parts.shift().trim(); if (intro) parts.unshift("Copy\n" + intro);
+    parts.forEach(p => {
+      const nl = p.indexOf("\n"); const t = (nl < 0 ? p : p.slice(0, nl)).trim(), body = (nl < 0 ? "" : p.slice(nl + 1)).trim();
+      const sec = document.createElement("div"); sec.className = "section";
+      sec.innerHTML = `<div class="section-head"><h3>${esc(t.replace(/\*\*/g, ""))}</h3>${body ? '<button class="copy">Copiar</button>' : ""}</div><div class="body">${md(body)}</div>`;
+      const b = sec.querySelector("button"); if (b) b.onclick = async () => { try { await navigator.clipboard.writeText(body.replace(/\*\*/g, "")); b.textContent = "Copiado"; } catch { b.textContent = "Seleciona e copia"; } setTimeout(() => b.textContent = "Copiar", 1500); };
+      el.appendChild(sec);
+    });
+  }
+
+  function overlay(html) {
+    const ov = document.createElement("div"); ov.className = "overlay"; ov.innerHTML = `<div class="drawer" role="dialog" aria-modal="true">${html}</div>`;
+    document.body.appendChild(ov);
+    const close = () => { ov.remove(); openId = null; renderAll(); };
+    ov.addEventListener("click", (e) => { if (e.target === ov) close(); });
+    ov.querySelector("[data-close]").onclick = close;
+    return { ov, close };
+  }
+
+  function openDia(id) {
+    openId = id;
+    const d0 = plano.find(x => x.id === id); if (!d0) return;
+    const d = JSON.parse(JSON.stringify(d0));
+    const { ov, close } = overlay(`
+      <div class="row" style="justify-content:space-between"><span class="label">${esc(d.dia)} · ${esc(fmtD(d.data))} · semana de ${esc(semanaLabel(d.semana))}</span><button data-close>Fechar</button></div>
+      <h2 id="pd-h">${esc(d.titulo || "Dia por preencher")}</h2>
+      <div class="row" id="pd-estado"></div>
+      <div class="grid-f">
+        <div class="field"><label class="label" for="pd-fmt">Formato do feed</label><select id="pd-fmt"><option value="">Escolhe</option>${FORMATOS.map(f => `<option${f === d.formato ? " selected" : ""}>${esc(f)}</option>`).join("")}</select></div>
+        <div class="field" style="grid-column:span 2"><label class="label" for="pd-tit">Tema / título</label><input type="text" id="pd-tit" value="${esc(d.titulo || "")}"></div>
+      </div>
+      <div class="field"><label class="label" for="pd-cartao">Descrição do cartão da Sarah</label><textarea id="pd-cartao" rows="9" placeholder="Cola aqui a descrição inteira do cartão: Feed, Estratégia, Tema, Como fazer…">${esc(d.cartao || "")}</textarea></div>
+      <details id="pd-sec-box"><summary>Ver a descrição por secções</summary><div id="pd-sec"></div></details>
+      <div class="field"><label class="label" for="pd-insp">Inspiração (um link por linha)</label><textarea id="pd-insp" rows="2">${esc((d.inspiracao || []).join("\n"))}</textarea></div>
+      <div class="field"><label class="label" for="pd-inspdesc">O que acontece na inspiração</label><textarea id="pd-inspdesc" rows="2" placeholder="A app não abre links do Instagram. Descreve numa frase.">${esc(d.inspDesc || "")}</textarea></div>
+      <div class="field"><label class="label" for="pd-stories">O que fazer nos stories (cartão da Sarah)</label><textarea id="pd-stories" rows="6" placeholder="Cola aqui a checklist dos stories: Manhã, Tarde, Noite…">${esc(d.stories || "")}</textarea></div>
+      <div class="field"><label class="label" for="pd-notas">Os teus dados reais (casos, números, nomes)</label><textarea id="pd-notas" rows="2">${esc(d.notas || "")}</textarea></div>
+      <div class="row"><button class="primary" id="pd-gen">${d.copy ? "Refazer copy do zero" : "Fazer copy"}</button><button id="pd-save">Guardar</button><button class="ghost" id="pd-stop" hidden>Parar</button><span class="note" id="pd-note"></span></div>
+      <div class="field"><div class="row" style="justify-content:space-between"><span class="label">Copy</span><button class="copy" id="pd-edit">Editar à mão</button></div><div id="pd-copy"></div><textarea id="pd-copytxt" rows="14" hidden></textarea></div>
+      <div class="field"><span class="label">Comentários</span><div id="pd-coms"></div>
+        <div class="grid-f"><div class="field"><label class="label" for="pd-autor">Quem comenta</label><select id="pd-autor"><option>Sarah</option><option>Tânia</option></select></div></div>
+        <textarea id="pd-com" rows="3" placeholder="Cola aqui o comentário da Sarah, ou escreve o teu."></textarea>
+        <div class="row"><button id="pd-addcom">Juntar comentário</button><button class="primary" id="pd-redo" ${d.copy ? "" : "disabled"}>Refazer copy com os comentários</button><label class="note"><input type="checkbox" id="pd-regra"> guardar também como regra para todos os copies</label></div>
+      </div>
+      ${(d.versoes || []).length ? `<details><summary>Versões anteriores (${d.versoes.length})</summary>${d.versoes.slice().reverse().map(v => `<div class="field"><span class="label">${esc(new Date(v.em).toLocaleString("pt-PT"))}</span><div class="pre">${md(v.copy)}</div></div>`).join("")}</details>` : ""}
+      ${d.trello ? `<div class="links"><a href="${esc(d.trello)}" target="_blank" rel="noopener">Abrir no Trello</a></div>` : ""}`);
+
+    const readForm = () => {
+      d.formato = $("pd-fmt").value; d.titulo = $("pd-tit").value.trim(); d.cartao = $("pd-cartao").value;
+      d.inspiracao = $("pd-insp").value.split(/\s+/).filter(x => /^https?:\/\//.test(x)); d.inspDesc = $("pd-inspdesc").value;
+      d.stories = $("pd-stories").value; d.notas = $("pd-notas").value;
+      if (!$("pd-copytxt").hidden) d.copy = $("pd-copytxt").value;
+      d.secoes = secoes(d.cartao);
+      if (!d.titulo) { const t = d.secoes.find(s => s.titulo === "Tema"); if (t) d.titulo = t.texto.split("\n")[0].replace(/[*_]/g, "").slice(0, 140); }
+    };
+    const save = async (extra) => {
+      readForm(); Object.assign(d, extra || {}); d.atualizado = nowIso();
+      if (d.estado === "Por fazer" && (d.cartao || d.copy)) d.estado = "Rascunho";
+      const { id: _, ...body } = d;
+      try { await db.collection("plano").doc(id).set(body); $("pd-note").textContent = "Guardado."; return true; }
+      catch { $("pd-note").textContent = "Não gravou. Tenta outra vez."; return false; }
+    };
+    const paintSec = () => { $("pd-sec").innerHTML = secoesHtml(secoes($("pd-cartao").value)) || '<p class="note">Cola a descrição para a ver por secções.</p>'; };
+    const paintComs = () => {
+      $("pd-coms").innerHTML = (d.comentarios || []).map((c, i) => `<div class="com"><b>${esc(c.autor)} · ${esc(fmtD((c.data || "").slice(0, 10)))}${c.aplicado ? " · aplicado" : ""}</b><span style="white-space:pre-wrap">${esc(c.texto)}</span><button class="ghost copy" data-delcom="${i}" style="justify-self:start">Apagar</button></div>`).join("") || '<p class="note">Sem comentários ainda.</p>';
+      $("pd-coms").querySelectorAll("[data-delcom]").forEach(b => b.onclick = async () => { d.comentarios.splice(Number(b.dataset.delcom), 1); paintComs(); await save(); });
+    };
+    const paintEstado = () => {
+      const nxt = { "Por fazer": null, "Rascunho": ["Para a Sarah", "Enviar à Sarah"], "Para a Sarah": ["Aprovado", "A Sarah aprovou"], "Aprovado": ["conteudos", "Passar para Conteúdos"], "Em conteúdos": null }[d.estado];
+      $("pd-estado").innerHTML = pillEst(d.estado) + (nxt ? ` <button class="primary" id="pd-next">${esc(nxt[1])}</button>` : "") + (d.estado !== "Por fazer" && d.estado !== "Rascunho" && d.estado !== "Em conteúdos" ? ' <button class="ghost" id="pd-back">Voltar a rascunho</button>' : "");
+      if ($("pd-next")) $("pd-next").onclick = async () => {
+        if (nxt[0] === "conteudos") return passarConteudos();
+        d.estado = nxt[0]; await save(); paintEstado();
+      };
+      if ($("pd-back")) $("pd-back").onclick = async () => { d.estado = "Rascunho"; await save(); paintEstado(); };
+    };
+    const passarConteudos = async () => {
+      readForm();
+      if (!d.copy) { $("pd-note").textContent = "Falta o copy."; return; }
+      const cid = "p" + d.data;
+      const doc = { data: d.data, dia: d.dia, semana: d.semana, titulo: d.titulo || "Sem título", formato: d.formato || "Por definir", estado: d.data <= HOJE ? "Publicado" : "Agendado",
+        cartao: d.cartao, secoes: d.secoes, copy: d.copy, stories: [], storiesTxt: d.stories, inspiracao: d.inspiracao, canva: [],
+        comentarios: (d.comentarios || []).map(c => ({ quem: c.autor === "Sarah" ? "Sarah Moreira" : "Tânia Silveira", data: (c.data || "").slice(0, 10), texto: c.texto })),
+        trello: d.trello || "", origem: "plano", planoId: id, metricas: {}, criado: nowIso() };
+      try { await db.collection("conteudos").doc(cid).set(doc); d.estado = "Em conteúdos"; d.conteudoId = cid; await save(); paintEstado(); $("pd-note").textContent = "Passou para Conteúdos."; }
+      catch { $("pd-note").textContent = "Não conseguiu passar. Tenta outra vez."; }
+    };
+    let ctl = null;
+    const gerar = async (modo) => {
+      readForm();
+      if (!sample) { $("pd-note").textContent = "O Claude só funciona dentro do claude.ai."; return; }
+      if (!d.cartao && !d.stories && modo !== "refazer") { $("pd-note").textContent = "Cola primeiro a descrição do cartão ou os stories."; return; }
+      if (d.copy) d.versoes = [...(d.versoes || []), { em: nowIso(), copy: d.copy }].slice(-12);
+      ctl = new AbortController(); $("pd-gen").disabled = $("pd-redo").disabled = true; $("pd-stop").hidden = false; $("pd-note").textContent = "";
+      $("pd-copy").innerHTML = '<p class="thinking">A escrever… (pode levar até um minuto)</p>';
+      try {
+        const { text } = await sample(promptDia(d, modo), { signal: ctl.signal, modelTier: "complex", cache: false, onText: ({ text }) => renderCopyBlocks(text, $("pd-copy")) });
+        d.copy = text;
+        if (modo === "refazer") d.comentarios = (d.comentarios || []).map(c => ({ ...c, aplicado: true }));
+        renderCopyBlocks(text, $("pd-copy")); $("pd-copytxt").value = text; paintComs();
+        await save();
+      } catch (e) {
+        $("pd-note").textContent = e && e.code === "cancelled" ? "Parado." : e && e.code === "not_granted" ? "Não deste autorização ao Claude. Recarrega e aceita." : e && e.code === "rate_limited" ? "Muitos pedidos seguidos. Espera um minuto." : "Correu mal. Tenta outra vez.";
+        renderCopyBlocks(d.copy, $("pd-copy"));
+      } finally { $("pd-gen").disabled = false; $("pd-redo").disabled = !d.copy; $("pd-stop").hidden = true; }
+    };
+    $("pd-stop").onclick = () => ctl && ctl.abort();
+    $("pd-gen").onclick = () => gerar("novo");
+    $("pd-redo").onclick = () => gerar("refazer");
+    $("pd-save").onclick = () => save();
+    $("pd-edit").onclick = () => { const ta = $("pd-copytxt"); if (ta.hidden) { ta.value = d.copy || ""; ta.hidden = false; $("pd-copy").hidden = true; $("pd-edit").textContent = "Ver formatado"; } else { d.copy = ta.value; ta.hidden = true; $("pd-copy").hidden = false; renderCopyBlocks(d.copy, $("pd-copy")); $("pd-edit").textContent = "Editar à mão"; save(); } };
+    $("pd-addcom").onclick = async () => {
+      const t = $("pd-com").value.trim(); if (!t) return;
+      d.comentarios = [...(d.comentarios || []), { autor: $("pd-autor").value, texto: t, data: nowIso() }];
+      if ($("pd-regra").checked && window.CF && window.CF.addRegra) window.CF.addRegra(t);
+      $("pd-com").value = ""; paintComs(); await save();
+    };
+    $("pd-cartao").addEventListener("change", paintSec);
+    $("pd-sec-box").addEventListener("toggle", paintSec);
+    renderCopyBlocks(d.copy, $("pd-copy")); paintComs(); paintEstado();
+  }
+
+  // ---------- CONTEÚDOS ----------
   function renderList() {
     const box = $("c-list");
-    if (!db) { box.innerHTML = '<div class="empty">Abre esta página no claude.ai com a tua conta para veres os conteúdos.</div>'; return; }
-    if (!loaded) { box.innerHTML = '<div class="empty">A carregar os conteúdos…</div>'; return; }
-    if (!docs.length) { box.innerHTML = '<div class="empty">Ainda não há conteúdos. Carrega em <b>Novo conteúdo</b> ou guarda um copy da aba Copy.</div>'; return; }
+    if (!db) { box.innerHTML = '<div class="empty">Abre esta página no claude.ai com a tua conta.</div>'; return; }
+    if (!loaded.c) { box.innerHTML = '<div class="empty">A carregar os conteúdos…</div>'; return; }
     const q = $("c-q").value.trim().toLowerCase(), mes = $("c-mes").value, fmt = $("c-fmt").value, est = $("c-est").value;
-    const f = docs.filter(c => (!mes || (c.data || "").startsWith(mes)) && (!fmt || c.formato === fmt) && (!est || c.estado === est) &&
-      (!q || [c.titulo, c.tema, c.copy].some(x => (x || "").toLowerCase().includes(q)))).sort((a, b) => (b.data || "").localeCompare(a.data || ""));
-    const pub = docs.filter(c => c.estado === "Publicado" && ehFeed(c)), com = pub.filter(temMet);
-    $("c-info").textContent = `${f.length} de ${docs.length} conteúdos · ${pub.length} publicados no feed · ${com.length} com métricas.`;
-    const weeks = new Map();
-    f.forEach(c => { const k = c.semana || (c.data ? c.data : "sem-data"); if (!weeks.has(k)) weeks.set(k, []); weeks.get(k).push(c); });
-    box.innerHTML = [...weeks.entries()].map(([k, arr]) => {
-      const lab = k === "sem-data" ? "Sem data" : "Semana de " + fmtD(k);
-      const items = arr.sort((a, b) => (a.data || "").localeCompare(b.data || "")).map(c => {
-        const ok = temMet(c);
-        return `<button class="item f-${esc((c.formato || "").replace(/\s/g, "-"))}" data-open="${esc(c.id)}">
-          <span class="m"><span>${esc(c.dia || "")} ${esc(fmtD(c.data))}</span><span class="pill muted">${esc(c.formato || "")}</span>${c.estado === "Publicado" ? (ehFeed(c) ? (ok ? '<span class="pill ok">métricas ✓</span>' : '<span class="pill">sem métricas</span>') : "") : `<span class="pill muted">${esc(c.estado)}</span>`}</span>
-          <span class="t">${esc(c.titulo || c.tema || "Sem título")}</span></button>`;
-      }).join("");
-      return `<div class="week"><h3>${esc(lab)}<span>${arr.length} conteúdos</span></h3><div class="items">${items}</div></div>`;
-    }).join("") || '<div class="empty">Nada corresponde aos filtros.</div>';
+    const f = conts.filter(c => (!mes || (c.data || "").startsWith(mes)) && (!fmt || c.formato === fmt) && (!est || c.estado === est) &&
+      (!q || [c.titulo, c.copy, c.cartao].some(x => (x || "").toLowerCase().includes(q)))).sort((a, b) => (b.data || "").localeCompare(a.data || ""));
+    const pub = conts.filter(c => c.estado === "Publicado");
+    $("c-info").textContent = `${f.length} de ${conts.length} conteúdos · ${pub.filter(c => temP(c, "ig")).length} com dados do Instagram · ${pub.filter(c => temP(c, "st")).length} com dados dos stories · ${pub.filter(c => temP(c, "fb")).length} com dados do Facebook.`;
+    const weeks = new Map(); f.forEach(c => { const k = c.semana || "sem"; if (!weeks.has(k)) weeks.set(k, []); weeks.get(k).push(c); });
+    box.innerHTML = [...weeks.entries()].map(([w, arr]) => `<div class="week"><h3>${w === "sem" ? "Sem data" : esc(semanaLabel(w))}<span>${arr.length} conteúdos</span></h3><div class="items">${arr.sort((a, b) => (a.data || "").localeCompare(b.data || "")).map(c => `
+      <button class="item f-${esc((c.formato || "").replace(/\s/g, "-"))}" data-open="${esc(c.id)}">
+        <span class="m"><span>${esc(c.dia || "")} ${esc(fmtD(c.data))}</span><span class="pill muted">${esc(c.formato || "")}</span>${c.estado !== "Publicado" ? pillEst(c.estado) : ""}${["ig","st","fb"].filter(p => temP(c, p)).map(p => `<span class="pill ok">${p === "ig" ? "IG" : p === "st" ? "Stories" : "FB"} ✓</span>`).join("")}</span>
+        <span class="t">${esc(c.titulo || "Sem título")}</span></button>`).join("")}</div></div>`).join("") || '<div class="empty">Nada corresponde aos filtros.</div>';
   }
-  $("c-list").addEventListener("click", (e) => { const b = e.target.closest("[data-open]"); if (b) openDrawer(b.dataset.open); });
+  $("c-list").addEventListener("click", (e) => { const b = e.target.closest("[data-open]"); if (b) openConteudo(b.dataset.open); });
 
-  // ---------- gaveta ----------
-  function openDrawer(id) {
+  function metInputs(c, p) {
+    const m = (c.metricas || {})[p] || {};
+    return `<details ${temP(c, p) ? "open" : ""}><summary>${esc(MET[p].nome)}</summary><div class="grid-f" style="margin-top:10px">${MET[p].campos.map(([k, l]) => `<div class="field"><label class="label" for="cm-${p}-${k}">${esc(l)}</label><input type="number" min="0" step="any" id="cm-${p}-${k}" value="${esc(m[k] ?? "")}"></div>`).join("")}</div></details>`;
+  }
+  function openConteudo(id) {
     openId = id;
-    const c = docs.find(x => x.id === id); if (!c) return;
-    const m = c.metricas || {};
-    const ov = document.createElement("div"); ov.className = "overlay"; ov.id = "ov";
-    ov.innerHTML = `<div class="drawer" role="dialog" aria-modal="true" aria-label="Conteúdo">
-      <div class="row" style="justify-content:space-between"><span class="label">${esc(c.dia || "")} ${esc(fmtD(c.data))} · ${esc(c.formato || "")}</span><button id="dw-close">Fechar</button></div>
-      <h2>${esc(c.titulo || c.tema || "Sem título")}</h2>
+    const c = conts.find(x => x.id === id); if (!c) return;
+    const secs = (c.secoes && c.secoes.length) ? c.secoes : secoes(c.cartao);
+    const { close } = overlay(`
+      <div class="row" style="justify-content:space-between"><span class="label">${esc(c.dia || "")} · ${esc(fmtD(c.data))} · ${esc(c.formato || "")}</span><button data-close>Fechar</button></div>
+      <h2>${esc(c.titulo || "Sem título")}</h2>
       <div class="grid-f">
-        <div class="field"><label class="label" for="dw-data">Data</label><input type="date" id="dw-data" value="${esc(c.data || "")}"></div>
-        <div class="field"><label class="label" for="dw-fmt">Formato</label><select id="dw-fmt">${FORMATOS.map(f => `<option${f === c.formato ? " selected" : ""}>${esc(f)}</option>`).join("")}</select></div>
-        <div class="field"><label class="label" for="dw-est">Estado</label><select id="dw-est">${ESTADOS.map(f => `<option${f === c.estado ? " selected" : ""}>${esc(f)}</option>`).join("")}</select></div>
+        <div class="field"><label class="label" for="cd-data">Data</label><input type="date" id="cd-data" value="${esc(c.data || "")}"></div>
+        <div class="field"><label class="label" for="cd-fmt">Formato</label><select id="cd-fmt">${FORMATOS.map(f => `<option${f === c.formato ? " selected" : ""}>${esc(f)}</option>`).join("")}</select></div>
+        <div class="field"><label class="label" for="cd-est">Estado</label><select id="cd-est">${EST_CONT.map(f => `<option${f === c.estado ? " selected" : ""}>${esc(f)}</option>`).join("")}</select></div>
       </div>
-      <div class="field"><label class="label" for="dw-tit">Título</label><input type="text" id="dw-tit" value="${esc(c.titulo || "")}"></div>
-      ${ehFeed(c) ? `<div class="field"><span class="label">Métricas do post (Instagram)</span><div class="grid-f">${MET.map(([k, l]) => `<div class="field"><label class="label" for="dw-m-${k}">${esc(l)}</label><input type="number" min="0" inputmode="numeric" id="dw-m-${k}" value="${esc(m[k] ?? "")}"></div>`).join("")}</div></div>` : ""}
-      <div class="field"><label class="label" for="dw-obs">Notas (o que achaste, o que a Sarah disse)</label><textarea id="dw-obs" rows="2">${esc(c.notas || "")}</textarea></div>
-      <div class="row"><button class="primary" id="dw-save">Guardar</button><button id="dw-copy">Fazer copy com este cartão</button><span class="note" id="dw-note"></span></div>
-      <div class="field"><label class="label" for="dw-copytxt">Copy final</label><textarea id="dw-copytxt" rows="10">${esc(c.copy || "")}</textarea></div>
-      ${(c.comentarios || []).length ? `<div class="field"><span class="label">Comentários no Trello</span>${c.comentarios.slice().sort((a, b) => a.data.localeCompare(b.data)).map(x => `<div class="com"><b>${esc(x.quem)} · ${esc(fmtD(x.data))}</b><span style="white-space:pre-wrap">${esc(x.texto)}</span></div>`).join("")}</div>` : ""}
-      ${(c.stories || []).length ? `<details><summary>Stories pedidos (${c.stories.length})</summary><ul>${c.stories.map(s => `<li>${esc(s.replace(/\*\*/g, ""))}</li>`).join("")}</ul></details>` : ""}
-      ${c.cartao ? `<details><summary>Cartão da Sarah completo</summary><div class="pre">${esc(c.cartao)}</div></details>` : ""}
-      <div class="links">${c.trello ? `<a href="${esc(c.trello)}" target="_blank" rel="noopener">Abrir no Trello</a>` : ""}${(c.inspiracao || []).map((u, i) => `<a href="${esc(u)}" target="_blank" rel="noopener">Inspiração ${i + 1}</a>`).join("")}${(c.canva || []).map((u, i) => `<a href="${esc(u)}" target="_blank" rel="noopener">Canva ${i + 1}</a>`).join("")}</div>
-      <div class="row"><button id="dw-del" class="ghost">Apagar conteúdo</button><span class="note" id="dw-delnote"></span></div>
-    </div>`;
-    document.body.appendChild(ov);
-    const close = () => { ov.remove(); openId = null; renderList(); if (!$("tab-dados").hidden) renderDados(); };
-    $("dw-close").onclick = close;
-    ov.addEventListener("click", (e) => { if (e.target === ov) close(); });
-    $("dw-save").onclick = async () => {
-      const metricas = {}; MET.forEach(([k]) => { const el = $("dw-m-" + k); if (el && el.value !== "") metricas[k] = Number(el.value); });
-      const d = $("dw-data").value || null;
-      const upd = { titulo: $("dw-tit").value.trim(), data: d, formato: $("dw-fmt").value, estado: $("dw-est").value, copy: $("dw-copytxt").value, notas: $("dw-obs").value, metricas, atualizado: new Date().toISOString() };
-      if (d) { const dt = new Date(d + "T12:00:00"); const wd = (dt.getDay() + 6) % 7; upd.dia = ["Segunda","Terça","Quarta","Quinta","Sexta","Sábado","Domingo"][wd]; const mon = new Date(dt); mon.setDate(dt.getDate() - wd); upd.semana = mon.toISOString().slice(0, 10); }
-      try { await db.collection("conteudos").doc(c.id).update(upd); $("dw-note").textContent = "Guardado."; }
-      catch { $("dw-note").textContent = "Não gravou. Tenta outra vez."; }
-    };
-    $("dw-copy").onclick = () => { if (window.CF) window.CF.fill(c.cartao || c.tema || "", (c.inspiracao || [])[0] || ""); close(); show("copy"); };
-    let armed = false;
-    $("dw-del").onclick = async () => {
-      if (!armed) { armed = true; $("dw-del").textContent = "Confirmar: apagar de vez"; $("dw-delnote").textContent = "Carrega outra vez para apagar."; return; }
-      try { await db.collection("conteudos").doc(c.id).delete(); close(); } catch { $("dw-delnote").textContent = "Não apagou."; }
+      <div class="field"><span class="label">Métricas (preenche à mão ou importa da Meta na aba Dados)</span>${ehFeed(c) ? metInputs(c, "ig") : ""}${metInputs(c, "st")}${ehFeed(c) ? metInputs(c, "fb") : ""}</div>
+      <div class="field"><label class="label" for="cd-notas">As tuas notas sobre este conteúdo</label><textarea id="cd-notas" rows="2">${esc(c.notas || "")}</textarea></div>
+      <div class="row"><button class="primary" id="cd-save">Guardar</button><span class="note" id="cd-note"></span></div>
+      <h3 style="font:400 1.2rem var(--f-display);color:var(--brown);margin:8px 0 0">Cartão da Sarah</h3>
+      ${secoesHtml(secs) || '<p class="note">Sem descrição no Trello.</p>'}
+      ${c.textoCanva ? `<div class="field"><span class="label">Texto final no Canva (o que foi publicado)</span><div class="pre">${md(c.textoCanva)}</div></div>` : ""}
+      ${c.storiesTxt ? `<div class="field"><span class="label">O que fazer nos stories</span><div class="pre">${md(c.storiesTxt)}</div></div>` : ""}
+      ${(c.comentarios || []).length ? `<div class="field"><span class="label">Comentários</span>${c.comentarios.slice().sort((a, b) => (a.data || "").localeCompare(b.data || "")).map(x => `<div class="com"><b>${esc(x.quem)} · ${esc(fmtD(x.data))}</b><span style="white-space:pre-wrap">${esc(x.texto)}</span></div>`).join("")}</div>` : ""}
+      ${c.origem === "plano" && c.copy ? `<div class="field"><span class="label">Copy aprovado</span><div class="pre">${md(c.copy)}</div></div>` : ""}
+      <div class="links">${c.trello ? `<a href="${esc(c.trello)}" target="_blank" rel="noopener">Abrir no Trello</a>` : ""}${(c.inspiracao || []).map((u, i) => `<a href="${esc(u)}" target="_blank" rel="noopener">Inspiração ${i + 1}</a>`).join("")}${(c.canva || []).map((u, i) => `<a href="${esc(u)}" target="_blank" rel="noopener">Canva ${i + 1}</a>`).join("")}</div>`);
+    $("cd-save").onclick = async () => {
+      const metricas = {};
+      ["ig", "st", "fb"].forEach(p => MET[p].campos.forEach(([k]) => { const el = $(`cm-${p}-${k}`); if (el && el.value !== "") { (metricas[p] = metricas[p] || {})[k] = Number(el.value); } }));
+      const dd = $("cd-data").value || null; const upd = { data: dd, formato: $("cd-fmt").value, estado: $("cd-est").value, notas: $("cd-notas").value, metricas, atualizado: nowIso() };
+      if (dd) { const dt = new Date(dd + "T12:00:00"); const wd = (dt.getDay() + 6) % 7; upd.dia = DIAS[wd]; const mon = new Date(dt); mon.setDate(dt.getDate() - wd); upd.semana = mon.toISOString().slice(0, 10); }
+      try { await db.collection("conteudos").doc(c.id).update(upd); $("cd-note").textContent = "Guardado."; } catch { $("cd-note").textContent = "Não gravou."; }
     };
   }
-  $("c-novo").addEventListener("click", async () => {
-    if (!db) return;
-    const id = "n" + Date.now().toString(36);
-    const hoje = new Date().toISOString().slice(0, 10);
-    try { await db.collection("conteudos").doc(id).set({ titulo: "Novo conteúdo", data: hoje, formato: "Por definir", estado: "Planeado", origem: "app", criado: new Date().toISOString() }); openDrawer(id); } catch {}
-  });
-  $("savecontent").addEventListener("click", async (e) => {
-    if (!db || !window.CF) return;
-    const btn = e.currentTarget; const txt = window.CF.last(); if (!txt) return;
-    const brief = window.CF.brief();
-    const linha = (brief.split("\n").find(l => l.trim() && !/^(tema|feed|objetivo)$/i.test(l.trim())) || "Copy").trim().slice(0, 140);
-    const hoje = new Date().toISOString().slice(0, 10);
-    const ex = docs.find(c => c.cartao && brief && c.cartao.trim() === brief.trim());
-    try {
-      if (ex) await db.collection("conteudos").doc(ex.id).update({ copy: txt, atualizado: new Date().toISOString() });
-      else await db.collection("conteudos").doc("n" + Date.now().toString(36)).set({ titulo: linha, data: hoje, formato: "Por definir", estado: "Planeado", copy: txt, cartao: brief, inspiracao: window.CF.insp() ? [window.CF.insp()] : [], origem: "app", criado: new Date().toISOString() });
-      btn.textContent = ex ? "Atualizado no conteúdo" : "Guardado em Conteúdos";
-    } catch { btn.textContent = "Não gravou"; }
-    setTimeout(() => { btn.textContent = "Guardar nos conteúdos"; }, 2200);
-  });
 
-  // ---------- dados ----------
-  function bar(v, max, dec, suf) { const p = max ? Math.max(2, v / max * 100) : 0; return `<div class="bar" title="${esc(fmtN(v, dec) + (suf || ""))}"><div class="tr"><span style="width:${v == null ? 0 : p}%"></span></div><span class="v">${fmtN(v, dec)}${v == null ? "" : (suf || "")}</span></div>`; }
-  const avg = (arr) => { const v = arr.filter(x => x != null && !isNaN(x)); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; };
-  const isPct = (k) => k === "taxa" || k === "taxaGuard";
-  function groupTable(title, rows, key, label) {
-    const dec = isPct(key) ? 1 : 0, suf = isPct(key) ? "%" : "";
-    const max = Math.max(0, ...rows.map(r => r.v || 0));
-    return `<div class="field"><span class="label">${esc(title)}</span><div class="tbl"><table><thead><tr><th>${esc(label)}</th><th class="n">Posts</th><th>Média de ${esc(nomeMet(key).toLowerCase())}</th></tr></thead><tbody>${rows.map(r => `<tr><td>${esc(r.k)}</td><td class="n">${r.n}</td><td>${bar(r.v, max, dec, suf)}</td></tr>`).join("")}</tbody></table></div></div>`;
-  }
-  const nomeMet = (k) => ([...MET, ...DERIV].find(x => x[0] === k) || [k, k])[1].replace(/ \(.*\)/, "");
+  // ---------- DADOS ----------
+  const avg = (a) => { const v = a.filter(x => x != null && !isNaN(x)); return v.length ? v.reduce((s, x) => s + x, 0) / v.length : null; };
+  const sum = (a) => { const v = a.filter(x => x != null && !isNaN(x)); return v.length ? v.reduce((s, x) => s + x, 0) : null; };
+  function bar(v, max, pct) { const w = max && v != null ? Math.max(2, v / max * 100) : 0; return `<div class="bar" title="${esc(fmtN(v, pct ? 1 : 0))}${pct ? "%" : ""}"><div class="tr"><span style="width:${w}%"></span></div><span class="v">${fmtN(v, pct ? 1 : 0)}${v != null && pct ? "%" : ""}</span></div>`; }
+  const kpi = (l, v, d) => `<div class="kpi"><span class="label">${esc(l)}</span><span class="v">${v}</span><span class="d">${esc(d || "")}</span></div>`;
   function renderDados() {
     const body = $("d-body");
     if (!db) { body.innerHTML = '<div class="empty">Abre esta página no claude.ai com a tua conta.</div>'; return; }
-    if (!loaded) { body.innerHTML = '<div class="empty">A carregar…</div>'; return; }
-    const mes = $("d-mes").value, key = $("d-met").value || "alcance";
-    const pub = docs.filter(c => c.estado === "Publicado" && ehFeed(c) && (!mes || (c.data || "") >= mes));
-    const com = pub.filter(temMet).map(c => ({ c, m: mets(c) }));
-    const kp = (k) => avg(com.map(x => x.m[k]));
-    let html = `<div class="kpis">
-      <div class="kpi"><span class="label">Publicados no feed</span><span class="v">${pub.length}</span><span class="d">${com.length} com métricas</span></div>
-      <div class="kpi"><span class="label">Alcance médio</span><span class="v">${fmtN(kp("alcance"))}</span><span class="d">por post</span></div>
-      <div class="kpi"><span class="label">Guardados médios</span><span class="v">${fmtN(kp("guardados"))}</span><span class="d">${fmtN(kp("taxaGuard"), 1)}% do alcance</span></div>
-      <div class="kpi"><span class="label">Taxa de interação</span><span class="v">${fmtN(kp("taxa"), 1)}%</span><span class="d">gostos, comentários, partilhas e guardados</span></div>
-      <div class="kpi"><span class="label">Novos seguidores</span><span class="v">${fmtN(com.reduce((a, x) => a + (x.m.seguidores || 0), 0))}</span><span class="d">soma dos posts com dados</span></div>
-    </div>`;
-    if (!com.length) {
-      body.innerHTML = html + `<div class="empty"><b>Ainda não há métricas.</b><br>Tens ${pub.length} conteúdos publicados no feed à espera de números. Duas formas de os pôr: abre cada conteúdo em <b>Conteúdos</b> e escreve as métricas do Instagram, ou carrega em <b>Colar métricas do Instagram</b> e cola a exportação do Meta Business Suite. Quando houver dados, aparecem aqui as comparações por formato, dia, mês e o ranking dos posts.</div>`;
+    if (!loaded.c) { body.innerHTML = '<div class="empty">A carregar…</div>'; return; }
+    const mes = $("d-mes").value, key = $("d-met").value || "ig.alcance", pct = isPct(key);
+    const pub = conts.filter(c => c.estado === "Publicado" && (!mes || (c.data || "") >= mes));
+    const ig = pub.filter(c => ehFeed(c) && temP(c, "ig")), st = pub.filter(c => temP(c, "st")), fb = pub.filter(c => temP(c, "fb"));
+    const reels = ig.filter(c => c.formato === "Reels");
+    const semCom = ig.filter(c => (M(c, "ig", "comentarios") || 0) === 0).length;
+    const comT = sum(ig.map(c => M(c, "ig", "comentarios"))), respT = sum(ig.map(c => M(c, "ig", "comentariosRespondidos")));
+    const stDias0 = st.filter(c => (M(c, "st", "respostas") || 0) === 0).length;
+    let html = `<div class="field"><span class="label">Instagram · publicações e Reels (${ig.length} de ${pub.filter(ehFeed).length} publicados com dados)</span><div class="kpis">
+      ${kpi("Alcance médio", fmtN(avg(ig.map(c => M(c, "ig", "alcance")))), "por publicação")}
+      ${kpi("Taxa de interação", fmtN(avg(ig.map(c => deriv(c).taxa)), 1) + "%", "gostos, comentários, partilhas e guardados ÷ alcance")}
+      ${kpi("Guardados", fmtN(sum(ig.map(c => M(c, "ig", "guardados")))), fmtN(avg(ig.map(c => deriv(c).taxaGuard)), 1) + "% do alcance, em média")}
+      ${kpi("Comentários", fmtN(comT), `${semCom} publicações sem nenhum · ${comT ? fmtN((respT || 0) / comT * 100) : "—"}% respondidos`)}
+      ${kpi("Novos seguidores", fmtN(sum(ig.map(c => M(c, "ig", "seguidores")))), "somados")}
+      ${kpi("Reels · tempo médio", fmtN(avg(reels.map(c => M(c, "ig", "tempoMedio"))), 1) + " s", "retenção média " + fmtN(avg(reels.map(c => M(c, "ig", "retencao"))), 1) + "%")}
+    </div></div>
+    <div class="field"><span class="label">Instagram · stories (${st.length} dias com dados)</span><div class="kpis">
+      ${kpi("Alcance médio por dia", fmtN(avg(st.map(c => M(c, "st", "alcance")))), "")}
+      ${kpi("Respostas", fmtN(sum(st.map(c => M(c, "st", "respostas")))), `${stDias0} dias sem nenhuma resposta`)}
+      ${kpi("Enquetes e caixinhas", fmtN(sum(st.map(c => M(c, "st", "stickers")))), "respostas")}
+      ${kpi("Taxa de saída", fmtN(avg(st.map(c => deriv(c).stSaida)), 1) + "%", "saídas ÷ visualizações")}
+      ${kpi("Cliques no link", fmtN(sum(st.map(c => M(c, "st", "cliques")))), "")}
+    </div></div>
+    <div class="field"><span class="label">Facebook (${fb.length} publicações com dados)</span><div class="kpis">
+      ${kpi("Alcance médio", fmtN(avg(fb.map(c => M(c, "fb", "alcance")))), "")}
+      ${kpi("Reações", fmtN(sum(fb.map(c => M(c, "fb", "reacoes")))), "")}
+      ${kpi("Comentários", fmtN(sum(fb.map(c => M(c, "fb", "comentarios")))), "")}
+      ${kpi("Partilhas", fmtN(sum(fb.map(c => M(c, "fb", "partilhas")))), "")}
+    </div></div>`;
+    const base = pub.filter(c => getSel(c, key) != null);
+    if (!base.length) {
+      body.innerHTML = html + `<div class="empty"><b>Ainda não há números.</b> Os dados vêm da Meta. Carrega em <b>Importar exportação da Meta</b> e cola a exportação do Instagram (publicações e stories) e do Facebook. Cada linha junta-se ao conteúdo do mesmo dia, e as comparações aparecem aqui.</div>`;
       return;
     }
-    const by = (fn) => { const g = new Map(); com.forEach(x => { const k = fn(x.c); if (!k) return; if (!g.has(k)) g.set(k, []); g.get(k).push(x.m[key]); }); return [...g.entries()].map(([k, v]) => ({ k, n: v.length, v: avg(v) })); };
-    const dias = ["Segunda","Terça","Quarta","Quinta","Sexta","Sábado","Domingo"];
-    html += `<div class="cols" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))">`
-      + groupTable("Por formato", by(c => c.formato).sort((a, b) => (b.v || 0) - (a.v || 0)), key, "Formato")
-      + groupTable("Por dia da semana", by(c => c.dia).sort((a, b) => dias.indexOf(a.k) - dias.indexOf(b.k)), key, "Dia")
-      + groupTable("Por mês", by(c => (c.data || "").slice(0, 7)).sort((a, b) => a.k.localeCompare(b.k)).map(r => ({ ...r, k: MESES[Number(r.k.slice(5)) - 1] })), key, "Mês")
-      + `</div>`;
-    const dec = isPct(key) ? 1 : 0, suf = isPct(key) ? "%" : "";
-    const rank = com.filter(x => x.m[key] != null).sort((a, b) => b.m[key] - a.m[key]);
-    const max = rank.length ? rank[0].m[key] : 0;
-    html += `<div class="field"><span class="label">Posts ordenados por ${esc(nomeMet(key).toLowerCase())}</span><div class="tbl"><table><thead><tr><th>Data</th><th>Post</th><th>Formato</th><th class="n">Alcance</th><th class="n">Guardados</th><th class="n">Partilhas</th><th>${esc(nomeMet(key))}</th></tr></thead><tbody>${rank.map(x => `<tr><td class="n">${esc(fmtD(x.c.data))}</td><td><button class="ghost" style="padding:0;border:0;text-align:left;font-weight:600" data-open="${esc(x.c.id)}">${esc((x.c.titulo || "").slice(0, 70))}</button></td><td>${esc(x.c.formato)}</td><td class="n">${fmtN(x.m.alcance)}</td><td class="n">${fmtN(x.m.guardados)}</td><td class="n">${fmtN(x.m.partilhas)}</td><td>${bar(x.m[key], max, dec, suf)}</td></tr>`).join("")}</tbody></table></div></div>`;
-    html += `<div class="panel" style="padding:14px"><span class="label">Análise</span><p class="note">O Claude lê os teus números e os temas dos posts e diz-te o que está a funcionar, o que repetir e o que propor à Sarah.</p><div class="row"><button class="primary" id="d-ai" ${sample ? "" : "disabled"}>Analisar os meus conteúdos</button><button class="ghost" id="d-ai-stop" hidden>Parar</button><span class="note" id="d-ai-note">${sample ? "" : "A análise só funciona dentro do claude.ai."}</span></div><div id="d-ai-out"></div></div>`;
+    const by = (fn) => { const g = new Map(); base.forEach(c => { const k = fn(c); if (!k) return; if (!g.has(k)) g.set(k, []); g.get(k).push(getSel(c, key)); }); return [...g.entries()].map(([k, v]) => ({ k, n: v.length, v: avg(v) })); };
+    const tbl = (t, rows, lab) => { const mx = Math.max(0, ...rows.map(r => r.v || 0)); return `<div class="field" style="min-width:0"><span class="label">${esc(t)}</span><div class="tbl"><table><thead><tr><th>${esc(lab)}</th><th class="n">Nº</th><th>Média</th></tr></thead><tbody>${rows.map(r => `<tr><td>${esc(r.k)}</td><td class="n">${r.n}</td><td>${bar(r.v, mx, pct)}</td></tr>`).join("")}</tbody></table></div></div>`; };
+    const nomeKey = (METSEL.find(x => x[0] === key) || [key, key])[1];
+    html += `<p class="note">A comparar por: <b>${esc(nomeKey)}</b></p><div class="cols" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))">`
+      + tbl("Por formato", by(c => c.formato).sort((a, b) => (b.v || 0) - (a.v || 0)), "Formato")
+      + tbl("Por dia da semana", by(c => c.dia).sort((a, b) => DIAS.indexOf(a.k) - DIAS.indexOf(b.k)), "Dia")
+      + tbl("Por mês", by(c => (c.data || "").slice(0, 7)).sort((a, b) => a.k.localeCompare(b.k)).map(r => ({ ...r, k: MESES[Number(r.k.slice(5)) - 1] })), "Mês") + `</div>`;
+    const rank = base.slice().sort((a, b) => getSel(b, key) - getSel(a, key)); const mx = getSel(rank[0], key);
+    html += `<div class="field"><span class="label">Conteúdos ordenados</span><div class="tbl"><table><thead><tr><th>Data</th><th>Conteúdo</th><th>Formato</th><th class="n">Alcance IG</th><th class="n">Coment.</th><th class="n">Guard.</th><th class="n">Resp. stories</th><th>${esc(nomeKey.replace(/^.*· /, ""))}</th></tr></thead><tbody>${rank.map(c => `<tr><td class="n">${esc(fmtD(c.data))}</td><td><button class="ghost" style="padding:0;border:0;text-align:left;font-weight:600" data-open="${esc(c.id)}">${esc((c.titulo || "").slice(0, 70))}</button></td><td>${esc(c.formato)}</td><td class="n">${fmtN(M(c, "ig", "alcance"))}</td><td class="n">${fmtN(M(c, "ig", "comentarios"))}</td><td class="n">${fmtN(M(c, "ig", "guardados"))}</td><td class="n">${fmtN(M(c, "st", "respostas"))}</td><td>${bar(getSel(c, key), mx, pct)}</td></tr>`).join("")}</tbody></table></div></div>`;
+    html += `<div class="panel" style="padding:14px"><span class="label">Análise</span><p class="note">O Claude cruza os números com o que foi pedido em cada cartão e com o copy, e diz-te o que funciona, o que repetir e o que levar à Sarah.</p><div class="row"><button class="primary" id="d-ai" ${sample ? "" : "disabled"}>Analisar os meus conteúdos</button><button class="ghost" id="d-ai-stop" hidden>Parar</button><span class="note" id="d-ai-note"></span></div><div id="d-ai-out"></div></div>`;
     body.innerHTML = html;
-    if ($("d-ai")) $("d-ai").onclick = analisar;
-    if ($("d-ai-stop")) $("d-ai-stop").onclick = () => aiCtl && aiCtl.abort();
+    $("d-ai").onclick = analisar; $("d-ai-stop").onclick = () => aiCtl && aiCtl.abort();
   }
-  $("d-body").addEventListener("click", (e) => { const b = e.target.closest("[data-open]"); if (b) openDrawer(b.dataset.open); });
+  $("d-body").addEventListener("click", (e) => { const b = e.target.closest("[data-open]"); if (b) openConteudo(b.dataset.open); });
 
   async function analisar() {
     const mes = $("d-mes").value;
-    const rows = docs.filter(c => c.estado === "Publicado" && ehFeed(c) && temMet(c) && (!mes || (c.data || "") >= mes)).map(c => {
-      const m = mets(c);
-      return [c.data, c.dia, c.formato, (c.titulo || "").slice(0, 90), m.alcance, m.visualizacoes, m.gostos, m.comentarios, m.partilhas, m.guardados, m.seguidores, m.cliques, m.mensagens, m.taxa == null ? "" : m.taxa.toFixed(1)].map(v => v == null ? "" : v).join(" | ");
+    const rows = conts.filter(c => c.estado === "Publicado" && (!mes || (c.data || "") >= mes) && (temP(c, "ig") || temP(c, "st") || temP(c, "fb"))).map(c => {
+      const tema = ((c.secoes || []).find(s => s.titulo === "Estratégia") || {}).texto || "";
+      const ms = ["ig", "st", "fb"].map(p => temP(c, p) ? p.toUpperCase() + " " + MET[p].campos.map(([k, l]) => M(c, p, k) != null ? `${l}=${M(c, p, k)}` : "").filter(Boolean).join(", ") : "").filter(Boolean).join(" | ");
+      return `- ${c.data} ${c.dia} · ${c.formato} · "${(c.titulo || "").slice(0, 90)}" · estratégia: ${tema.replace(/\s+/g, " ").slice(0, 160)} · gancho: ${(c.copy || "").replace(/\s+/g, " ").slice(0, 120)}\n  ${ms}`;
     });
-    const prompt = `És analista de conteúdo da Tânia Silveira, estrategista de produto e estrutura para marcas de moda (Método FIBRA). A mentora dela, Sarah Moreira, define o plano no Trello. Analisa os números do Instagram abaixo e responde em português de Portugal, direto, sem floreados, sem inventar números que não estão nos dados.
+    const prompt = `És analista de conteúdo da Tânia Silveira (estrategista de produto e estrutura para marcas de moda, Método FIBRA). A mentora, Sarah Moreira, define o plano no Trello. Analisa os dados do Instagram (publicações e stories) e do Facebook abaixo. Responde em português de Portugal, direto, sem floreados e sem inventar números.
 
-Estrutura (usa "## " em cada bloco):
-## O que está a funcionar (3 a 5 pontos com números concretos)
-## O que não está a funcionar (2 a 4 pontos)
-## Padrões de tema e formato (que assuntos e formatos trazem mais guardados, partilhas e seguidores)
-## O que repetir nas próximas 4 semanas (5 ideias de conteúdo concretas, no estilo do que funcionou)
-## O que levar à Sarah (3 pontos curtos para a próxima reunião)
-Se houver poucos dados (menos de 10 posts), diz isso no início e trata as conclusões como pistas.
+Usa "## " em cada bloco:
+## Resumo em 3 linhas
+## O que está a funcionar (com números)
+## O que não está a funcionar (com números)
+## Comentários e conversa (quem comenta, respostas, stories com e sem respostas)
+## Formatos, temas e ganchos (o que traz mais alcance, guardados, partilhas, seguidores e retenção)
+## Instagram vs Facebook
+## O que repetir nas próximas semanas (5 ideias concretas)
+## O que levar à Sarah (3 pontos)
+Se houver menos de 10 conteúdos com dados, diz isso logo no início.
 
-DADOS (data | dia | formato | título | alcance | visualizações | gostos | comentários | partilhas | guardados | novos seguidores | cliques | mensagens | taxa de interação %):
+DADOS:
 ${rows.join("\n")}`;
-    aiCtl = new AbortController();
-    $("d-ai").disabled = true; $("d-ai-stop").hidden = false; $("d-ai-note").textContent = "";
-    const out = $("d-ai-out"); out.innerHTML = '<p class="thinking">A analisar… (pode levar até um minuto)</p>';
-    const paint = (t) => { out.innerHTML = '<div class="ai-out">' + esc(t).replace(/^## (.*)$/gm, '<strong style="font-family:var(--f-display);font-weight:400;font-size:1.1rem;color:var(--brown)">$1</strong>').replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>") + "</div>"; };
+    aiCtl = new AbortController(); $("d-ai").disabled = true; $("d-ai-stop").hidden = false; $("d-ai-note").textContent = "";
+    const out = $("d-ai-out"); out.innerHTML = '<p class="thinking">A analisar…</p>';
+    const paint = (t) => { out.innerHTML = '<div class="ai-out">' + md(t).replace(/^## (.*)$/gm, '<strong style="font-family:var(--f-display);font-weight:400;font-size:1.1rem;color:var(--brown)">$1</strong>') + "</div>"; };
     try { const { text } = await sample(prompt, { signal: aiCtl.signal, modelTier: "complex", cache: false, onText: ({ text }) => paint(text) }); paint(text); }
-    catch (e) { if (e && e.text) paint(e.text); else out.innerHTML = ""; $("d-ai-note").textContent = e && e.code === "cancelled" ? "Parado." : e && e.code === "not_granted" ? "Não deste autorização ao Claude. Recarrega a página e aceita." : "A análise falhou. Tenta outra vez daqui a pouco."; }
-    finally { const b = $("d-ai"); if (b) b.disabled = false; const s = $("d-ai-stop"); if (s) s.hidden = true; }
+    catch (e) { if (e && e.text) paint(e.text); else out.innerHTML = ""; $("d-ai-note").textContent = e && e.code === "cancelled" ? "Parado." : "A análise falhou. Tenta outra vez."; }
+    finally { const b = $("d-ai"); if (b) b.disabled = false; const s2 = $("d-ai-stop"); if (s2) s2.hidden = true; }
   }
 
-  // ---------- importar CSV ----------
-  $("d-import-btn").addEventListener("click", () => { $("d-import").hidden = !$("d-import").hidden; });
-  const COLS = [["data", /data|date|publica/i], ["alcance", /alcance|reach|contas alcan/i], ["visualizacoes", /visualiza|views|impress|reprodu/i], ["gostos", /gost|like|reac/i], ["comentarios", /coment/i], ["partilhas", /partilh|compartilh|share|envio/i], ["guardados", /guard|salv|save/i], ["seguidores", /seguid|follow/i], ["visitas", /visita|perfil|profile/i], ["cliques", /clique|click|link/i], ["mensagens", /mensag|dm|messag|respost/i]];
-  function parseNum(s) { s = String(s || "").trim().replace(/\s/g, ""); if (!s) return null; if (/^\d{1,3}(\.\d{3})+(,\d+)?$/.test(s)) s = s.replace(/\./g, "").replace(",", "."); else s = s.replace(",", "."); const n = Number(s); return isNaN(n) ? null : n; }
-  function parseDate(s) {
+  // ---------- importar Meta ----------
+  $("d-import-btn").onclick = () => { $("d-import").hidden = !$("d-import").hidden; };
+  const COLS = {
+    ig: [["data", /hora de publica|data de publica|publish time|^data$|^date$|data/i], ["alcance", /alcance|reach/i], ["visualizacoes", /visualiza|views|impress|reprodu/i], ["gostos", /gost|like/i], ["comentarios", /coment/i], ["partilhas", /partilh|compartilh|share/i], ["guardados", /guard|salv|save/i], ["seguidores", /seguid|follow/i], ["visitas", /visita|profile/i], ["cliques", /clique|click|link/i], ["mensagens", /mensag|message/i], ["tempoMedio", /tempo m[ée]dio|average watch|watch time|dura[çc][ãa]o m[ée]dia/i], ["retencao", /reten/i]],
+    st: [["data", /hora de publica|data de publica|publish time|^data$|^date$|data/i], ["alcance", /alcance|reach/i], ["visualizacoes", /visualiza|views|impress/i], ["respostas", /respost|repl/i], ["partilhas", /partilh|compartilh|share/i], ["stickers", /autocolante|sticker|enquete|sondagem|poll|caixa/i], ["cliques", /clique|click|link/i], ["avancos", /avan[çc]|forward|seguinte|next/i], ["recuos", /recu|back|anterior/i], ["saidas", /sa[ií]d|exit/i], ["seguidores", /seguid|follow/i]],
+    fb: [["data", /hora de publica|data de publica|publish time|^data$|^date$|data/i], ["alcance", /alcance|reach/i], ["visualizacoes", /visualiza|views|impress|reprodu/i], ["reacoes", /rea[çc]|reaction|gost|like/i], ["comentarios", /coment/i], ["partilhas", /partilh|compartilh|share/i], ["cliques", /clique|click/i], ["seguidores", /seguid|follow/i]]
+  };
+  function splitCsv(line, sep) { const out = []; let cur = "", q = false; for (let i = 0; i < line.length; i++) { const ch = line[i]; if (ch === '"') { if (q && line[i + 1] === '"') { cur += '"'; i++; } else q = !q; } else if (ch === sep && !q) { out.push(cur); cur = ""; } else cur += ch; } out.push(cur); return out.map(x => x.trim()); }
+  function parseNum(s) { s = String(s || "").trim().replace(/\s|%/g, ""); if (!s || s === "-") return null; if (/^\d{1,3}(\.\d{3})+(,\d+)?$/.test(s)) s = s.replace(/\./g, "").replace(",", "."); else if (/^\d{1,3}(,\d{3})+(\.\d+)?$/.test(s)) s = s.replace(/,/g, ""); else s = s.replace(",", "."); const n = Number(s); return isNaN(n) ? null : n; }
+  function parseDate(s, mode) {
     s = String(s || "").trim(); let m;
     if ((m = s.match(/(\d{4})-(\d{2})-(\d{2})/))) return `${m[1]}-${m[2]}-${m[3]}`;
-    if ((m = s.match(/(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})/))) { let y = m[3].length === 2 ? "20" + m[3] : m[3]; let a = Number(m[1]), b = Number(m[2]); if (b > 12) [a, b] = [b, a]; return `${y}-${String(b).padStart(2, "0")}-${String(a).padStart(2, "0")}`; }
+    if ((m = s.match(/(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})/))) { const y = m[3].length === 2 ? "20" + m[3] : m[3]; let a = Number(m[1]), b = Number(m[2]); let day, mon; if (mode === "dm") { day = a; mon = b; } else if (mode === "md") { mon = a; day = b; } else if (a > 12) { day = a; mon = b; } else { mon = a; day = b; } return `${y}-${String(mon).padStart(2, "0")}-${String(day).padStart(2, "0")}`; }
     return null;
   }
-  $("d-csv-go").addEventListener("click", async () => {
-    const raw = $("d-csv").value.trim(); const note = $("d-csv-note");
-    if (!raw) { note.textContent = "Cola primeiro os dados."; return; }
+  $("d-csv-go").onclick = async () => {
+    const plat = $("d-plat").value, raw = $("d-csv").value.trim(), note = $("d-csv-note");
+    if (!raw) { note.textContent = "Cola primeiro a exportação."; return; }
     const lines = raw.split(/\r?\n/).filter(l => l.trim());
-    const sep = lines[0].includes("\t") ? "\t" : (lines[0].split(";").length > lines[0].split(",").length ? ";" : ",");
-    const split = (l) => l.split(sep).map(x => x.replace(/^"|"$/g, ""));
-    const head = split(lines[0]);
-    const idx = {}; COLS.forEach(([k, re]) => { const i = head.findIndex((h, j) => re.test(h) && !Object.values(idx).includes(j)); if (i >= 0) idx[k] = i; });
-    if (idx.data == null) { note.textContent = "Não encontrei a coluna da data. O cabeçalho tem de ter uma coluna chamada Data."; return; }
-    let ok = 0, sem = [];
+    const h0 = lines[0]; const sep = h0.includes("\t") ? "\t" : (h0.split(";").length > h0.split(",").length ? ";" : ",");
+    const head = splitCsv(h0, sep); const idx = {}; const used = new Set();
+    COLS[plat].forEach(([k, re]) => { const i = head.findIndex((h, j) => !used.has(j) && re.test(h)); if (i >= 0) { idx[k] = i; used.add(i); } });
+    if (idx.data == null) { note.textContent = "Não encontrei a coluna da data de publicação no cabeçalho."; return; }
+    let mode = $("d-dfmt").value;
+    if (mode === "auto") { mode = "md"; for (const l of lines.slice(1)) { const m = (splitCsv(l, sep)[idx.data] || "").match(/(\d{1,2})[\/.-](\d{1,2})[\/.-]/); if (m && Number(m[1]) > 12) { mode = "dm"; break; } } }
+    const agg = new Map();
     for (const l of lines.slice(1)) {
-      const r = split(l); const d = parseDate(r[idx.data]); if (!d) continue;
-      const alvo = docs.filter(c => c.data === d && ehFeed(c)).sort((a, b) => (a.formato === "Por definir") - (b.formato === "Por definir"))[0];
-      if (!alvo) { sem.push(d); continue; }
-      const metricas = { ...(alvo.metricas || {}) };
-      MET.forEach(([k]) => { if (idx[k] != null) { const v = parseNum(r[idx[k]]); if (v != null) metricas[k] = v; } });
-      try { await db.collection("conteudos").doc(alvo.id).update({ metricas, estado: "Publicado", atualizado: new Date().toISOString() }); ok++; } catch {}
+      const r = splitCsv(l, sep); const d = parseDate(r[idx.data], mode); if (!d) continue;
+      const o = agg.get(d) || {}; if (plat === "st") o.n = (o.n || 0) + 1;
+      COLS[plat].forEach(([k]) => { if (k === "data" || idx[k] == null) return; const v = parseNum(r[idx[k]]); if (v == null) return; if (plat === "st" && k !== "alcance") o[k] = (o[k] || 0) + v; else if (plat === "st") o[k] = Math.max(o[k] || 0, v); else o[k] = (o[k] || 0) + v; });
+      agg.set(d, o);
     }
-    note.textContent = `${ok} conteúdos atualizados.` + (sem.length ? ` Sem conteúdo nessa data: ${[...new Set(sem)].slice(0, 8).map(fmtD).join(", ")}${sem.length > 8 ? "…" : ""}.` : "");
-  });
+    let ok = 0; const sem = [];
+    for (const [d, o] of agg) {
+      const alvo = conts.filter(c => c.data === d && (plat === "st" || ehFeed(c))).sort((a, b) => (a.formato === "Por definir") - (b.formato === "Por definir"))[0]
+        || (plat === "st" ? conts.find(c => c.data === d) : null);
+      if (!alvo) { sem.push(d); continue; }
+      const metricas = { ...(alvo.metricas || {}) }; metricas[plat] = { ...(metricas[plat] || {}), ...o };
+      try { await db.collection("conteudos").doc(alvo.id).update({ metricas, estado: "Publicado", atualizado: nowIso() }); ok++; } catch {}
+    }
+    const reconhecidas = Object.keys(idx).filter(k => k !== "data").length;
+    note.textContent = `${ok} conteúdos atualizados (${reconhecidas} colunas reconhecidas, datas lidas como ${mode === "md" ? "mês/dia" : "dia/mês"}).` + (sem.length ? ` Sem conteúdo nessas datas: ${sem.slice(0, 8).map(fmtD).join(", ")}${sem.length > 8 ? "…" : ""}.` : "");
+  };
 
   // ---------- arranque ----------
+  try { const t = localStorage.getItem("cf_tab2"); if (TABS.includes(t)) show(t); else show("plano"); } catch { show("plano"); }
   (async () => {
-    if (!window.claude) { renderList(); renderDados(); return; }
-    db = await claude.use("db");
-    sample = await claude.use("sample");
-    if (!db) { renderList(); renderDados(); return; }
-    db.collection("conteudos").onSnapshot((snap) => {
-      docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      loaded = true; fillFilters();
-      if (!$("tab-conteudos").hidden && !openId) renderList();
-      if (!$("tab-dados").hidden && !document.activeElement?.closest?.("#tab-dados textarea")) renderDados();
-    }, () => { loaded = true; renderList(); renderDados(); });
+    if (!window.claude) { renderAll(); return; }
+    db = await claude.use("db"); sample = await claude.use("sample");
+    if (!db) { renderAll(); return; }
+    db.collection("conteudos").onSnapshot((snap) => { conts = snap.docs.map(d => ({ id: d.id, ...d.data() })); loaded.c = true; fillFilters(); if (!openId) renderAll(); }, () => { loaded.c = true; renderAll(); });
+    db.collection("plano").onSnapshot((snap) => { plano = snap.docs.map(d => ({ id: d.id, ...d.data() })); loaded.p = true; fillFilters(); if (!openId) renderAll(); }, () => { loaded.p = true; renderAll(); });
   })();
 })();
 </script>
