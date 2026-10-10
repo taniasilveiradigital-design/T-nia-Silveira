@@ -105,6 +105,13 @@ select { width: 100%; font: inherit; color: var(--ink); background: var(--bg); b
 .com { border-left: 3px solid var(--terra); padding: 6px 10px; background: var(--surface); border-radius: 0 8px 8px 0; display: grid; gap: 2px; }
 .com.resp { border-left-color: var(--brown); background: var(--terra-soft); margin-left: 18px; }
 .com b { font-size: .8rem; }
+details.bloco { background: var(--surface); }
+details.bloco > summary { font: 400 1.1rem var(--f-display); color: var(--brown); }
+details.bloco[open] > summary { margin-bottom: 10px; }
+details.bloco > *:not(summary) + * { margin-top: 10px; }
+.bloco-copy { border: 1px solid var(--line); border-radius: 10px; padding: 14px; background: var(--surface); display: grid; gap: 12px; }
+.bloco-copy.off > :not(:first-child):not(:nth-child(2)) { display: none; }
+.blk-h { font: 400 1.3rem var(--f-display); color: var(--brown); margin: 0; }
 .thumbs { display: flex; flex-wrap: wrap; gap: 8px; }
 .thumb { margin: 0; display: grid; gap: 4px; justify-items: start; }
 .thumb img { width: 96px; height: 170px; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); display: block; }
@@ -138,7 +145,6 @@ tr:last-child td { border-bottom: 0; }
 
   <nav class="tabs" role="tablist" aria-label="Secções">
     <button role="tab" id="t-plano" data-tab="plano" aria-selected="true">Plano</button>
-    <button role="tab" id="t-copy" data-tab="copy" aria-selected="false">Copy livre</button>
     <button role="tab" id="t-conteudos" data-tab="conteudos" aria-selected="false">Conteúdos</button>
     <button role="tab" id="t-dados" data-tab="dados" aria-selected="false">Dados</button>
   </nav>
@@ -156,6 +162,15 @@ tr:last-child td { border-bottom: 0; }
       <div class="field"><label class="label" for="est-txt">Estilo de stories da Tânia</label><textarea id="est-txt" rows="8" placeholder="Ainda vazio. Junta prints e carrega em Ler o estilo, ou escreve aqui."></textarea>
       <div class="row"><button id="est-save">Guardar texto</button></div></div>
     </details>
+    <details id="rules-box">
+        <summary>Correções da Sarah que a app já aprendeu (<span id="rules-count">0</span>)</summary>
+        <p class="note">Sempre que a Sarah corrigir alguma coisa, cola aqui o comentário dela. Entra em todos os copies a partir daí.</p>
+        <div class="field">
+          <textarea id="newrule" rows="2" placeholder="Ex.: Começa sem rodeios. Gancho com o título do tema."></textarea>
+          <div class="row"><button id="addrule">Guardar correção</button><span class="note" id="rules-note"></span></div>
+        </div>
+        <div class="rules" id="rules"></div>
+      </details>
     <div id="p-list"></div>
   </section>
 
@@ -188,96 +203,6 @@ tr:last-child td { border-bottom: 0; }
     <div id="d-body"></div>
   </section>
 
-  <div class="cols" id="tab-copy" hidden>
-    <section class="panel" aria-label="Pedido">
-      <div class="field">
-        <span class="label">O que queres</span>
-        <div class="seg" role="radiogroup" aria-label="Modo">
-          <label><input type="radio" name="modo" id="m-escrever" value="escrever" checked><span>Escrever copy</span></label>
-          <label><input type="radio" name="modo" id="m-rever" value="rever"><span>Rever o meu copy</span></label>
-        </div>
-      </div>
-
-      <div class="field">
-        <span class="label">Formato</span>
-        <div class="seg" role="radiogroup" aria-label="Formato">
-          <label><input type="radio" name="formato" id="f-auto" value="auto" checked><span>A app decide</span></label>
-          <label><input type="radio" name="formato" id="f-car" value="carrossel"><span>Carrossel</span></label>
-          <label><input type="radio" name="formato" id="f-reels" value="reels"><span>Reels</span></label>
-          <label><input type="radio" name="formato" id="f-stories" value="stories"><span>Stories</span></label>
-          <label><input type="radio" name="formato" id="f-dia" value="dia"><span>Dia completo</span></label>
-        </div>
-      </div>
-
-      <div class="field">
-        <label class="label" for="brief">Cartão da Sarah</label>
-        <textarea id="brief" placeholder="Cola aqui tudo: Feed, Estratégia, Tema, Como fazer, O que fazer nos stories…"></textarea>
-        <small id="brief-tag"></small>
-      </div>
-
-      <div class="field">
-        <label class="label" for="insp">Link de inspiração</label>
-        <input type="text" id="insp" placeholder="https://www.instagram.com/reel/…">
-        <small>A app não abre links do Instagram. Diz-lhe em baixo o que acontece no vídeo ou carrossel, ou junta prints.</small>
-      </div>
-
-      <div class="field">
-        <label class="label" for="inspdesc">O que acontece na inspiração</label>
-        <textarea id="inspdesc" rows="2" placeholder="Ex.: ela fala para a câmara, texto grande no ecrã, lista de 5 pontos, fecha com pergunta."></textarea>
-      </div>
-
-      <div class="field" id="imgs-field" hidden>
-        <label class="label" for="imgs">Prints (opcional)</label>
-        <input type="file" id="imgs" accept="image/*" multiple>
-        <small id="imgs-info">Prints do cartão, da inspiração ou do comentário da Sarah.</small>
-      </div>
-
-      <div class="field">
-        <label class="label" for="notas" id="notas-label">Os teus dados reais</label>
-        <textarea id="notas" rows="3" placeholder="Casos, números, nome da cliente, o que se passou esta semana. A app não inventa nada disto."></textarea>
-      </div>
-
-      <div class="row">
-        <button class="primary" id="go">Fazer copy</button>
-        <button class="ghost" id="stop" hidden>Parar</button>
-        <span class="note" id="status"></span>
-      </div>
-
-      <details id="rules-box">
-        <summary>Correções da Sarah que a app já aprendeu (<span id="rules-count">0</span>)</summary>
-        <p class="note">Sempre que a Sarah corrigir alguma coisa, cola aqui o comentário dela. Entra em todos os copies a partir daí.</p>
-        <div class="field">
-          <textarea id="newrule" rows="2" placeholder="Ex.: Começa sem rodeios. Gancho com o título do tema."></textarea>
-          <div class="row"><button id="addrule">Guardar correção</button><span class="note" id="rules-note"></span></div>
-        </div>
-        <div class="rules" id="rules"></div>
-      </details>
-    </section>
-
-    <section class="panel" aria-label="Copy" aria-live="polite">
-      <div class="row" style="justify-content:space-between">
-        <span class="label">Copy pronto</span>
-        <span class="row"><button class="copy" id="copyall" hidden>Copiar tudo</button></span>
-      </div>
-      <div id="out">
-        <div class="out-empty">
-          <strong>Como usar:</strong> abre o cartão do dia no Trello, copia tudo e cola à esquerda. Junta a inspiração e o que tiveres de real (cliente, número, história). Carrega em <strong>Fazer copy</strong>.<br><br>
-          O copy sai separado por blocos: capa, slides, roteiro, legenda e stories da manhã, tarde e noite. Cada bloco tem o seu botão de copiar, para levares direto para o Canva.
-        </div>
-      </div>
-
-      <div class="field" id="refine-box" hidden>
-        <label class="label" for="refine">Afinar</label>
-        <textarea id="refine" rows="2" placeholder="Ex.: mais curto · cola aqui o comentário da Sarah · tira o slide 4 · gancho mais forte"></textarea>
-        <div class="row"><button id="refine-go">Afinar este copy</button></div>
-      </div>
-
-      <details id="hist-box">
-        <summary>Últimos copies</summary>
-        <div class="hist" id="hist"><span class="note">Ainda não há nada guardado.</span></div>
-      </details>
-    </section>
-  </div>
 </div>
 
 <script type="text/plain" id="guia">
@@ -373,196 +298,14 @@ Antes: "Nem sabes quantas vezes já ouvi isto. Fundadora com produto bom…" →
 (() => {
   const $ = (id) => document.getElementById(id);
   const GUIA = $("guia").textContent.trim();
-  const EXEMPLO = `Tema
-Como é a sua resposta quando uma cliente pergunta sobre uma peça que não tem?
-
-Objetivo
-Fazer você perceber que a forma como responde quando não tem uma peça também comunica o posicionamento da sua marca. Uma resposta mal conduzida pode encerrar uma oportunidade de venda; uma resposta estratégica pode manter o interesse da cliente e até abrir espaço para outra compra.
-
-Estratégia
-Partir de uma situação simples do atendimento para mostrar que "não temos" não precisa ser o fim da conversa.
-
-Direcionamento
-- Comece com a pergunta: Quando uma cliente pergunta por uma peça que você não tem, o que você responde?
-- Mostre a diferença entre simplesmente dizer "não temos" e continuar conduzindo a conversa
-- A resposta pode depender da situação: peça esgotada, modelo que saiu de linha, produto que ainda não foi lançado ou peça que a marca nunca trabalhou
-- Mostre como usar a pergunta da cliente para entender o que despertou o interesse nela
-
-Inspiração de conteúdo
-https://vm.tiktok.com/ZN82m6goa/`;
-
-  let sample = null, db = null, uid = null, imagesOk = false;
-  let rules = [];          // {id, texto, ts}
-  let hist = [];           // {id, titulo, texto, ts}
-  let turns = [];          // conversa atual com o Claude
-  let lastText = "";
-  let ctl = null;
-  let usingLocal = false;
-
-  // ---------- exemplo inicial ----------
-  $("brief").value = EXEMPLO;
-  $("brief-tag").innerHTML = '<span class="example-tag">EXEMPLO</span> Cartão real de novembro. Substitui pelo cartão do dia.';
-  $("brief").addEventListener("input", () => { $("brief-tag").textContent = ""; }, { once: true });
-
-  // ---------- modo ----------
-  function modo() { return document.querySelector('input[name="modo"]:checked').value; }
-  function formato() { return document.querySelector('input[name="formato"]:checked').value; }
-  document.querySelectorAll('input[name="modo"]').forEach(r => r.addEventListener("change", () => {
-    const rever = modo() === "rever";
-    $("notas-label").textContent = rever ? "O teu copy (para rever)" : "Os teus dados reais";
-    $("notas").placeholder = rever ? "Cola aqui o copy que escreveste. A app corrige como a Sarah corrigiria." : "Casos, números, nome da cliente, o que se passou esta semana. A app não inventa nada disto.";
-    $("notas").rows = rever ? 8 : 3;
-    $("go").textContent = rever ? "Rever copy" : "Fazer copy";
-  }));
-
-  // ---------- render ----------
-  function esc(s) { return s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
-  function inline(s) { return esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>"); }
-  function render(text, done) {
-    const out = $("out");
-    out.innerHTML = "";
-    const parts = text.split(/^##\s+/m);
-    const intro = parts.shift().trim();
-    if (intro) parts.unshift("Copy\n" + intro);
-    if (!parts.length) { out.innerHTML = '<p class="thinking">A escrever…</p>'; return; }
-    parts.forEach(p => {
-      const nl = p.indexOf("\n");
-      const title = (nl === -1 ? p : p.slice(0, nl)).trim();
-      const body = (nl === -1 ? "" : p.slice(nl + 1)).trim();
-      const sec = document.createElement("div");
-      sec.className = "section";
-      const head = document.createElement("div");
-      head.className = "section-head";
-      const h = document.createElement("h3");
-      h.textContent = title.replace(/\*\*/g, "");
-      head.appendChild(h);
-      if (done && body) {
-        const b = document.createElement("button");
-        b.className = "copy"; b.textContent = "Copiar";
-        b.addEventListener("click", () => copyText(body.replace(/\*\*/g, ""), b));
-        head.appendChild(b);
-      }
-      const d = document.createElement("div");
-      d.className = "body";
-      d.innerHTML = inline(body);
-      sec.append(head, d);
-      out.appendChild(sec);
-    });
-  }
-  async function copyText(t, btn) {
-    try { await navigator.clipboard.writeText(t); btn.textContent = "Copiado"; }
-    catch { btn.textContent = "Seleciona e copia"; }
-    setTimeout(() => { btn.textContent = btn.id === "copyall" ? "Copiar tudo" : "Copiar"; }, 1600);
-  }
-  $("copyall").addEventListener("click", (e) => copyText(lastText.replace(/\*\*/g, "").replace(/^##\s+/gm, ""), e.currentTarget));
-
-  // ---------- prompt ----------
-  const FORMATOS = {
-    auto: "Decide tu o formato a partir do cartão e do link de inspiração (reel/tiktok = Reels; /p/ = carrossel). Se o cartão tiver checklist de stories, faz também os stories.",
-    carrossel: "Carrossel.",
-    reels: "Reels falado.",
-    stories: "Só os stories do dia, a partir do checklist 'O que fazer nos stories'.",
-    dia: "O dia completo: o conteúdo de feed (formato pela inspiração) E os stories do checklist."
-  };
   const ESTRUTURA = `ESTRUTURA DA RESPOSTA (usa "## " no início de cada bloco, nada antes do primeiro bloco, sem explicar o teu processo):
 - Primeiro bloco "## Enquadramento": uma só linha, "Para: (quem, em poucas palavras, ex.: dona de loja a começar) · Tipo: conexão/autoridade/venda · CTA: …".
 - Carrossel: "## Capa" (frase da capa + subtítulo opcional), depois "## Slide 2", "## Slide 3"… (cada um: **título curto** numa linha + uma ou duas frases), depois "## Legenda" (3 a 6 linhas, termina com pergunta ou CTA e 3 a 5 hashtags).
 - Reels: "## Texto da capa", "## Roteiro" (texto falado, parágrafos curtos, máx. ~200 palavras), "## Texto no ecrã" (3 a 5 frases curtas para legendar o vídeo), "## Legenda".
 - Stories: "## Stories · Manhã", "## Stories · Tarde", "## Stories · Noite". Dentro, uma linha por story: "Story 1 · [tipo] — texto exato". Enquetes com as opções; caixinhas com a pergunta.
 - No fim, se faltar algum dado real, "## Para confirmar" com no máximo 3 pontos. Se não faltar nada, não incluas este bloco.`;
+  let db = null, uid = null, rules = [], usingLocal = false;
 
-  function buildPrompt() {
-    const brief = $("brief").value.trim();
-    const insp = $("insp").value.trim();
-    const inspdesc = $("inspdesc").value.trim();
-    const notas = $("notas").value.trim();
-    const extra = rules.length ? "\n\nCORREÇÕES RECENTES DA SARAH (têm prioridade sobre tudo o resto):\n" + rules.map(r => "- " + r.texto).join("\n") : "";
-    let tarefa;
-    if (modo() === "rever") {
-      tarefa = `TAREFA: A Tânia escreveu este copy para o cartão abaixo. Revê-o como a Sarah o reveria: corrige o que viola as regras, mantém a voz e as ideias dela, não acrescentes casos inventados. Devolve a versão corrigida pronta a publicar e, no fim, um bloco "## O que mudei" com no máximo 4 pontos curtos.
-Formato: ${FORMATOS[formato()]}
-
-COPY DA TÂNIA:
-${notas || "(vazio)"}`;
-    } else {
-      tarefa = `TAREFA: Escreve o copy para este cartão.
-Formato: ${FORMATOS[formato()]}
-${notas ? "\nDADOS REAIS DA TÂNIA (usa-os; não inventes outros):\n" + notas : "\nA Tânia não deu casos nem números reais: onde fizerem falta, usa [parêntesis retos]."}`;
-    }
-    return `${GUIA}${extra}
-
-${tarefa}
-
-CARTÃO DA SARAH:
-${brief || "(vazio)"}
-${insp ? "\nLINK DE INSPIRAÇÃO (não consegues abrir; usa só o tipo de link): " + insp : ""}${inspdesc ? "\nO QUE ACONTECE NA INSPIRAÇÃO: " + inspdesc : ""}
-
-${ESTRUTURA}`;
-  }
-
-  // ---------- erros ----------
-  function msgErro(code) {
-    return ({
-      not_granted: "Não deste autorização ao Claude nesta página. Recarrega a página e aceita quando ela perguntar.",
-      rate_limited: "Muitos pedidos seguidos. Espera um minuto e tenta outra vez.",
-      prompt_too_large: "O texto é demasiado grande. Encurta o cartão ou tira as imagens.",
-      image_rejected: "Uma das imagens não foi aceite. Tenta com outra.",
-      session_expired: "A sessão expirou. Recarrega a página.",
-      sampling_disabled: "O acesso ao Claude está desligado para esta conta.",
-      refused: "O Claude não respondeu a este pedido. Reformula o cartão ou as notas.",
-      cancelled: "Parado."
-    })[code] || "Correu mal desta vez. Tenta outra vez daqui a pouco.";
-  }
-
-  // ---------- gerar ----------
-  async function run(input, label) {
-    if (!sample) return;
-    ctl = new AbortController();
-    $("go").disabled = true; $("refine-go").disabled = true;
-    $("stop").hidden = false; $("copyall").hidden = true;
-    $("status").textContent = "";
-    $("out").innerHTML = '<p class="thinking">A pensar no copy… (pode levar até um minuto)</p>';
-    const opts = {
-      signal: ctl.signal, modelTier: "complex", cache: false,
-      onText: ({ text }) => render(text, false)
-    };
-    const files = imagesOk ? Array.from($("imgs").files || []) : [];
-    if (files.length && turns.length <= 1) opts.images = files;
-    try {
-      const { text, truncated } = await sample(input, opts);
-      lastText = text;
-      turns = input.concat([{ role: "assistant", content: text }]);
-      render(text, true);
-      $("copyall").hidden = false;
-      $("refine-box").hidden = false;
-      if (truncated) $("status").textContent = "O copy ficou cortado. Pede uma parte de cada vez (só carrossel, ou só stories).";
-      saveHist(label, text);
-    } catch (e) {
-      if (e && e.text) { lastText = e.text; render(e.text, true); }
-      else if (!e || e.code !== "cancelled") $("out").innerHTML = "";
-      $("status").textContent = msgErro(e && e.code);
-      $("status").className = "note warn";
-    } finally {
-      $("go").disabled = false; $("refine-go").disabled = false; $("stop").hidden = true;
-    }
-  }
-  $("stop").addEventListener("click", () => ctl && ctl.abort());
-  $("go").addEventListener("click", () => {
-    $("status").className = "note";
-    if (!$("brief").value.trim()) { $("status").textContent = "Cola primeiro o cartão da Sarah."; return; }
-    turns = [];
-    const first = $("brief").value.trim().split("\n").find(l => l.trim() && !/^(tema|feed|objetivo)$/i.test(l.trim())) || "Copy";
-    run([{ role: "user", content: buildPrompt() }], first.slice(0, 80));
-  });
-  $("refine-go").addEventListener("click", () => {
-    const r = $("refine").value.trim();
-    if (!r || !turns.length) return;
-    const next = turns.concat([{ role: "user", content: `Afina o copy anterior com esta indicação (se for um comentário da Sarah, aplica-o à letra) e devolve a versão completa na mesma estrutura:\n${r}` }]);
-    $("refine").value = "";
-    run(next, "Afinado: " + r.slice(0, 60));
-  });
-
-  // ---------- correções (db, com recurso local) ----------
   function renderRules() {
     $("rules-count").textContent = rules.length;
     const box = $("rules");
@@ -595,59 +338,25 @@ ${ESTRUTURA}`;
   }
   $("addrule").addEventListener("click", addRule);
 
-  function renderHist() {
-    const box = $("hist");
-    box.innerHTML = "";
-    if (!hist.length) { box.innerHTML = '<span class="note">Ainda não há nada guardado.</span>'; return; }
-    hist.slice().sort((a, b) => b.ts - a.ts).slice(0, 15).forEach(h => {
-      const b = document.createElement("button");
-      const d = new Date(h.ts);
-      b.textContent = d.toLocaleDateString("pt-PT", { day: "2-digit", month: "2-digit" }) + " · " + h.titulo;
-      b.addEventListener("click", () => { lastText = h.texto; render(h.texto, true); $("copyall").hidden = false; turns = []; $("refine-box").hidden = true; });
-      box.appendChild(b);
-    });
-  }
-  async function saveHist(titulo, texto) {
-    const item = { tipo: "hist", titulo, texto: texto.slice(0, 60000), ts: Date.now() };
-    if (db && uid && !usingLocal) {
-      try { await db.collection("data/users/" + uid).doc("hist_" + item.ts).set(item); return; } catch {}
-    }
-    hist.push({ id: "hist_" + item.ts, ...item }); hist = hist.slice(-30); localSet("cf_hist", hist); renderHist();
-  }
-
   window.CF = {
     guia: GUIA,
     regras: () => rules.map(r => r.texto),
     estrutura: ESTRUTURA,
-    addRegra: (t) => { $("newrule").value = t; addRule(); },
-    last: () => lastText,
-    brief: () => $("brief").value,
-    insp: () => $("insp").value,
-    fill: (b, i) => { $("brief").value = b || ""; $("insp").value = i || ""; $("brief-tag").textContent = ""; }
+    addRegra: (t) => { $("newrule").value = t; addRule(); }
   };
-  // ---------- arranque ----------
-  renderRules(); renderHist();
+  renderRules();
   (async () => {
-    if (!window.claude) { $("status").textContent = "Abre esta página no claude.ai para usar."; $("go").disabled = true; return; }
-    sample = await claude.use("sample");
-    if (!sample) { $("status").textContent = "O Claude não está disponível nesta página. Abre-a no claude.ai com a tua conta."; $("status").className = "note warn"; $("go").disabled = true; }
-    else {
-      try { const lim = await sample.limits(); imagesOk = !!(lim && lim.images); } catch { imagesOk = false; }
-      $("imgs-field").hidden = !imagesOk;
-    }
+    if (!window.claude) return;
     const user = await claude.use("user");
     db = await claude.use("db");
     try { uid = user ? await user.id() : null; } catch { uid = null; }
     if (db && uid) {
       db.collection("data/users/" + uid).onSnapshot((snap) => {
-        const all = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        rules = all.filter(x => x.tipo === "regra");
-        hist = all.filter(x => x.tipo === "hist");
-        renderRules(); renderHist();
-      }, () => { usingLocal = true; rules = localGet("cf_regras"); hist = localGet("cf_hist"); renderRules(); renderHist(); });
+        rules = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(x => x.tipo === "regra");
+        renderRules();
+      }, () => { usingLocal = true; rules = localGet("cf_regras"); renderRules(); });
     } else {
-      usingLocal = true;
-      rules = localGet("cf_regras"); hist = localGet("cf_hist"); renderRules(); renderHist();
+      usingLocal = true; rules = localGet("cf_regras"); renderRules();
       $("rules-note").textContent = "As correções ficam guardadas só neste aparelho.";
     }
   })();
@@ -724,7 +433,7 @@ ${ESTRUTURA}`;
   let db = null, sample = null, conts = [], plano = [], loaded = { c: false, p: false }, openId = null, aiCtl = null;
 
   // ---------- tabs ----------
-  const TABS = ["plano", "copy", "conteudos", "dados"];
+  const TABS = ["plano", "conteudos", "dados"];
   function show(t) {
     TABS.forEach(k => { $("t-" + k).setAttribute("aria-selected", k === t); $("tab-" + k).hidden = k !== t; });
     try { localStorage.setItem("cf_tab2", t); } catch {}
@@ -791,33 +500,47 @@ ${ESTRUTURA}`;
     return { lista: [...prints, ...fotos], nPrints: prints.length, nFotos: fotos.length };
   }
   const notaImgs = (im) => (im.nPrints ? `\n\nIMAGENS JUNTAS: as primeiras ${im.nPrints} são prints da INSPIRAÇÃO (vê o formato, a estrutura, o texto no ecrã e o ritmo; copia a estrutura, nunca o texto).` : "") + (im.nFotos ? `${im.nPrints ? " As" : "\n\nIMAGENS JUNTAS: as"} ${im.nFotos} seguintes são FOTOS da Tânia para o post, pela ordem.` : "");
-  function promptDia(d, modo, nFotos) {
+  const ALVO = { feed: { nome: "feed", copy: "copy", vers: "versoes" }, stories: { nome: "stories", copy: "copyStories", vers: "versoesStories" } };
+  const alvoDe = (c) => c.alvo || "feed";
+  const linhasCom = (arr) => arr.map(c => `- ${c.tipo === "resposta" ? "Claude" : c.autor}${c.tipo === "pergunta" ? " (pergunta)" : ""}: ${c.texto}`).join("\n");
+  function promptDia(d, modo, alvo, nFotos) {
     const CF = window.CF || {};
     const regras = (CF.regras ? CF.regras() : []);
     const fmt = d.formato || "Por definir";
-    const ex = exemplos(fmt, (d.titulo || "") + " " + d.cartao);
-    const coms = (d.comentarios || []).filter(c => !c.tipo).map(c => `- ${c.autor}: ${c.texto}`).join("\n");
-    const conversa = (d.comentarios || []).filter(c => c.tipo && !c.aplicado).map(c => `- ${c.tipo === "resposta" ? "Claude" : c.autor}: ${c.texto}`).join("\n");
+    const ex = exemplos(alvo === "stories" ? "" : fmt, (d.titulo || "") + " " + d.cartao);
+    const meus = (d.comentarios || []).filter(c => alvoDe(c) === alvo);
+    const pend = meus.filter(c => !c.tipo && !c.aplicado), feitos = meus.filter(c => !c.tipo && c.aplicado);
+    const conversa = meus.filter(c => c.tipo && !c.aplicado);
+    const atual = d[ALVO[alvo].copy] || "";
     let tarefa;
     if (modo === "refazer") {
-      tarefa = `TAREFA: Reescreve o copy abaixo aplicando os comentários. Os comentários da Sarah aplicam-se à letra; os da Tânia também. Mantém o que não foi comentado. Devolve a versão completa, na mesma estrutura.
+      tarefa = `TAREFA: Analisa os comentários e reescreve o copy ${alvo === "feed" ? "do FEED" : "dos STORIES"} abaixo, aplicando-os. Os comentários da Sarah aplicam-se à letra; os da Tânia também. Se um comentário for vago, interpreta-o pelas regras da Sarah. Mantém o que não foi comentado. Devolve a versão completa, na mesma estrutura.
 
-COPY ATUAL:
-${d.copy}
+COPY ATUAL ${alvo === "feed" ? "DO FEED" : "DOS STORIES"}:
+${atual || "(vazio)"}
 
-COMENTÁRIOS:
-${coms || "(sem comentários de correção)"}${conversa ? "\n\nCONVERSA SOBRE ESTE COPY (perguntas da Tânia e tuas respostas; se ficou combinada alguma mudança, aplica-a):\n" + conversa : ""}`;
+COMENTÁRIOS A APLICAR AGORA:
+${linhasCom(pend) || "(nenhum novo; revê o copy com as regras da Sarah)"}${feitos.length ? "\n\nCOMENTÁRIOS JÁ APLICADOS ANTES (mantém-nos cumpridos):\n" + linhasCom(feitos) : ""}${conversa.length ? "\n\nCONVERSA SOBRE ESTE COPY (se ficou combinada alguma mudança, aplica-a):\n" + linhasCom(conversa) : ""}`;
+    } else if (alvo === "feed") {
+      tarefa = `TAREFA: Escreve só o copy do FEED deste dia. Não escrevas stories.
+Formato do feed: ${fmt === "Por definir" ? "decide pela inspiração (reel/tiktok = Reels; /p/ = Carrossel)" : fmt}.${pend.length ? "\n\nCOMENTÁRIOS JÁ FEITOS (cumpre-os):\n" + linhasCom(pend) : ""}`;
     } else {
-      tarefa = `TAREFA: Escreve o copy deste dia.
-Formato do feed: ${fmt === "Só stories" ? "não há post no feed, é só stories" : fmt === "Por definir" ? "decide pela inspiração (reel/tiktok = Reels; /p/ = Carrossel)" : fmt}.
-Depois do feed, escreve os stories do dia a partir do que a Sarah pediu para os stories (um story por linha, com o tipo e o texto exato).${coms ? "\n\nCOMENTÁRIOS JÁ FEITOS A ESTE CARTÃO (cumpre-os):\n" + coms : ""}${d.notas ? "\n\nDADOS REAIS DA TÂNIA (usa-os; não inventes outros):\n" + d.notas : "\n\nSe faltar um caso ou número real, usa [parêntesis retos]."}`;
+      tarefa = `TAREFA: Escreve só os STORIES deste dia, a partir do que a Sarah pediu para os stories (um story por linha, com o tipo e o texto exato). Liga-os ao tema do feed quando fizer sentido.${pend.length ? "\n\nCOMENTÁRIOS JÁ FEITOS (cumpre-os):\n" + linhasCom(pend) : ""}${d.copy ? "\n\nCOPY DO FEED DESTE DIA (contexto):\n" + d.copy.slice(0, 3000) : ""}`;
     }
+    const dados = d.notas ? "\n\nDADOS REAIS DA TÂNIA (usa-os; não inventes outros):\n" + d.notas : "\n\nSe faltar um caso ou número real, usa [parêntesis retos].";
+    const estrut = alvo === "feed"
+      ? `${CF.estrutura || ""}
+- Fotos (carrossel de fotos pessoais): "## Foto 1", "## Foto 2"… uma por foto, pela ordem, cada uma com uma legenda curta (uma ou duas frases, leve, na primeira pessoa, sem lição de negócio), depois "## Legenda". Escreve só sobre o que se vê na foto ou o que a Tânia disse dela; nunca inventes o momento.${nFotos ? `\n- A Tânia juntou ${nFotos} foto(s), pela ordem do carrossel. Faz uma legenda para cada uma.` : fmt === "Fotos" ? "\n- Não há fotos juntas: usa as descrições que a Tânia deu nos dados reais; se não houver, deixa [descreve a foto] em cada uma." : ""}
+- IMPORTANTE: só blocos do feed. Nada de "## Stories".`
+      : `ESTRUTURA DA RESPOSTA (usa "## " no início de cada bloco, nada antes, sem explicar o processo):
+- Só estes blocos: "## Stories · Manhã", "## Stories · Tarde", "## Stories · Noite" (os que o cartão pedir). Dentro, uma linha por story: "Story 1 · [tipo e o que filmar] — texto exato". Enquetes com as opções; caixinhas com a pergunta.
+- No fim, se faltar algum dado real, "## Para confirmar" com no máximo 3 pontos.`;
     return `${CF.guia || ""}${regras.length ? "\n\nCORREÇÕES RECENTES DA SARAH (prioridade máxima):\n" + regras.map(r => "- " + r).join("\n") : ""}
 
-COPIES REAIS JÁ PUBLICADOS DA TÂNIA (referência de tom e estrutura; não copies o conteúdo):
+${ex.length ? `COPIES REAIS JÁ PUBLICADOS DA TÂNIA (referência de tom e estrutura; não copies o conteúdo):
 ${ex.map(c => `--- ${c.formato} · ${c.titulo}\n${(c.copy || "").slice(0, 1500)}`).join("\n\n")}
 
-${tarefa}
+` : ""}${tarefa}${dados}
 
 DIA: ${d.dia}, ${fmtD(d.data)}
 CARTÃO DA SARAH (descrição):
@@ -825,23 +548,21 @@ ${d.cartao || "(vazio)"}
 ${(d.inspiracao || []).length ? "\nINSPIRAÇÃO (não consegues abrir o link; usa o tipo de link e os prints, se houver): " + d.inspiracao.join(" ") : ""}${d.inspDesc ? "\nO QUE ACONTECE NA INSPIRAÇÃO: " + d.inspDesc : ""}
 
 O QUE A SARAH PEDE PARA OS STORIES:
-${d.stories || "(não colado)"}${estiloTxt()}
+${d.stories || "(não colado)"}${alvo === "stories" ? estiloTxt() : ""}
 
-${CF.estrutura || ""}
-- Fotos (carrossel de fotos pessoais): "## Foto 1", "## Foto 2"… uma por foto, pela ordem, cada uma com uma legenda curta (uma ou duas frases, leve, na primeira pessoa, sem lição de negócio), depois "## Legenda". Escreve só sobre o que se vê na foto ou o que a Tânia disse dela; nunca inventes o momento.${nFotos ? `\n- A Tânia juntou ${nFotos} foto(s), pela ordem do carrossel. Faz uma legenda para cada uma.` : d.formato === "Fotos" ? "\n- Não há fotos juntas: usa as descrições que a Tânia deu nos dados reais; se não houver, deixa [descreve a foto] em cada uma." : ""}
-- Depois do bloco do feed (ou só isto, se for dia só de stories): "## Stories · Manhã", "## Stories · Tarde", "## Stories · Noite".`;
+${estrut}`;
   }
 
-  function promptPergunta(d, pergunta) {
+  function promptPergunta(d, pergunta, alvo) {
     const CF = window.CF || {};
-    const conversa = (d.comentarios || []).map(c => `- ${c.tipo === "resposta" ? "Claude" : c.autor}${c.tipo === "pergunta" ? " (pergunta)" : ""}: ${c.texto}`).join("\n");
+    const conversa = linhasCom((d.comentarios || []).filter(c => alvoDe(c) === alvo));
     return `${CF.guia || ""}
 
-ÉS O PAR DE TRABALHO DA TÂNIA NESTE COPY. Ela fez-te uma pergunta. NÃO reescrevas o copy. Responde à pergunta.
+ÉS O PAR DE TRABALHO DA TÂNIA NESTE COPY. Ela fez-te uma pergunta sobre o copy ${alvo === "feed" ? "do FEED" : "dos STORIES"}. NÃO reescrevas o copy. Responde à pergunta.
 Como responder:
 - PT-PT, direto, sem aula e sem elogios. Primeiro a resposta, depois o pormenor.
-- Se ela perguntar onde está alguma coisa (ex.: a estrutura da Sarah), aponta o sítio exato: cita a frase ou o slide do copy e diz a que ponto do cartão corresponde. Se um ponto do cartão não está no copy, diz isso claramente.
-- Se encontrares um erro no copy, assume-o e diz o que mudarias, em concreto. Ela decide se carrega em "Refazer copy com os comentários".
+- Se ela perguntar onde está alguma coisa (ex.: a estrutura da Sarah), aponta o sítio exato: cita a frase, o slide ou o story e diz a que ponto do cartão corresponde. Se um ponto do cartão não está no copy, diz isso claramente.
+- Se encontrares um erro no copy, assume-o e diz o que mudarias, em concreto. Ela decide se carrega em "Refazer com os comentários".
 - Se não souberes, diz que não sabes. Não inventes.
 - Curto: até 200 palavras, a não ser que a pergunta peça mais.
 
@@ -850,11 +571,14 @@ CARTÃO DA SARAH:
 ${d.cartao || "(vazio)"}
 
 STORIES PEDIDOS PELA SARAH:
-${d.stories || "(não colado)"}${estiloTxt()}
+${d.stories || "(não colado)"}${alvo === "stories" ? estiloTxt() : ""}
 
-COPY ATUAL:
+COPY DO FEED:
 ${d.copy || "(ainda sem copy)"}
-${conversa ? "\nCONVERSA ATÉ AGORA:\n" + conversa : ""}
+
+COPY DOS STORIES:
+${d.copyStories || "(ainda sem copy)"}
+${conversa ? "\nCONVERSA ATÉ AGORA SOBRE ESTA PARTE:\n" + conversa : ""}
 
 PERGUNTA DA TÂNIA:
 ${pergunta}`;
@@ -883,6 +607,23 @@ ${pergunta}`;
   }
 
   const autorDe = (x) => x.autor || (/sarah/i.test(x.quem || "") ? "Sarah" : /t[âa]nia/i.test(x.quem || "") ? "Tânia" : (x.quem || "Tânia"));
+  const splitCopy = (t) => { t = t || ""; const i = t.search(/^##\s*Stories/m); return i < 0 ? [t, ""] : [t.slice(0, i).trim(), t.slice(i).trim()]; };
+  const quemDe = (a) => a === "Sarah" ? "Sarah Moreira" : a === "Tânia" ? "Tânia Silveira" : a;
+  function blocoHtml(alvo, d) {
+    const nome = alvo === "feed" ? "Feed" : "Stories";
+    return `<section class="bloco-copy" id="blk-${alvo}">
+      <div class="row" style="justify-content:space-between"><h3 class="blk-h">Copy · ${nome}</h3><span class="row"><button class="copy" id="edit-${alvo}">Editar à mão</button></span></div>
+      <div class="row"><button class="primary" id="gen-${alvo}"></button><button class="ghost" id="stop-${alvo}" hidden>Parar</button><span class="note" id="note-${alvo}"></span></div>
+      <div id="cp-${alvo}"></div><textarea id="cpt-${alvo}" rows="14" hidden></textarea>
+      <div class="field"><span class="label">Comentários · ${nome}</span><div id="coms-${alvo}"></div>
+        <div class="row"><label class="note" for="autor-${alvo}">Quem comenta</label><select id="autor-${alvo}" style="width:auto"><option>Sarah</option><option>Tânia</option></select></div>
+        <textarea id="com-${alvo}" rows="3" placeholder="Cola os comentários da Sarah (podem ser vários) ou faz uma pergunta sobre este copy."></textarea>
+        <div class="row"><button class="primary" id="redo-${alvo}">Refazer com os comentários</button><button id="ask-${alvo}">Perguntar (não mexe no copy)</button><button class="ghost" id="add-${alvo}">Só guardar comentário</button></div>
+        <label class="note"><input type="checkbox" id="regra-${alvo}"> guardar também como regra para todos os copies</label>
+      </div>
+      <details id="vers-${alvo}"><summary>Versões anteriores · ${nome} (<span id="nv-${alvo}">0</span>)</summary><div id="vl-${alvo}"></div></details>
+    </section>`;
+  }
   function openDia(id, src) {
     src = src || "plano";
     const ehC = src === "conteudos";
@@ -892,8 +633,10 @@ ${pergunta}`;
     if (ehC) {
       d.stories = d.storiesTxt || (Array.isArray(d.stories) ? d.stories.join("\n") : "");
       d.notas = d.dadosReais || "";
-      d.comentarios = (d.comentarios || []).map(x => ({ ...x, autor: autorDe(x) }));
     }
+    d.comentarios = (d.comentarios || []).map(x => ({ ...x, autor: autorDe(x), alvo: x.alvo || "feed" }));
+    if (d.copyStories === undefined) { const [f, s] = splitCopy(d.copy); d.copy = f; d.copyStories = s; }
+    d.versoes = d.versoes || []; d.versoesStories = d.versoesStories || [];
     const { ov, close } = overlay(`
       <div class="row" style="justify-content:space-between"><span class="label">${ehC ? "Conteúdo · " : ""}${esc(d.dia || "")} · ${esc(fmtD(d.data))}${d.semana ? " · semana de " + esc(semanaLabel(d.semana)) : ""}</span><span class="row">${ehC ? '<button id="pd-back-c">Voltar ao conteúdo</button>' : ""}<button data-close>Fechar</button></span></div>
       <h2 id="pd-h">${esc(d.titulo || "Dia por preencher")}</h2>
@@ -902,96 +645,60 @@ ${pergunta}`;
         <div class="field"><label class="label" for="pd-fmt">Formato do feed</label><select id="pd-fmt"><option value="">Escolhe</option>${FORMATOS.map(f => `<option${f === d.formato ? " selected" : ""}>${esc(f)}</option>`).join("")}</select></div>
         <div class="field" style="grid-column:span 2"><label class="label" for="pd-tit">Tema / título</label><input type="text" id="pd-tit" value="${esc(d.titulo || "")}"></div>
       </div>
-      <div class="field"><label class="label" for="pd-cartao">Descrição do cartão da Sarah</label><textarea id="pd-cartao" rows="9" placeholder="Cola aqui a descrição inteira do cartão: Feed, Estratégia, Tema, Como fazer…">${esc(d.cartao || "")}</textarea></div>
-      <details id="pd-sec-box"><summary>Ver a descrição por secções</summary><div id="pd-sec"></div></details>
-      <div class="field"><label class="label" for="pd-insp">Inspiração (um link por linha)</label><textarea id="pd-insp" rows="2">${esc((d.inspiracao || []).join("\n"))}</textarea></div>
-      <div class="field"><span class="label">Prints da inspiração</span>
-        <div class="thumbs" id="pd-prints"></div>
-        ${assets ? `<div class="row"><label class="btnfile">Juntar prints<input type="file" id="pd-printin" accept="image/png,image/jpeg,image/webp,image/gif" multiple hidden></label><span class="note">ou cola aqui um print (Ctrl+V / Cmd+V). Ficam guardados neste dia e o Claude vê-os sempre que faz o copy.</span></div>` : '<span class="note">Para juntar prints, abre a app no claude.ai com a tua conta.</span>'}
-        <span class="note" id="pd-printnote"></span></div>
-      <div class="field"><label class="label" for="pd-inspdesc">O que acontece na inspiração</label><textarea id="pd-inspdesc" rows="2" placeholder="Opcional se juntaste prints. Ex.: fala para a câmara, texto grande no ecrã, lista de 5 pontos.">${esc(d.inspDesc || "")}</textarea></div>
-      <div class="field"><label class="label" for="pd-stories">O que fazer nos stories (cartão da Sarah)</label><textarea id="pd-stories" rows="6" placeholder="Cola aqui a checklist dos stories: Manhã, Tarde, Noite…">${esc(d.stories || "")}</textarea></div>
-      <div class="field"><label class="label" for="pd-notas">Os teus dados reais (casos, números, nomes, o que se passa em cada foto)</label><textarea id="pd-notas" rows="2">${esc(d.notas || "")}</textarea></div>
-      ${imgsOk2 ? `<div class="field"><label class="label" for="pd-fotos">Fotos ou prints (opcional)</label><input type="file" id="pd-fotos" accept="image/*" multiple><small class="note">Pela ordem do carrossel. O Claude vê-as para escrever a legenda de cada uma. Não ficam guardadas.</small></div>` : ""}
-      <div class="row"><button class="primary" id="pd-gen">${d.copy ? "Refazer copy do zero" : "Fazer copy"}</button><button id="pd-save">Guardar</button><button class="ghost" id="pd-stop" hidden>Parar</button><span class="note" id="pd-note"></span></div>
-      <div class="field"><div class="row" style="justify-content:space-between"><span class="label">Copy</span><button class="copy" id="pd-edit">Editar à mão</button></div><div id="pd-copy"></div><textarea id="pd-copytxt" rows="14" hidden></textarea></div>
-      <div class="field"><span class="label">Comentários</span><div id="pd-coms"></div>
-        <div class="grid-f"><div class="field"><label class="label" for="pd-autor">Quem comenta</label><select id="pd-autor"><option>Sarah</option><option>Tânia</option></select></div></div>
-        <textarea id="pd-com" rows="3" placeholder="Cola o comentário da Sarah, escreve o teu, ou faz uma pergunta sobre o copy."></textarea>
-        <div class="row"><button id="pd-ask">Perguntar (não mexe no copy)</button><button id="pd-addcom">Juntar comentário</button><button class="primary" id="pd-redo" ${d.copy ? "" : "disabled"}>Refazer copy com os comentários</button><label class="note"><input type="checkbox" id="pd-regra"> guardar também como regra para todos os copies</label></div>
-      </div>
-      ${(d.versoes || []).length ? `<details><summary>Versões anteriores (${d.versoes.length})</summary>${d.versoes.slice().reverse().map(v => `<div class="field"><span class="label">${esc(new Date(v.em).toLocaleString("pt-PT"))}</span><div class="pre">${md(v.copy)}</div></div>`).join("")}</details>` : ""}
+      <details class="bloco" ${d.cartao ? "" : "open"}><summary>Cartão da Sarah · feed</summary>
+        <div id="pd-sec"></div>
+        <div class="row"><button class="copy" id="pd-edit-cartao">Editar descrição</button></div>
+        <textarea id="pd-cartao" rows="10" hidden placeholder="Cola aqui a descrição inteira do cartão: Feed, Estratégia, Tema, Como fazer…">${esc(d.cartao || "")}</textarea>
+        <div class="field"><label class="label" for="pd-insp">Links de inspiração (um por linha)</label><textarea id="pd-insp" rows="2">${esc((d.inspiracao || []).join("\n"))}</textarea></div>
+        <div class="field"><span class="label">Prints da inspiração</span>
+          <div class="thumbs" id="pd-prints"></div>
+          ${assets ? `<div class="row"><label class="btnfile">Juntar prints<input type="file" id="pd-printin" accept="image/png,image/jpeg,image/webp,image/gif" multiple hidden></label><span class="note">ou cola um print aqui (Cmd+V). O Claude vê-os sempre que faz o copy.</span></div>` : '<span class="note">Para juntar prints, abre a app no claude.ai com a tua conta.</span>'}
+          <span class="note" id="pd-printnote"></span></div>
+        <div class="field"><label class="label" for="pd-inspdesc">O que acontece na inspiração</label><textarea id="pd-inspdesc" rows="2" placeholder="Opcional se juntaste prints.">${esc(d.inspDesc || "")}</textarea></div>
+      </details>
+      <details class="bloco" ${d.stories ? "" : "open"}><summary>Cartão da Sarah · stories</summary>
+        <div class="pre" id="pd-stories-view"></div>
+        <div class="row"><button class="copy" id="pd-edit-stories">Editar</button></div>
+        <textarea id="pd-stories" rows="8" hidden placeholder="Cola aqui a checklist dos stories: Manhã, Tarde, Noite…">${esc(d.stories || "")}</textarea>
+      </details>
+      <details class="bloco"><summary>Os teus dados reais e fotos</summary>
+        <div class="field"><label class="label" for="pd-notas">Casos, números, nomes, o que se passa em cada foto</label><textarea id="pd-notas" rows="3">${esc(d.notas || "")}</textarea></div>
+        ${imgsOk2 ? `<div class="field"><label class="label" for="pd-fotos">Fotos do post (opcional)</label><input type="file" id="pd-fotos" accept="image/*" multiple><small class="note">Pela ordem do carrossel. O Claude vê-as para escrever a legenda de cada uma. Não ficam guardadas.</small></div>` : ""}
+      </details>
+      <div class="row"><button class="primary" id="pd-all">Fazer feed e stories</button><button id="pd-save">Guardar</button><span class="note" id="pd-note"></span></div>
+      ${blocoHtml("feed", d)}
+      ${blocoHtml("stories", d)}
       ${d.trello ? `<div class="links"><a href="${esc(d.trello)}" target="_blank" rel="noopener">Abrir no Trello</a></div>` : ""}`);
 
     const readForm = () => {
       d.formato = $("pd-fmt").value; d.titulo = $("pd-tit").value.trim(); d.cartao = $("pd-cartao").value;
       d.inspiracao = $("pd-insp").value.split(/\s+/).filter(x => /^https?:\/\//.test(x)); d.inspDesc = $("pd-inspdesc").value;
       d.stories = $("pd-stories").value; d.notas = $("pd-notas").value;
-      if (!$("pd-copytxt").hidden) d.copy = $("pd-copytxt").value;
+      ["feed", "stories"].forEach(a => { if (!$("cpt-" + a).hidden) d[ALVO[a].copy] = $("cpt-" + a).value; });
       d.secoes = secoes(d.cartao);
       if (!d.titulo) { const t = d.secoes.find(s => s.titulo === "Tema"); if (t) d.titulo = t.texto.split("\n")[0].replace(/[*_]/g, "").slice(0, 140); }
     };
     const save = async (extra) => {
       readForm(); Object.assign(d, extra || {}); d.atualizado = nowIso();
-      if (!ehC && d.estado === "Por fazer" && (d.cartao || d.copy)) d.estado = "Rascunho";
+      if (!ehC && d.estado === "Por fazer" && (d.cartao || d.copy || d.copyStories)) d.estado = "Rascunho";
       try {
         if (ehC) {
-          const coms = (d.comentarios || []).map(x => ({ ...x, quem: x.autor === "Sarah" ? "Sarah Moreira" : x.autor === "Tânia" ? "Tânia Silveira" : x.autor }));
-          await db.collection("conteudos").doc(id).update({ titulo: d.titulo || d0.titulo || "", formato: d.formato || "Por definir", cartao: d.cartao || "", secoes: d.secoes, inspiracao: d.inspiracao, inspDesc: d.inspDesc || "", inspPrints: d.inspPrints || [], storiesTxt: d.stories || "", dadosReais: d.notas || "", copy: d.copy || "", versoes: d.versoes || [], comentarios: coms, atualizado: d.atualizado });
+          const coms = d.comentarios.map(x => ({ ...x, quem: quemDe(x.autor) }));
+          await db.collection("conteudos").doc(id).update({ titulo: d.titulo || d0.titulo || "", formato: d.formato || "Por definir", cartao: d.cartao || "", secoes: d.secoes, inspiracao: d.inspiracao, inspDesc: d.inspDesc || "", inspPrints: d.inspPrints || [], storiesTxt: d.stories || "", dadosReais: d.notas || "", copy: d.copy || "", copyStories: d.copyStories || "", versoes: d.versoes, versoesStories: d.versoesStories, comentarios: coms, atualizado: d.atualizado });
         } else { const { id: _, ...body } = d; await db.collection("plano").doc(id).set(body); }
-        $("pd-note").textContent = "Guardado."; return true; }
-      catch { $("pd-note").textContent = "Não gravou. Tenta outra vez."; return false; }
+        $("pd-note").textContent = "Guardado."; return true;
+      } catch { $("pd-note").textContent = "Não gravou. Tenta outra vez."; return false; }
     };
-    const paintSec = () => { $("pd-sec").innerHTML = secoesHtml(secoes($("pd-cartao").value)) || '<p class="note">Cola a descrição para a ver por secções.</p>'; };
-    const paintComs = () => {
-      $("pd-coms").innerHTML = (d.comentarios || []).map((c, i) => `<div class="com${c.tipo === "resposta" ? " resp" : ""}"><b>${esc(c.tipo === "resposta" ? "Resposta do Claude" : c.autor + (c.tipo === "pergunta" ? " · pergunta" : ""))} · ${esc(fmtD((c.data || "").slice(0, 10)))}${c.aplicado && !c.tipo ? " · aplicado" : ""}</b><span style="white-space:pre-wrap">${esc(c.texto)}</span><button class="ghost copy" data-delcom="${i}" style="justify-self:start">Apagar</button></div>`).join("") || '<p class="note">Sem comentários ainda.</p>';
-      $("pd-coms").querySelectorAll("[data-delcom]").forEach(b => b.onclick = async () => { d.comentarios.splice(Number(b.dataset.delcom), 1); paintComs(); await save(); });
-    };
-    const paintEstado = () => {
-      const nxt = { "Por fazer": null, "Rascunho": ["Para a Sarah", "Enviar à Sarah"], "Para a Sarah": ["Aprovado", "A Sarah aprovou"], "Aprovado": ["conteudos", "Passar para Conteúdos"], "Em conteúdos": null }[d.estado];
-      $("pd-estado").innerHTML = pillEst(d.estado) + (nxt ? ` <button class="primary" id="pd-next">${esc(nxt[1])}</button>` : "") + (d.estado !== "Por fazer" && d.estado !== "Rascunho" && d.estado !== "Em conteúdos" ? ' <button class="ghost" id="pd-back">Voltar a rascunho</button>' : "");
-      if ($("pd-next")) $("pd-next").onclick = async () => {
-        if (nxt[0] === "conteudos") return passarConteudos();
-        d.estado = nxt[0]; await save(); paintEstado();
-      };
-      if ($("pd-back")) $("pd-back").onclick = async () => { d.estado = "Rascunho"; await save(); paintEstado(); };
-    };
-    const passarConteudos = async () => {
-      readForm();
-      if (!d.copy) { $("pd-note").textContent = "Falta o copy."; return; }
-      const cid = "p" + d.data;
-      const doc = { data: d.data, dia: d.dia, semana: d.semana, titulo: d.titulo || "Sem título", formato: d.formato || "Por definir", estado: d.data <= HOJE ? "Publicado" : "Agendado",
-        cartao: d.cartao, secoes: d.secoes, copy: d.copy, stories: [], storiesTxt: d.stories, inspiracao: d.inspiracao, inspDesc: d.inspDesc || "", inspPrints: d.inspPrints || [], canva: [],
-        comentarios: (d.comentarios || []).filter(c => !c.tipo).map(c => ({ quem: c.autor === "Sarah" ? "Sarah Moreira" : "Tânia Silveira", data: (c.data || "").slice(0, 10), texto: c.texto })),
-        trello: d.trello || "", origem: "plano", planoId: id, metricas: {}, criado: nowIso() };
-      try { await db.collection("conteudos").doc(cid).set(doc); d.estado = "Em conteúdos"; d.conteudoId = cid; await save(); paintEstado(); $("pd-note").textContent = "Passou para Conteúdos."; }
-      catch { $("pd-note").textContent = "Não conseguiu passar. Tenta outra vez."; }
-    };
-    let ctl = null;
-    const gerar = async (modo) => {
-      readForm();
-      if (!sample) { $("pd-note").textContent = "O Claude só funciona dentro do claude.ai."; return; }
-      if (!d.cartao && !d.stories && modo !== "refazer") { $("pd-note").textContent = "Cola primeiro a descrição do cartão ou os stories."; return; }
-      if (d.copy) d.versoes = [...(d.versoes || []), { em: nowIso(), copy: d.copy }].slice(-12);
-      ctl = new AbortController(); $("pd-gen").disabled = $("pd-redo").disabled = true; $("pd-stop").hidden = false; $("pd-note").textContent = "";
-      $("pd-copy").innerHTML = '<p class="thinking">A escrever… (pode levar até um minuto)</p>';
-      try {
-        const im = await imagensDia(d); const op = { signal: ctl.signal, modelTier: "complex", cache: false, onText: ({ text }) => renderCopyBlocks(text, $("pd-copy")) }; if (im.lista.length) op.images = im.lista;
-        const { text } = await sample(promptDia(d, modo, im.nFotos) + notaImgs(im), op);
-        d.copy = text;
-        if (modo === "refazer") d.comentarios = (d.comentarios || []).map(c => ({ ...c, aplicado: true }));
-        renderCopyBlocks(text, $("pd-copy")); $("pd-copytxt").value = text; paintComs();
-        await save();
-      } catch (e) {
-        $("pd-note").textContent = e && e.code === "cancelled" ? "Parado." : e && e.code === "not_granted" ? "Não deste autorização ao Claude. Recarrega e aceita." : e && e.code === "rate_limited" ? "Muitos pedidos seguidos. Espera um minuto." : "Correu mal. Tenta outra vez.";
-        renderCopyBlocks(d.copy, $("pd-copy"));
-      } finally { $("pd-gen").disabled = false; $("pd-redo").disabled = !d.copy; $("pd-stop").hidden = true; }
-    };
-    $("pd-stop").onclick = () => ctl && ctl.abort();
-    $("pd-gen").onclick = () => gerar("novo");
-    $("pd-redo").onclick = () => gerar("refazer");
-    $("pd-save").onclick = () => save();
-    $("pd-edit").onclick = () => { const ta = $("pd-copytxt"); if (ta.hidden) { ta.value = d.copy || ""; ta.hidden = false; $("pd-copy").hidden = true; $("pd-edit").textContent = "Ver formatado"; } else { d.copy = ta.value; ta.hidden = true; $("pd-copy").hidden = false; renderCopyBlocks(d.copy, $("pd-copy")); $("pd-edit").textContent = "Editar à mão"; save(); } };
+    const paintSec = () => { $("pd-sec").innerHTML = secoesHtml(secoes($("pd-cartao").value)) || '<p class="note">Sem descrição. Carrega em Editar descrição e cola o cartão.</p>'; };
+    const paintStoriesView = () => { const v = $("pd-stories").value; $("pd-stories-view").innerHTML = v ? md(v) : '<span class="note">Sem checklist. Carrega em Editar e cola.</span>'; };
+    const toggleEdit = (btn, ta, view, paint) => () => { if (ta.hidden) { ta.hidden = false; view.hidden = true; btn.textContent = "Ver por secções"; ta.focus(); } else { ta.hidden = true; view.hidden = false; btn.textContent = btn.dataset.lbl; paint(); save(); } };
+    $("pd-edit-cartao").dataset.lbl = "Editar descrição"; $("pd-edit-stories").dataset.lbl = "Editar";
+    $("pd-edit-cartao").onclick = toggleEdit($("pd-edit-cartao"), $("pd-cartao"), $("pd-sec"), paintSec);
+    $("pd-edit-stories").onclick = toggleEdit($("pd-edit-stories"), $("pd-stories"), $("pd-stories-view"), paintStoriesView);
+    if (!d.cartao) $("pd-edit-cartao").click();
+    if (!d.stories) $("pd-edit-stories").click();
+
+    // ---- prints da inspiração ----
     const paintPrints = () => {
       const ids = d.inspPrints || [];
       $("pd-prints").innerHTML = ids.map((pid, i) => `<figure class="thumb"><a href="${blobUrl(pid)}" target="_blank" rel="noopener"><img src="${blobUrl(pid)}" alt="Print ${i + 1} da inspiração" loading="lazy"></a>${assets ? `<button class="ghost copy" data-delprint="${i}">Tirar</button>` : ""}</figure>`).join("") || '<span class="note">Sem prints.</span>';
@@ -1015,35 +722,117 @@ ${pergunta}`;
       const imgs = Array.from((e.clipboardData && e.clipboardData.files) || []).filter(f => f.type.startsWith("image/"));
       if (imgs.length) { e.preventDefault(); addPrints(imgs); }
     });
-    paintPrints();
-    $("pd-ask").onclick = async () => {
-      const t = $("pd-com").value.trim(); if (!t) { $("pd-note").textContent = "Escreve a pergunta na caixa."; return; }
+
+    // ---- blocos de copy ----
+    const paintBloco = (a) => {
+      const k = ALVO[a].copy, so = a === "feed" && d.formato === "Só stories";
+      $("blk-" + a).classList.toggle("off", so);
+      $("gen-" + a).textContent = so ? "Dia só de stories" : d[k] ? `Refazer ${a === "feed" ? "feed" : "stories"} do zero` : `Fazer copy ${a === "feed" ? "do feed" : "dos stories"}`;
+      $("gen-" + a).disabled = so || busy[a];
+      $("pd-all").hidden = !!((d.copy || d.formato === "Só stories") && d.copyStories);
+      $("pd-all").textContent = !d.copy && !d.copyStories ? "Fazer feed e stories" : "Fazer o que falta";
+      if ($("cpt-" + a).hidden) renderCopyBlocks(d[k], $("cp-" + a));
+      const cs = d.comentarios.map((c, i) => [c, i]).filter(([c]) => c.alvo === a);
+      $("coms-" + a).innerHTML = cs.map(([c, i]) => `<div class="com${c.tipo === "resposta" ? " resp" : ""}"><b>${esc(c.tipo === "resposta" ? "Resposta do Claude" : c.autor + (c.tipo === "pergunta" ? " · pergunta" : ""))} · ${esc(fmtD((c.data || "").slice(0, 10)))}${c.aplicado && !c.tipo ? " · aplicado" : !c.tipo ? " · por aplicar" : ""}</b><span style="white-space:pre-wrap">${esc(c.texto)}</span><button class="ghost copy" data-delcom="${i}" style="justify-self:start">Apagar</button></div>`).join("") || '<p class="note">Sem comentários.</p>';
+      $("coms-" + a).querySelectorAll("[data-delcom]").forEach(b => b.onclick = async () => { d.comentarios.splice(Number(b.dataset.delcom), 1); paintBloco(a); await save(); });
+      $("redo-" + a).disabled = busy[a] || so; $("ask-" + a).disabled = busy[a];
+      const vs = d[ALVO[a].vers];
+      $("nv-" + a).textContent = vs.length;
+      $("vl-" + a).innerHTML = vs.slice().reverse().map((v, j) => `<div class="field"><div class="row" style="justify-content:space-between"><span class="label">${esc(new Date(v.em).toLocaleString("pt-PT"))}</span><button class="ghost copy" data-repor="${vs.length - 1 - j}">Repor esta versão</button></div><div class="pre">${md(v.copy)}</div></div>`).join("") || '<p class="note">Ainda não há.</p>';
+      $("vl-" + a).querySelectorAll("[data-repor]").forEach(b => b.onclick = async () => { const v = vs[Number(b.dataset.repor)]; guardaVersao(a); d[ALVO[a].copy] = v.copy; paintBloco(a); await save(); });
+    };
+    const guardaVersao = (a) => { const k = ALVO[a].copy, vk = ALVO[a].vers; if (d[k]) d[vk] = [...d[vk], { em: nowIso(), copy: d[k] }].slice(-12); };
+    const busy = { feed: false, stories: false }; const ctl = {};
+    const erroMsg = (e) => e && e.code === "cancelled" ? "Parado." : e && e.code === "not_granted" ? "Não deste autorização ao Claude. Recarrega e aceita." : e && e.code === "rate_limited" ? "Muitos pedidos seguidos. Espera um minuto." : "Correu mal. Tenta outra vez.";
+    const juntaComentario = (a, tipo) => {
+      const t = $("com-" + a).value.trim(); if (!t) return null;
+      const autor = tipo === "pergunta" ? "Tânia" : $("autor-" + a).value;
+      d.comentarios.push({ autor, texto: t, data: nowIso(), alvo: a, ...(tipo ? { tipo } : {}) });
+      if (!tipo && $("regra-" + a).checked && window.CF && window.CF.addRegra) window.CF.addRegra(t);
+      $("com-" + a).value = ""; return t;
+    };
+    const gerar = async (a, modo) => {
       readForm();
-      if (!sample) { $("pd-note").textContent = "O Claude só funciona dentro do claude.ai."; return; }
-      d.comentarios = [...(d.comentarios || []), { autor: "Tânia", texto: t, data: nowIso(), tipo: "pergunta" }];
-      $("pd-com").value = ""; paintComs();
-      const resp = document.createElement("div"); resp.className = "com resp"; resp.innerHTML = '<b>Resposta do Claude</b><span class="thinking" style="white-space:pre-wrap">A pensar…</span>';
-      $("pd-coms").appendChild(resp); const span = resp.querySelector("span");
-      $("pd-ask").disabled = true;
+      if (!sample) { $("note-" + a).textContent = "O Claude só funciona dentro do claude.ai."; return false; }
+      if (modo !== "refazer" && !d.cartao && !d.stories) { $("note-" + a).textContent = "Cola primeiro a descrição do cartão ou os stories."; return false; }
+      const k = ALVO[a].copy;
+      guardaVersao(a);
+      busy[a] = true; ctl[a] = new AbortController(); $("stop-" + a).hidden = false; $("note-" + a).textContent = ""; paintBloco(a);
+      $("cp-" + a).innerHTML = '<p class="thinking">A escrever… (pode levar até um minuto)</p>';
       try {
-        const im = await imagensDia(d); const op = { modelTier: "complex", cache: false, onText: ({ text }) => { span.className = ""; span.textContent = text; } }; if (im.lista.length) op.images = im.lista;
-        const { text } = await sample(promptPergunta(d, t) + notaImgs(im), op);
-        d.comentarios = [...d.comentarios, { autor: "Claude", texto: text.trim(), data: nowIso(), tipo: "resposta" }];
-        paintComs(); await save();
-      } catch (e) {
-        $("pd-note").textContent = e && e.code === "not_granted" ? "Não deste autorização ao Claude. Recarrega e aceita." : e && e.code === "rate_limited" ? "Muitos pedidos seguidos. Espera um minuto." : "A resposta falhou. Tenta outra vez.";
-        paintComs(); await save();
-      } finally { $("pd-ask").disabled = false; }
+        const im = a === "feed" ? await imagensDia(d) : { lista: [], nPrints: 0, nFotos: 0 };
+        const op = { signal: ctl[a].signal, modelTier: "complex", cache: false, onText: ({ text }) => renderCopyBlocks(text, $("cp-" + a)) }; if (im.lista.length) op.images = im.lista;
+        const { text } = await sample(promptDia(d, modo, a, im.nFotos) + notaImgs(im), op);
+        d[k] = text.trim();
+        d.comentarios = d.comentarios.map(c => c.alvo === a ? { ...c, aplicado: true } : c);
+        $("cpt-" + a).value = d[k];
+        await save(); return true;
+      } catch (e) { $("note-" + a).textContent = erroMsg(e); return false; }
+      finally { busy[a] = false; $("stop-" + a).hidden = true; paintBloco(a); }
     };
-    $("pd-addcom").onclick = async () => {
-      const t = $("pd-com").value.trim(); if (!t) return;
-      d.comentarios = [...(d.comentarios || []), { autor: $("pd-autor").value, texto: t, data: nowIso() }];
-      if ($("pd-regra").checked && window.CF && window.CF.addRegra) window.CF.addRegra(t);
-      $("pd-com").value = ""; paintComs(); await save();
+    ["feed", "stories"].forEach(a => {
+      $("stop-" + a).onclick = () => ctl[a] && ctl[a].abort();
+      $("gen-" + a).onclick = () => gerar(a, "novo");
+      $("redo-" + a).onclick = async () => {
+        juntaComentario(a);
+        if (!d[ALVO[a].copy]) return gerar(a, "novo");
+        gerar(a, "refazer");
+      };
+      $("add-" + a).onclick = async () => { if (juntaComentario(a)) { paintBloco(a); await save(); } };
+      $("ask-" + a).onclick = async () => {
+        readForm();
+        const t = juntaComentario(a, "pergunta"); if (!t) { $("note-" + a).textContent = "Escreve a pergunta na caixa."; return; }
+        if (!sample) { $("note-" + a).textContent = "O Claude só funciona dentro do claude.ai."; return; }
+        paintBloco(a);
+        const resp = document.createElement("div"); resp.className = "com resp"; resp.innerHTML = '<b>Resposta do Claude</b><span class="thinking" style="white-space:pre-wrap">A pensar…</span>';
+        $("coms-" + a).appendChild(resp); const span = resp.querySelector("span");
+        busy[a] = true; $("ask-" + a).disabled = true;
+        try {
+          const im = a === "feed" ? await imagensDia(d) : { lista: [], nPrints: 0, nFotos: 0 };
+          const op = { modelTier: "complex", cache: false, onText: ({ text }) => { span.className = ""; span.textContent = text; } }; if (im.lista.length) op.images = im.lista;
+          const { text } = await sample(promptPergunta(d, t, a) + notaImgs(im), op);
+          d.comentarios.push({ autor: "Claude", texto: text.trim(), data: nowIso(), tipo: "resposta", alvo: a });
+        } catch (e) { $("note-" + a).textContent = erroMsg(e); }
+        finally { busy[a] = false; paintBloco(a); await save(); }
+      };
+      $("edit-" + a).onclick = () => {
+        const ta = $("cpt-" + a), k = ALVO[a].copy;
+        if (ta.hidden) { ta.value = d[k] || ""; ta.hidden = false; $("cp-" + a).hidden = true; $("edit-" + a).textContent = "Ver formatado"; }
+        else { if (ta.value !== (d[k] || "")) { guardaVersao(a); d[k] = ta.value; } ta.hidden = true; $("cp-" + a).hidden = false; $("edit-" + a).textContent = "Editar à mão"; paintBloco(a); save(); }
+      };
+    });
+    $("pd-all").onclick = async () => {
+      $("pd-all").disabled = true;
+      if (d.formato !== "Só stories" && !d.copy) { const ok = await gerar("feed", "novo"); if (!ok) { $("pd-all").disabled = false; return; } }
+      if (!d.copyStories) await gerar("stories", "novo");
+      $("pd-all").disabled = false;
     };
-    $("pd-cartao").addEventListener("change", paintSec);
-    $("pd-sec-box").addEventListener("toggle", paintSec);
-    renderCopyBlocks(d.copy, $("pd-copy")); paintComs(); if (!ehC) paintEstado();
+    $("pd-fmt").addEventListener("change", () => { readForm(); paintBloco("feed"); });
+    $("pd-save").onclick = () => save();
+
+    // ---- estados ----
+    const paintEstado = () => {
+      const nxt = { "Por fazer": null, "Rascunho": ["Para a Sarah", "Enviar à Sarah"], "Para a Sarah": ["Aprovado", "A Sarah aprovou"], "Aprovado": ["conteudos", "Passar para Conteúdos"], "Em conteúdos": null }[d.estado];
+      $("pd-estado").innerHTML = pillEst(d.estado) + (nxt ? ` <button class="primary" id="pd-next">${esc(nxt[1])}</button>` : "") + (d.estado !== "Por fazer" && d.estado !== "Rascunho" && d.estado !== "Em conteúdos" ? ' <button class="ghost" id="pd-back">Voltar a rascunho</button>' : "");
+      if ($("pd-next")) $("pd-next").onclick = async () => {
+        if (nxt[0] === "conteudos") return passarConteudos();
+        d.estado = nxt[0]; await save(); paintEstado();
+      };
+      if ($("pd-back")) $("pd-back").onclick = async () => { d.estado = "Rascunho"; await save(); paintEstado(); };
+    };
+    const passarConteudos = async () => {
+      readForm();
+      if (!d.copy && !d.copyStories) { $("pd-note").textContent = "Falta o copy."; return; }
+      const cid = "p" + d.data;
+      const doc = { data: d.data, dia: d.dia, semana: d.semana, titulo: d.titulo || "Sem título", formato: d.formato || "Por definir", estado: d.data <= HOJE ? "Publicado" : "Agendado",
+        cartao: d.cartao, secoes: d.secoes, copy: d.copy || "", copyStories: d.copyStories || "", versoes: d.versoes, versoesStories: d.versoesStories, stories: [], storiesTxt: d.stories, inspiracao: d.inspiracao, inspDesc: d.inspDesc || "", inspPrints: d.inspPrints || [], canva: [], dadosReais: d.notas || "",
+        comentarios: d.comentarios.map(c => ({ ...c, quem: c.tipo === "resposta" ? "Claude" : quemDe(c.autor), data: (c.data || "").slice(0, 10) })),
+        trello: d.trello || "", origem: "plano", planoId: id, metricas: {}, criado: nowIso() };
+      try { await db.collection("conteudos").doc(cid).set(doc); d.estado = "Em conteúdos"; d.conteudoId = cid; await save(); paintEstado(); $("pd-note").textContent = "Passou para Conteúdos."; }
+      catch { $("pd-note").textContent = "Não conseguiu passar. Tenta outra vez."; }
+    };
+
+    paintSec(); paintStoriesView(); paintPrints(); paintBloco("feed"); paintBloco("stories"); if (!ehC) paintEstado();
     if (ehC) $("pd-back-c").onclick = () => { close(); openConteudo(id); };
   }
 
@@ -1090,7 +879,8 @@ ${pergunta}`;
       ${(c.inspPrints || []).length ? `<div class="field"><span class="label">Prints da inspiração</span><div class="thumbs">${c.inspPrints.map((pid, i) => `<figure class="thumb"><a href="/_blob/${esc(pid)}" target="_blank" rel="noopener"><img src="/_blob/${esc(pid)}" alt="Print ${i + 1}" loading="lazy"></a></figure>`).join("")}</div></div>` : ""}
       ${c.storiesTxt ? `<div class="field"><span class="label">O que fazer nos stories</span><div class="pre">${md(c.storiesTxt)}</div></div>` : ""}
       ${(c.comentarios || []).length ? `<div class="field"><span class="label">Comentários</span>${c.comentarios.slice().sort((a, b) => (a.data || "").localeCompare(b.data || "")).map(x => `<div class="com"><b>${esc(x.quem)} · ${esc(fmtD(x.data))}</b><span style="white-space:pre-wrap">${esc(x.texto)}</span></div>`).join("")}</div>` : ""}
-      ${c.copy && (c.origem === "plano" || (c.versoes || []).length) ? `<div class="field"><span class="label">Copy</span><div class="pre">${md(c.copy)}</div></div>` : ""}
+      ${c.copy && (c.origem === "plano" || (c.versoes || []).length) ? `<div class="field"><span class="label">Copy · feed</span><div class="pre">${md(c.copy)}</div></div>` : ""}
+      ${c.copyStories ? `<div class="field"><span class="label">Copy · stories</span><div class="pre">${md(c.copyStories)}</div></div>` : ""}
       <div class="links">${c.trello ? `<a href="${esc(c.trello)}" target="_blank" rel="noopener">Abrir no Trello</a>` : ""}${(c.inspiracao || []).map((u, i) => `<a href="${esc(u)}" target="_blank" rel="noopener">Inspiração ${i + 1}</a>`).join("")}${(c.canva || []).map((u, i) => `<a href="${esc(u)}" target="_blank" rel="noopener">Canva ${i + 1}</a>`).join("")}</div>`);
     $("cd-work").onclick = () => { close(); openDia(id, "conteudos"); };
     $("cd-save").onclick = async () => {
