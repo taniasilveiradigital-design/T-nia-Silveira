@@ -91,7 +91,17 @@ Detalhes que fazem a tua cliente comprar e a que quase ninguém dá atenção. M
 
 ---
 
-## 6. Plano Estratégico da Sarah (PDF "Plano de Posicionamento")
+## 6. O Trello ganha ao plano inicial
+
+O Plano de Posicionamento é de abril. Muita coisa foi ajustada desde então. **Quando não batem certo, ganha o Trello.** O que mudou:
+- O público inclui donas de lojas de roupa (montra, atendimento, experiência de compra), e não só marcas que produzem.
+- Os nomes das personas não aparecem nos conteúdos. Fala-se do momento da pessoa.
+- Os Reels falados são formato regular.
+- 4 posts por semana, com pausas no feed. Sábado é conteúdo pessoal ou leve.
+- O CTA por defeito é o FIBRA. Imersão e eventos só quando o cartão os indica. Tafetá só quando o cartão a pede.
+- A Sarah quer menos "estrutura e clareza" em abstrato e mais prática.
+
+## 7. Plano Estratégico inicial (abril): só contexto de fundo
 
 - **Posicionamento:** estrategista de produto e estrutura para marcas de moda cansadas de andar às cegas. "És muito mais estratégica do que a tua comunicação mostra": o copy tem de mostrar o raciocínio, não só o resultado.
 - **Pilares inegociáveis:** estrutura antes do crescimento · produto antes da comunicação · clareza antes da execução · decisão antes da ação · autoridade com verdade.
