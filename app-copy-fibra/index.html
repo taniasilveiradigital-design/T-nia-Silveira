@@ -149,6 +149,13 @@ tr:last-child td { border-bottom: 0; }
       <div class="field"><label class="label" for="p-est">Estado</label><select id="p-est"></select></div>
     </div>
     <p class="note">Cada dia é um cartão como no Trello. Abre o dia, cola a descrição da Sarah, a inspiração e os stories, escolhe o formato e carrega em <b>Fazer copy</b>. Os comentários da Sarah ficam por baixo do copy. Quando ela aprovar, passa para Conteúdos.</p>
+    <details id="est-box"><summary>Stories de que gosto (<span id="est-n">0</span>)</summary>
+      <p class="note">Junta aqui prints de stories com o estilo que queres (teus ou de outras contas). Depois carrega em <b>Ler o estilo</b>: o Claude vê-os e escreve o estilo em texto. Esse texto entra em todos os copies de stories. Podes corrigi-lo à mão.</p>
+      <div class="thumbs" id="est-prints"></div>
+      <div class="row"><label class="btnfile" id="est-add-l">Juntar prints<input type="file" id="est-in" accept="image/png,image/jpeg,image/webp,image/gif" multiple hidden></label><button class="primary" id="est-ler">Ler o estilo</button><span class="note" id="est-note"></span></div>
+      <div class="field"><label class="label" for="est-txt">Estilo de stories da Tânia</label><textarea id="est-txt" rows="8" placeholder="Ainda vazio. Junta prints e carrega em Ler o estilo, ou escreve aqui."></textarea>
+      <div class="row"><button id="est-save">Guardar texto</button></div></div>
+    </details>
     <div id="p-list"></div>
   </section>
 
@@ -769,6 +776,8 @@ ${ESTRUTURA}`;
     return cand.sort((a, b) => b._s - a._s).slice(0, 3);
   }
   let imgsOk2 = false, imgMax = 10, assets = null;
+  let estilo = { prints: [], texto: "" }, estiloV = null;
+  const estiloTxt = () => estilo.texto ? `\n\nESTILO DE STORIES DE QUE A TÂNIA GOSTA (segue-o nos stories: tipo de imagem, texto no ecrã, tamanho das frases, stickers, ritmo):\n${estilo.texto}` : "";
   const fotosDe = () => { const el = $("pd-fotos"); return imgsOk2 && el ? Array.from(el.files || []).slice(0, 10) : []; };
   const blobUrl = (id) => "/_blob/" + id;
   async function blobDe(id) {
@@ -816,7 +825,7 @@ ${d.cartao || "(vazio)"}
 ${(d.inspiracao || []).length ? "\nINSPIRAÇÃO (não consegues abrir o link; usa o tipo de link e os prints, se houver): " + d.inspiracao.join(" ") : ""}${d.inspDesc ? "\nO QUE ACONTECE NA INSPIRAÇÃO: " + d.inspDesc : ""}
 
 O QUE A SARAH PEDE PARA OS STORIES:
-${d.stories || "(não colado)"}
+${d.stories || "(não colado)"}${estiloTxt()}
 
 ${CF.estrutura || ""}
 - Fotos (carrossel de fotos pessoais): "## Foto 1", "## Foto 2"… uma por foto, pela ordem, cada uma com uma legenda curta (uma ou duas frases, leve, na primeira pessoa, sem lição de negócio), depois "## Legenda". Escreve só sobre o que se vê na foto ou o que a Tânia disse dela; nunca inventes o momento.${nFotos ? `\n- A Tânia juntou ${nFotos} foto(s), pela ordem do carrossel. Faz uma legenda para cada uma.` : d.formato === "Fotos" ? "\n- Não há fotos juntas: usa as descrições que a Tânia deu nos dados reais; se não houver, deixa [descreve a foto] em cada uma." : ""}
@@ -841,7 +850,7 @@ CARTÃO DA SARAH:
 ${d.cartao || "(vazio)"}
 
 STORIES PEDIDOS PELA SARAH:
-${d.stories || "(não colado)"}
+${d.stories || "(não colado)"}${estiloTxt()}
 
 COPY ATUAL:
 ${d.copy || "(ainda sem copy)"}
@@ -1224,6 +1233,48 @@ ${rows.join("\n")}`;
     note.textContent = `${ok} conteúdos atualizados (${reconhecidas} colunas reconhecidas, datas lidas como ${mode === "md" ? "mês/dia" : "dia/mês"}).` + (sem.length ? ` Sem conteúdo nessas datas: ${sem.slice(0, 8).map(fmtD).join(", ")}${sem.length > 8 ? "…" : ""}.` : "");
   };
 
+  // ---------- estilo de stories ----------
+  function paintEstilo() {
+    $("est-n").textContent = estilo.prints.length;
+    $("est-prints").innerHTML = estilo.prints.map((pid, i) => `<figure class="thumb"><a href="${blobUrl(pid)}" target="_blank" rel="noopener"><img src="${blobUrl(pid)}" alt="Story de referência ${i + 1}" loading="lazy"></a>${assets ? `<button class="ghost copy" data-delest="${i}">Tirar</button>` : ""}</figure>`).join("") || '<span class="note">Sem prints.</span>';
+    if (document.activeElement !== $("est-txt")) $("est-txt").value = estilo.texto || "";
+    $("est-add-l").hidden = !assets; $("est-ler").disabled = !sample || !imgsOk2 || !estilo.prints.length;
+    $("est-prints").querySelectorAll("[data-delest]").forEach(b => b.onclick = async () => {
+      const [pid] = estilo.prints.splice(Number(b.dataset.delest), 1); paintEstilo(); await gravaEstilo();
+      try { await assets.delete(pid); } catch {}
+    });
+  }
+  async function gravaEstilo() {
+    if (!db) return;
+    try { await db.collection("config").doc("estilo").set({ prints: estilo.prints, texto: estilo.texto || "", atualizado: nowIso() }); $("est-note").textContent = "Guardado."; }
+    catch { $("est-note").textContent = "Não gravou. Tenta outra vez."; }
+  }
+  $("est-in").onchange = async (e) => {
+    const files = Array.from(e.target.files || []); e.target.value = ""; if (!assets || !files.length) return;
+    $("est-note").textContent = `A guardar ${files.length}…`;
+    for (const f of files) { try { const r = await assets.upload(f); estilo.prints.push(r.id); paintEstilo(); } catch (er) { $("est-note").textContent = er && er.code === "too_large" ? "Um print é grande demais." : "Um print não ficou guardado."; } }
+    await gravaEstilo();
+  };
+  $("est-save").onclick = async () => { estilo.texto = $("est-txt").value.trim(); await gravaEstilo(); };
+  $("est-ler").onclick = async () => {
+    if (!sample || !estilo.prints.length) return;
+    $("est-ler").disabled = true; $("est-note").textContent = "A ver os prints…";
+    try {
+      const blobs = []; for (const pid of estilo.prints.slice(0, imgMax)) { const b = await blobDe(pid); if (b) blobs.push(b); }
+      const { text } = await sample(`Estas imagens são prints de stories de Instagram de que a Tânia Silveira (estrategista de marcas de moda, PT-PT) gosta. Descreve o ESTILO para ela o repetir nos stories dela. Não descrevas o conteúdo concreto de cada print; tira o padrão.
+Em PT-PT, direto, em pontos curtos, com estes títulos:
+Tipo de imagem (o que se filma ou fotografa, enquadramento, luz, perto ou longe)
+Texto no ecrã (tamanho das frases, tom, maiúsculas, onde fica, quantas linhas)
+Interação (enquetes, caixinhas, stickers, links: quando e como)
+Sequência e ritmo (como os stories se encadeiam, quantos seguidos)
+O que evitar (o que NÃO aparece nestes prints)
+3 exemplos de texto de story nesse estilo, sobre o dia a dia de uma estrategista de marcas de moda.
+Se as imagens não forem stories, diz isso e não inventes.`, { images: blobs, modelTier: "complex", cache: false, onText: ({ text }) => { $("est-txt").value = text; } });
+      estilo.texto = text.trim(); await gravaEstilo(); paintEstilo(); $("est-note").textContent = "Estilo lido e guardado. Revê o texto e corrige o que não for bem assim.";
+    } catch (er) { $("est-note").textContent = er && er.code === "not_granted" ? "Não deste autorização ao Claude." : er && er.code === "rate_limited" ? "Muitos pedidos. Espera um minuto." : "Não consegui ler. Tenta outra vez."; }
+    finally { $("est-ler").disabled = false; }
+  };
+
   // ---------- arranque ----------
   try { const t = localStorage.getItem("cf_tab2"); if (TABS.includes(t)) show(t); else show("plano"); } catch { show("plano"); }
   (async () => {
@@ -1233,6 +1284,8 @@ ${rows.join("\n")}`;
     try { assets = await claude.use("assets"); } catch { assets = null; }
     if (!db) { renderAll(); return; }
     db.collection("conteudos").onSnapshot((snap) => { conts = snap.docs.map(d => ({ id: d.id, ...d.data() })); loaded.c = true; fillFilters(); if (!openId) renderAll(); }, () => { loaded.c = true; renderAll(); });
+    db.collection("config").onSnapshot((snap) => { const d = snap.docs.find(x => x.id === "estilo"); if (d) { const v = d.data(); estilo = { prints: v.prints || [], texto: v.texto || "" }; } paintEstilo(); }, () => paintEstilo());
+    paintEstilo();
     db.collection("plano").onSnapshot((snap) => { plano = snap.docs.map(d => ({ id: d.id, ...d.data() })); loaded.p = true; fillFilters(); if (!openId) renderAll(); }, () => { loaded.p = true; renderAll(); });
   })();
 })();
