@@ -73,6 +73,48 @@ Pausa no feed = só stories nesse dia.
 - "Literalmente mostrar, nada de computador ao longe."
 - Enquetes com as opções escritas. Caixinhas com a pergunta exata.
 
+### Estilo visual de stories de que a Tânia gosta
+
+Tirado de 24 prints da pasta "Stories que gosto" (Drive), de contas como marianakarimvakil, mayaspirationn, saraheamoreira, ritanunes.digital e fernandaschild.
+
+TIPO DE IMAGEM
+- Fundo é sempre uma foto ou vídeo REAL do momento, nunca um fundo de cor lisa: secretária com flores e caderno, carro, esplanada, praia, restaurante, ginásio, livro aberto com sumo, portátil na mesa.
+- Muitas vezes de perto e de cima (mãos, objetos, mesa). A pessoa aparece em selfie ao espelho, de corpo inteiro, ou de costas a trabalhar.
+- Luz natural, tons neutros e quentes (bege, castanho, bordeaux, creme). Estética cuidada mas não produzida.
+- Às vezes colagem de 4 fotos do dia com legendas mínimas por foto ("Emails e conteúdo", "Unhas", "Em repeat").
+
+TEXTO NO ECRÃ
+- Frases curtas em caixas: caixa branca com letra escura, ou caixa bordeaux/castanha com letra clara. Letra serifada ou de máquina de escrever, pequena.
+- Várias caixas empilhadas no mesmo story, cada uma com 1 a 3 linhas: a primeira abre ("Hoje vou mostrar-vos um bocadinho dos bastidores 👀"), as seguintes desenvolvem.
+- Fala na primeira pessoa, com a audiência no plural ("vos"), tom de conversa.
+- Às vezes só uma frase solta e leve em cima da foto ("Começar a manhã pela melhor parte do dia", com a hora "06:00").
+- Emojis poucos e no fim da frase: 👀 🥂 🙌 😅.
+
+INTERAÇÃO
+- Caixinha com pergunta concreta, e logo abaixo uma caixa com exemplos de resposta: "(Ex.: não sei o que publicar; falta de consistência; não consigo vender)".
+- Antes da caixinha, uma frase que prepara: "Quero perceber uma coisa antes de vos mostrar os bastidores hoje 👀" ou "Preciso da vossa ajuda numa coisa que estou a construir 👀".
+- No dia seguinte, avisa que vai responder: "Ontem deixaram perguntas mesmo boas na caixinha, vou responder a algumas ainda hoje".
+- Link com autocolante curto ("Garante o teu", "Sabe mais") em cima do produto mostrado num tablet ou telemóvel na mão, nunca um print solto.
+- Autocolante de localização e de música quando é momento pessoal.
+
+SEQUÊNCIA E RITMO
+- Narrativa em 2 a 4 stories: abertura com gancho, contexto, prova (foto real, equipa, resultado), pedido ou CTA.
+- Checklist do dia em cima de uma foto real: "Hoje já houve: ✓ Mentoria individual ✓ Reunião ✓ Orçamentos enviados ✓ Follow-ups. E agora uma pausa para…" (fecha com algo pessoal).
+- Prova social contada como história: "Há 3 anos sonhava…" / "Hoje tenho…" / "Esta foto é de…" / data ou CTA no fim.
+- Bastidores e momentos pessoais (praia, jantar, treino) intercalados com trabalho. O pessoal dá respiro, não vende.
+
+O QUE EVITAR
+- Fundo liso só com texto (no máximo um por dia).
+- Parágrafos longos numa só caixa.
+- Prints soltos sem contexto.
+- Gráficos muito produzidos, muitos emojis, letras grandes de cartaz.
+- Pedir interação sem preparar antes.
+
+EXEMPLOS NA VOZ DA TÂNIA
+1. [foto de perto: café e ficha técnica na secretária] Caixa branca: "Hoje vou mostrar-vos como começa uma análise de coleção 👀" / Caixa castanha: "Antes de olhar para as peças, olho para os números."
+2. [foto no carro ou à secretária] "Hoje já houve: ✓ Sessão FIBRA ✓ Revisão de margens ✓ Chamada com fornecedor. E agora uma pausa para ir buscar os miúdos."
+3. [foto real da mesa com amostras] Caixa: "Quero perceber uma coisa antes de vos mostrar os bastidores 👀" + caixinha "Qual é a tua maior dificuldade na tua marca?" + caixa "(Ex.: preço; stock parado; fornecedores; não sei o que produzir)".
+
 ---
 
 ## 5. Exemplos aprovados (referência de tom)
