@@ -105,6 +105,10 @@ select { width: 100%; font: inherit; color: var(--ink); background: var(--bg); b
 .com { border-left: 3px solid var(--terra); padding: 6px 10px; background: var(--surface); border-radius: 0 8px 8px 0; display: grid; gap: 2px; }
 .com.resp { border-left-color: var(--brown); background: var(--terra-soft); margin-left: 18px; }
 .com b { font-size: .8rem; }
+.thumbs { display: flex; flex-wrap: wrap; gap: 8px; }
+.thumb { margin: 0; display: grid; gap: 4px; justify-items: start; }
+.thumb img { width: 96px; height: 170px; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); display: block; }
+.btnfile { font: 600 .92rem var(--f-body); border-radius: 8px; padding: 10px 16px; cursor: pointer; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
 .links { display: flex; flex-wrap: wrap; gap: 8px; }
 .links a { color: var(--terra); font-weight: 600; font-size: .88rem; overflow-wrap: anywhere; }
 .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
@@ -764,8 +768,20 @@ ${ESTRUTURA}`;
     cand.forEach(c => { const w = ((c.titulo || "") + " " + (c.copy || "").slice(0, 600)).toLowerCase().match(/[a-zà-ú]{5,}/g) || []; c._s = w.filter(x => words.has(x)).length + ((c.comentarios || []).some(x => /aprovad/i.test(x.texto)) ? 3 : 0) + (c.data > "2026-07-20" ? 2 : 0); });
     return cand.sort((a, b) => b._s - a._s).slice(0, 3);
   }
-  let imgsOk2 = false;
+  let imgsOk2 = false, imgMax = 10, assets = null;
   const fotosDe = () => { const el = $("pd-fotos"); return imgsOk2 && el ? Array.from(el.files || []).slice(0, 10) : []; };
+  const blobUrl = (id) => "/_blob/" + id;
+  async function blobDe(id) {
+    try { const r = await fetch(blobUrl(id)); if (r.ok) return await r.blob(); } catch {}
+    return new Promise((res) => { const im = new Image(); im.onload = () => { const c = document.createElement("canvas"); c.width = im.naturalWidth; c.height = im.naturalHeight; c.getContext("2d").drawImage(im, 0, 0); c.toBlob(b => res(b), "image/jpeg", .9); }; im.onerror = () => res(null); im.src = blobUrl(id); });
+  }
+  async function imagensDia(d) {
+    const fotos = fotosDe();
+    const prints = [];
+    if (imgsOk2) for (const id of (d.inspPrints || []).slice(0, Math.max(0, imgMax - fotos.length))) { const b = await blobDe(id); if (b) prints.push(b); }
+    return { lista: [...prints, ...fotos], nPrints: prints.length, nFotos: fotos.length };
+  }
+  const notaImgs = (im) => (im.nPrints ? `\n\nIMAGENS JUNTAS: as primeiras ${im.nPrints} são prints da INSPIRAÇÃO (vê o formato, a estrutura, o texto no ecrã e o ritmo; copia a estrutura, nunca o texto).` : "") + (im.nFotos ? `${im.nPrints ? " As" : "\n\nIMAGENS JUNTAS: as"} ${im.nFotos} seguintes são FOTOS da Tânia para o post, pela ordem.` : "");
   function promptDia(d, modo, nFotos) {
     const CF = window.CF || {};
     const regras = (CF.regras ? CF.regras() : []);
@@ -797,7 +813,7 @@ ${tarefa}
 DIA: ${d.dia}, ${fmtD(d.data)}
 CARTÃO DA SARAH (descrição):
 ${d.cartao || "(vazio)"}
-${(d.inspiracao || []).length ? "\nINSPIRAÇÃO (não consegues abrir; usa só o tipo de link): " + d.inspiracao.join(" ") : ""}${d.inspDesc ? "\nO QUE ACONTECE NA INSPIRAÇÃO: " + d.inspDesc : ""}
+${(d.inspiracao || []).length ? "\nINSPIRAÇÃO (não consegues abrir o link; usa o tipo de link e os prints, se houver): " + d.inspiracao.join(" ") : ""}${d.inspDesc ? "\nO QUE ACONTECE NA INSPIRAÇÃO: " + d.inspDesc : ""}
 
 O QUE A SARAH PEDE PARA OS STORIES:
 ${d.stories || "(não colado)"}
@@ -880,7 +896,11 @@ ${pergunta}`;
       <div class="field"><label class="label" for="pd-cartao">Descrição do cartão da Sarah</label><textarea id="pd-cartao" rows="9" placeholder="Cola aqui a descrição inteira do cartão: Feed, Estratégia, Tema, Como fazer…">${esc(d.cartao || "")}</textarea></div>
       <details id="pd-sec-box"><summary>Ver a descrição por secções</summary><div id="pd-sec"></div></details>
       <div class="field"><label class="label" for="pd-insp">Inspiração (um link por linha)</label><textarea id="pd-insp" rows="2">${esc((d.inspiracao || []).join("\n"))}</textarea></div>
-      <div class="field"><label class="label" for="pd-inspdesc">O que acontece na inspiração</label><textarea id="pd-inspdesc" rows="2" placeholder="A app não abre links do Instagram. Descreve numa frase.">${esc(d.inspDesc || "")}</textarea></div>
+      <div class="field"><span class="label">Prints da inspiração</span>
+        <div class="thumbs" id="pd-prints"></div>
+        ${assets ? `<div class="row"><label class="btnfile">Juntar prints<input type="file" id="pd-printin" accept="image/png,image/jpeg,image/webp,image/gif" multiple hidden></label><span class="note">ou cola aqui um print (Ctrl+V / Cmd+V). Ficam guardados neste dia e o Claude vê-os sempre que faz o copy.</span></div>` : '<span class="note">Para juntar prints, abre a app no claude.ai com a tua conta.</span>'}
+        <span class="note" id="pd-printnote"></span></div>
+      <div class="field"><label class="label" for="pd-inspdesc">O que acontece na inspiração</label><textarea id="pd-inspdesc" rows="2" placeholder="Opcional se juntaste prints. Ex.: fala para a câmara, texto grande no ecrã, lista de 5 pontos.">${esc(d.inspDesc || "")}</textarea></div>
       <div class="field"><label class="label" for="pd-stories">O que fazer nos stories (cartão da Sarah)</label><textarea id="pd-stories" rows="6" placeholder="Cola aqui a checklist dos stories: Manhã, Tarde, Noite…">${esc(d.stories || "")}</textarea></div>
       <div class="field"><label class="label" for="pd-notas">Os teus dados reais (casos, números, nomes, o que se passa em cada foto)</label><textarea id="pd-notas" rows="2">${esc(d.notas || "")}</textarea></div>
       ${imgsOk2 ? `<div class="field"><label class="label" for="pd-fotos">Fotos ou prints (opcional)</label><input type="file" id="pd-fotos" accept="image/*" multiple><small class="note">Pela ordem do carrossel. O Claude vê-as para escrever a legenda de cada uma. Não ficam guardadas.</small></div>` : ""}
@@ -908,7 +928,7 @@ ${pergunta}`;
       try {
         if (ehC) {
           const coms = (d.comentarios || []).map(x => ({ ...x, quem: x.autor === "Sarah" ? "Sarah Moreira" : x.autor === "Tânia" ? "Tânia Silveira" : x.autor }));
-          await db.collection("conteudos").doc(id).update({ titulo: d.titulo || d0.titulo || "", formato: d.formato || "Por definir", cartao: d.cartao || "", secoes: d.secoes, inspiracao: d.inspiracao, inspDesc: d.inspDesc || "", storiesTxt: d.stories || "", dadosReais: d.notas || "", copy: d.copy || "", versoes: d.versoes || [], comentarios: coms, atualizado: d.atualizado });
+          await db.collection("conteudos").doc(id).update({ titulo: d.titulo || d0.titulo || "", formato: d.formato || "Por definir", cartao: d.cartao || "", secoes: d.secoes, inspiracao: d.inspiracao, inspDesc: d.inspDesc || "", inspPrints: d.inspPrints || [], storiesTxt: d.stories || "", dadosReais: d.notas || "", copy: d.copy || "", versoes: d.versoes || [], comentarios: coms, atualizado: d.atualizado });
         } else { const { id: _, ...body } = d; await db.collection("plano").doc(id).set(body); }
         $("pd-note").textContent = "Guardado."; return true; }
       catch { $("pd-note").textContent = "Não gravou. Tenta outra vez."; return false; }
@@ -932,7 +952,7 @@ ${pergunta}`;
       if (!d.copy) { $("pd-note").textContent = "Falta o copy."; return; }
       const cid = "p" + d.data;
       const doc = { data: d.data, dia: d.dia, semana: d.semana, titulo: d.titulo || "Sem título", formato: d.formato || "Por definir", estado: d.data <= HOJE ? "Publicado" : "Agendado",
-        cartao: d.cartao, secoes: d.secoes, copy: d.copy, stories: [], storiesTxt: d.stories, inspiracao: d.inspiracao, canva: [],
+        cartao: d.cartao, secoes: d.secoes, copy: d.copy, stories: [], storiesTxt: d.stories, inspiracao: d.inspiracao, inspDesc: d.inspDesc || "", inspPrints: d.inspPrints || [], canva: [],
         comentarios: (d.comentarios || []).filter(c => !c.tipo).map(c => ({ quem: c.autor === "Sarah" ? "Sarah Moreira" : "Tânia Silveira", data: (c.data || "").slice(0, 10), texto: c.texto })),
         trello: d.trello || "", origem: "plano", planoId: id, metricas: {}, criado: nowIso() };
       try { await db.collection("conteudos").doc(cid).set(doc); d.estado = "Em conteúdos"; d.conteudoId = cid; await save(); paintEstado(); $("pd-note").textContent = "Passou para Conteúdos."; }
@@ -947,8 +967,8 @@ ${pergunta}`;
       ctl = new AbortController(); $("pd-gen").disabled = $("pd-redo").disabled = true; $("pd-stop").hidden = false; $("pd-note").textContent = "";
       $("pd-copy").innerHTML = '<p class="thinking">A escrever… (pode levar até um minuto)</p>';
       try {
-        const fotos = fotosDe(); const op = { signal: ctl.signal, modelTier: "complex", cache: false, onText: ({ text }) => renderCopyBlocks(text, $("pd-copy")) }; if (fotos.length) op.images = fotos;
-        const { text } = await sample(promptDia(d, modo, fotos.length), op);
+        const im = await imagensDia(d); const op = { signal: ctl.signal, modelTier: "complex", cache: false, onText: ({ text }) => renderCopyBlocks(text, $("pd-copy")) }; if (im.lista.length) op.images = im.lista;
+        const { text } = await sample(promptDia(d, modo, im.nFotos) + notaImgs(im), op);
         d.copy = text;
         if (modo === "refazer") d.comentarios = (d.comentarios || []).map(c => ({ ...c, aplicado: true }));
         renderCopyBlocks(text, $("pd-copy")); $("pd-copytxt").value = text; paintComs();
@@ -963,6 +983,30 @@ ${pergunta}`;
     $("pd-redo").onclick = () => gerar("refazer");
     $("pd-save").onclick = () => save();
     $("pd-edit").onclick = () => { const ta = $("pd-copytxt"); if (ta.hidden) { ta.value = d.copy || ""; ta.hidden = false; $("pd-copy").hidden = true; $("pd-edit").textContent = "Ver formatado"; } else { d.copy = ta.value; ta.hidden = true; $("pd-copy").hidden = false; renderCopyBlocks(d.copy, $("pd-copy")); $("pd-edit").textContent = "Editar à mão"; save(); } };
+    const paintPrints = () => {
+      const ids = d.inspPrints || [];
+      $("pd-prints").innerHTML = ids.map((pid, i) => `<figure class="thumb"><a href="${blobUrl(pid)}" target="_blank" rel="noopener"><img src="${blobUrl(pid)}" alt="Print ${i + 1} da inspiração" loading="lazy"></a>${assets ? `<button class="ghost copy" data-delprint="${i}">Tirar</button>` : ""}</figure>`).join("") || '<span class="note">Sem prints.</span>';
+      $("pd-prints").querySelectorAll("[data-delprint]").forEach(b => b.onclick = async () => {
+        const [pid] = d.inspPrints.splice(Number(b.dataset.delprint), 1); paintPrints(); await save();
+        try { await assets.delete(pid); } catch {}
+      });
+    };
+    const addPrints = async (files) => {
+      files = Array.from(files || []).filter(f => /^image\/(png|jpeg|webp|gif)$/.test(f.type)); if (!files.length || !assets) return;
+      $("pd-printnote").textContent = `A guardar ${files.length} print(s)…`;
+      let ok = 0;
+      for (const f of files) {
+        try { const r = await assets.upload(f); d.inspPrints = [...(d.inspPrints || []), r.id]; ok++; paintPrints(); }
+        catch (e) { $("pd-printnote").textContent = e && e.code === "too_large" ? "Um print é grande demais (máx. 20 MB)." : e && e.code === "quota_or_state" ? "Espaço cheio. Tira prints antigos." : e && e.code === "rate_limited" ? "Muitos seguidos. Espera um pouco." : "Um print não ficou guardado. Tenta outra vez."; }
+      }
+      if (ok) { await save(); $("pd-printnote").textContent = `${ok} print(s) guardado(s).`; }
+    };
+    if ($("pd-printin")) $("pd-printin").onchange = (e) => { addPrints(e.target.files); e.target.value = ""; };
+    ov.querySelector(".drawer").addEventListener("paste", (e) => {
+      const imgs = Array.from((e.clipboardData && e.clipboardData.files) || []).filter(f => f.type.startsWith("image/"));
+      if (imgs.length) { e.preventDefault(); addPrints(imgs); }
+    });
+    paintPrints();
     $("pd-ask").onclick = async () => {
       const t = $("pd-com").value.trim(); if (!t) { $("pd-note").textContent = "Escreve a pergunta na caixa."; return; }
       readForm();
@@ -973,8 +1017,8 @@ ${pergunta}`;
       $("pd-coms").appendChild(resp); const span = resp.querySelector("span");
       $("pd-ask").disabled = true;
       try {
-        const fotos = fotosDe(); const op = { modelTier: "complex", cache: false, onText: ({ text }) => { span.className = ""; span.textContent = text; } }; if (fotos.length) op.images = fotos;
-        const { text } = await sample(promptPergunta(d, t) + (fotos.length ? `\n\n(A Tânia juntou ${fotos.length} foto(s), pela ordem.)` : ""), op);
+        const im = await imagensDia(d); const op = { modelTier: "complex", cache: false, onText: ({ text }) => { span.className = ""; span.textContent = text; } }; if (im.lista.length) op.images = im.lista;
+        const { text } = await sample(promptPergunta(d, t) + notaImgs(im), op);
         d.comentarios = [...d.comentarios, { autor: "Claude", texto: text.trim(), data: nowIso(), tipo: "resposta" }];
         paintComs(); await save();
       } catch (e) {
@@ -1034,6 +1078,7 @@ ${pergunta}`;
       <h3 style="font:400 1.2rem var(--f-display);color:var(--brown);margin:8px 0 0">Cartão da Sarah</h3>
       ${secoesHtml(secs) || '<p class="note">Sem descrição no Trello.</p>'}
       ${c.textoCanva ? `<div class="field"><span class="label">Texto final no Canva (o que foi publicado)</span><div class="pre">${md(c.textoCanva)}</div></div>` : ""}
+      ${(c.inspPrints || []).length ? `<div class="field"><span class="label">Prints da inspiração</span><div class="thumbs">${c.inspPrints.map((pid, i) => `<figure class="thumb"><a href="/_blob/${esc(pid)}" target="_blank" rel="noopener"><img src="/_blob/${esc(pid)}" alt="Print ${i + 1}" loading="lazy"></a></figure>`).join("")}</div></div>` : ""}
       ${c.storiesTxt ? `<div class="field"><span class="label">O que fazer nos stories</span><div class="pre">${md(c.storiesTxt)}</div></div>` : ""}
       ${(c.comentarios || []).length ? `<div class="field"><span class="label">Comentários</span>${c.comentarios.slice().sort((a, b) => (a.data || "").localeCompare(b.data || "")).map(x => `<div class="com"><b>${esc(x.quem)} · ${esc(fmtD(x.data))}</b><span style="white-space:pre-wrap">${esc(x.texto)}</span></div>`).join("")}</div>` : ""}
       ${c.copy && (c.origem === "plano" || (c.versoes || []).length) ? `<div class="field"><span class="label">Copy</span><div class="pre">${md(c.copy)}</div></div>` : ""}
@@ -1184,7 +1229,8 @@ ${rows.join("\n")}`;
   (async () => {
     if (!window.claude) { renderAll(); return; }
     db = await claude.use("db"); sample = await claude.use("sample");
-    if (sample) { try { const lim = await sample.limits(); imgsOk2 = !!(lim && lim.images); } catch { imgsOk2 = false; } }
+    if (sample) { try { const lim = await sample.limits(); imgsOk2 = !!(lim && lim.images); imgMax = (lim && lim.images && lim.images.maxCount) || 10; } catch { imgsOk2 = false; } }
+    try { assets = await claude.use("assets"); } catch { assets = null; }
     if (!db) { renderAll(); return; }
     db.collection("conteudos").onSnapshot((snap) => { conts = snap.docs.map(d => ({ id: d.id, ...d.data() })); loaded.c = true; fillFilters(); if (!openId) renderAll(); }, () => { loaded.c = true; renderAll(); });
     db.collection("plano").onSnapshot((snap) => { plano = snap.docs.map(d => ({ id: d.id, ...d.data() })); loaded.p = true; fillFilters(); if (!openId) renderAll(); }, () => { loaded.p = true; renderAll(); });
