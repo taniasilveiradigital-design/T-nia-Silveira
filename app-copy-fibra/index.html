@@ -645,6 +645,11 @@ ${pergunta}`;
         <div class="field"><label class="label" for="pd-fmt">Formato do feed</label><select id="pd-fmt"><option value="">Escolhe</option>${FORMATOS.map(f => `<option${f === d.formato ? " selected" : ""}>${esc(f)}</option>`).join("")}</select></div>
         <div class="field" style="grid-column:span 2"><label class="label" for="pd-tit">Tema / título</label><input type="text" id="pd-tit" value="${esc(d.titulo || "")}"></div>
       </div>
+      <details class="bloco"><summary>Os teus dados reais e fotos</summary>
+        <div class="field"><label class="label" for="pd-notas">Casos, números, nomes, o que se passa em cada foto</label><textarea id="pd-notas" rows="3">${esc(d.notas || "")}</textarea></div>
+        ${imgsOk2 ? `<div class="field"><label class="label" for="pd-fotos">Fotos do post (opcional)</label><input type="file" id="pd-fotos" accept="image/*" multiple><small class="note">Pela ordem do carrossel. O Claude vê-as para escrever a legenda de cada uma. Não ficam guardadas.</small></div>` : ""}
+      </details>
+      <div class="row"><button class="primary" id="pd-all">Fazer feed e stories</button><button id="pd-save">Guardar</button><span class="note" id="pd-note"></span></div>
       <details class="bloco" ${d.cartao ? "" : "open"}><summary>Cartão da Sarah · feed</summary>
         <div id="pd-sec"></div>
         <div class="row"><button class="copy" id="pd-edit-cartao">Editar descrição</button></div>
@@ -656,17 +661,12 @@ ${pergunta}`;
           <span class="note" id="pd-printnote"></span></div>
         <div class="field"><label class="label" for="pd-inspdesc">O que acontece na inspiração</label><textarea id="pd-inspdesc" rows="2" placeholder="Opcional se juntaste prints.">${esc(d.inspDesc || "")}</textarea></div>
       </details>
+      ${blocoHtml("feed", d)}
       <details class="bloco" ${d.stories ? "" : "open"}><summary>Cartão da Sarah · stories</summary>
         <div class="pre" id="pd-stories-view"></div>
         <div class="row"><button class="copy" id="pd-edit-stories">Editar</button></div>
         <textarea id="pd-stories" rows="8" hidden placeholder="Cola aqui a checklist dos stories: Manhã, Tarde, Noite…">${esc(d.stories || "")}</textarea>
       </details>
-      <details class="bloco"><summary>Os teus dados reais e fotos</summary>
-        <div class="field"><label class="label" for="pd-notas">Casos, números, nomes, o que se passa em cada foto</label><textarea id="pd-notas" rows="3">${esc(d.notas || "")}</textarea></div>
-        ${imgsOk2 ? `<div class="field"><label class="label" for="pd-fotos">Fotos do post (opcional)</label><input type="file" id="pd-fotos" accept="image/*" multiple><small class="note">Pela ordem do carrossel. O Claude vê-as para escrever a legenda de cada uma. Não ficam guardadas.</small></div>` : ""}
-      </details>
-      <div class="row"><button class="primary" id="pd-all">Fazer feed e stories</button><button id="pd-save">Guardar</button><span class="note" id="pd-note"></span></div>
-      ${blocoHtml("feed", d)}
       ${blocoHtml("stories", d)}
       ${d.trello ? `<div class="links"><a href="${esc(d.trello)}" target="_blank" rel="noopener">Abrir no Trello</a></div>` : ""}`);
 
