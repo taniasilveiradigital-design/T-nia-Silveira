@@ -1,0 +1,515 @@
+<title>Copy FIBRA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gilda+Display&family=Raleway:wght@400;500;600;700&family=Dr+Sugiyama&display=swap">
+<style>
+/* Layout: mesa de trabalho em duas colunas — o cartão da Sarah à esquerda, o copy pronto à direita; uma coluna no telemóvel. */
+:root {
+  --bg: #faf7f4;
+  --surface: #ffffff;
+  --ink: #3a271f;
+  --muted: #7d6558;
+  --line: #e6dbd2;
+  --brown: #5c3b2e;
+  --terra: #b26d47;
+  --terra-soft: #f3e6dd;
+  --beige: #bfa795;
+  --ok: #4f6b3a;
+  --warn: #9a4a24;
+  --f-display: "Gilda Display", "Cormorant Garamond", Georgia, serif;
+  --f-body: "Raleway", "Helvetica Neue", Arial, sans-serif;
+  --f-hand: "Dr Sugiyama", "Brush Script MT", cursive;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1d1512; --surface: #271c18; --ink: #f1e6de; --muted: #bba497; --line: #3d2d26;
+    --brown: #e2c1ae; --terra: #d98d63; --terra-soft: #3a2820; --beige: #8f7765;
+    --ok: #9fbe86; --warn: #f0a07a; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1d1512; --surface: #271c18; --ink: #f1e6de; --muted: #bba497; --line: #3d2d26;
+  --brown: #e2c1ae; --terra: #d98d63; --terra-soft: #3a2820; --beige: #8f7765;
+  --ok: #9fbe86; --warn: #f0a07a; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.55 var(--f-body); padding-inline: 16px; padding-block: 20px 48px; }
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 20px; }
+header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 20px; border-bottom: 1px solid var(--line); padding-bottom: 14px; }
+h1 { font: 400 2.1rem/1.1 var(--f-display); margin: 0; color: var(--brown); letter-spacing: .01em; }
+h1 .hand { font-family: var(--f-hand); color: var(--terra); font-size: 1.6rem; margin-left: 6px; }
+header p { margin: 0; color: var(--muted); max-width: 52ch; font-size: .92rem; }
+.cols { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 20px; align-items: start; }
+@media (max-width: 860px) { .cols { grid-template-columns: minmax(0, 1fr); } }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 14px; min-width: 0; }
+.label { font-size: .72rem; text-transform: uppercase; letter-spacing: .09em; font-weight: 700; color: var(--muted); }
+.field { display: grid; gap: 6px; }
+.field small { color: var(--muted); font-size: .8rem; }
+textarea, input[type="text"] { width: 100%; font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; resize: vertical; }
+textarea:focus, input:focus, button:focus-visible, .seg label:focus-within { outline: 2px solid var(--terra); outline-offset: 1px; }
+#brief { min-height: 210px; }
+.seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg label { border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; cursor: pointer; font-size: .88rem; font-weight: 500; background: var(--bg); }
+.seg input:checked + span { color: var(--surface); }
+.seg label:has(input:checked) { background: var(--brown); border-color: var(--brown); color: var(--surface); }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+button { font: 600 .92rem var(--f-body); border-radius: 8px; padding: 10px 16px; cursor: pointer; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+button.primary { background: var(--terra); border-color: var(--terra); color: #fff; }
+button:disabled { opacity: .55; cursor: default; }
+.ghost { background: transparent; }
+.note { font-size: .82rem; color: var(--muted); }
+.note.warn { color: var(--warn); }
+.out-empty { color: var(--muted); border: 1px dashed var(--line); border-radius: 8px; padding: 18px; }
+.out-empty strong { color: var(--ink); }
+.section { border-top: 1px solid var(--line); padding-top: 12px; display: grid; gap: 6px; }
+.section:first-child { border-top: 0; padding-top: 0; }
+.section-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.section h3 { font: 400 1.15rem var(--f-display); color: var(--brown); margin: 0; }
+.section .body { white-space: pre-wrap; overflow-wrap: anywhere; }
+.copy { font-size: .78rem; padding: 4px 10px; }
+.thinking { color: var(--muted); font-style: italic; }
+details { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: var(--bg); }
+summary { cursor: pointer; font-weight: 600; }
+.rules { display: grid; gap: 8px; margin-top: 10px; }
+.rule { display: flex; gap: 10px; align-items: flex-start; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+.rule p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; min-width: 0; }
+.rule button { padding: 2px 8px; font-size: .78rem; flex: none; }
+.hist { display: grid; gap: 6px; margin-top: 10px; }
+.hist button { text-align: left; font-weight: 500; }
+.example-tag { display: inline-block; font-size: .72rem; background: var(--terra-soft); color: var(--terra); border-radius: 999px; padding: 2px 8px; font-weight: 700; letter-spacing: .04em; }
+@media (prefers-reduced-motion: no-preference) { button { transition: filter .15s; } button:hover:not(:disabled) { filter: brightness(.96); } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Copy FIBRA <span class="hand">fio a fio</span></h1>
+    <p>Cola o cartão da Sarah e recebe o copy pronto: carrossel, Reels ou stories. Segue o guia tirado de todo o Trello, com as correções que ela foi fazendo.</p>
+  </header>
+
+  <div class="cols">
+    <section class="panel" aria-label="Pedido">
+      <div class="field">
+        <span class="label">O que queres</span>
+        <div class="seg" role="radiogroup" aria-label="Modo">
+          <label><input type="radio" name="modo" id="m-escrever" value="escrever" checked><span>Escrever copy</span></label>
+          <label><input type="radio" name="modo" id="m-rever" value="rever"><span>Rever o meu copy</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="label">Formato</span>
+        <div class="seg" role="radiogroup" aria-label="Formato">
+          <label><input type="radio" name="formato" id="f-auto" value="auto" checked><span>A app decide</span></label>
+          <label><input type="radio" name="formato" id="f-car" value="carrossel"><span>Carrossel</span></label>
+          <label><input type="radio" name="formato" id="f-reels" value="reels"><span>Reels</span></label>
+          <label><input type="radio" name="formato" id="f-stories" value="stories"><span>Stories</span></label>
+          <label><input type="radio" name="formato" id="f-dia" value="dia"><span>Dia completo</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label" for="brief">Cartão da Sarah</label>
+        <textarea id="brief" placeholder="Cola aqui tudo: Feed, Estratégia, Tema, Como fazer, O que fazer nos stories…"></textarea>
+        <small id="brief-tag"></small>
+      </div>
+
+      <div class="field">
+        <label class="label" for="insp">Link de inspiração</label>
+        <input type="text" id="insp" placeholder="https://www.instagram.com/reel/…">
+        <small>A app não abre links do Instagram. Diz-lhe em baixo o que acontece no vídeo ou carrossel, ou junta prints.</small>
+      </div>
+
+      <div class="field">
+        <label class="label" for="inspdesc">O que acontece na inspiração</label>
+        <textarea id="inspdesc" rows="2" placeholder="Ex.: ela fala para a câmara, texto grande no ecrã, lista de 5 pontos, fecha com pergunta."></textarea>
+      </div>
+
+      <div class="field" id="imgs-field" hidden>
+        <label class="label" for="imgs">Prints (opcional)</label>
+        <input type="file" id="imgs" accept="image/*" multiple>
+        <small id="imgs-info">Prints do cartão, da inspiração ou do comentário da Sarah.</small>
+      </div>
+
+      <div class="field">
+        <label class="label" for="notas" id="notas-label">Os teus dados reais</label>
+        <textarea id="notas" rows="3" placeholder="Casos, números, nome da cliente, o que se passou esta semana. A app não inventa nada disto."></textarea>
+      </div>
+
+      <div class="row">
+        <button class="primary" id="go">Fazer copy</button>
+        <button class="ghost" id="stop" hidden>Parar</button>
+        <span class="note" id="status"></span>
+      </div>
+
+      <details id="rules-box">
+        <summary>Correções da Sarah que a app já aprendeu (<span id="rules-count">0</span>)</summary>
+        <p class="note">Sempre que a Sarah corrigir alguma coisa, cola aqui o comentário dela. Entra em todos os copies a partir daí.</p>
+        <div class="field">
+          <textarea id="newrule" rows="2" placeholder="Ex.: Começa sem rodeios. Gancho com o título do tema."></textarea>
+          <div class="row"><button id="addrule">Guardar correção</button><span class="note" id="rules-note"></span></div>
+        </div>
+        <div class="rules" id="rules"></div>
+      </details>
+    </section>
+
+    <section class="panel" aria-label="Copy" aria-live="polite">
+      <div class="row" style="justify-content:space-between">
+        <span class="label">Copy pronto</span>
+        <button class="copy" id="copyall" hidden>Copiar tudo</button>
+      </div>
+      <div id="out">
+        <div class="out-empty">
+          <strong>Como usar:</strong> abre o cartão do dia no Trello, copia tudo e cola à esquerda. Junta a inspiração e o que tiveres de real (cliente, número, história). Carrega em <strong>Fazer copy</strong>.<br><br>
+          O copy sai separado por blocos: capa, slides, roteiro, legenda e stories da manhã, tarde e noite. Cada bloco tem o seu botão de copiar, para levares direto para o Canva.
+        </div>
+      </div>
+
+      <div class="field" id="refine-box" hidden>
+        <label class="label" for="refine">Afinar</label>
+        <textarea id="refine" rows="2" placeholder="Ex.: mais curto · cola aqui o comentário da Sarah · tira o slide 4 · gancho mais forte"></textarea>
+        <div class="row"><button id="refine-go">Afinar este copy</button></div>
+      </div>
+
+      <details id="hist-box">
+        <summary>Últimos copies</summary>
+        <div class="hist" id="hist"><span class="note">Ainda não há nada guardado.</span></div>
+      </details>
+    </section>
+  </div>
+</div>
+
+<script type="text/plain" id="guia">
+És a copywriter da Tânia Silveira. A Tânia é estrategista de produto e estrutura para marcas de moda em Portugal: 10+ anos no têxtil (chão de fábrica, produção, planeamento, produto). Engenheira de materiais, de Trás-os-Montes, vive em Guimarães, mãe de dois, trabalha a partir de casa. Vende o Método FIBRA (acompanhamento 1:1 de 6 meses: Mentalidade, Produto, Digital), o Diagnóstico Estratégico, a Consultoria Tafetá 360 (sessão de 2h + seguimento) e a Lista Estratégica de Fornecedores. Fez a Imersão Fibra IA – Black Friday. Tem um formato de lives chamado Conversas Tramadas. Público: donas de marcas e lojas de moda (muitas pequenas, a começar ou já a vender sem margem).
+
+A mentora dela, Sarah Moreira (brasileira), escreve cartões no Trello com: Feed/Objetivo, Estratégia, Tema, Como fazer/Direcionamento, Gancho, Inspiração de formato e "O que fazer nos stories" (Manhã/Tarde/Noite). O teu trabalho é transformar o cartão em copy pronto a publicar, a cumprir o que a Sarah pede e na voz da Tânia.
+
+COMO LER O CARTÃO
+- Objetivo = o que a pessoa tem de sentir ou perceber no fim.
+- Tema = título. Usa-o quase literalmente como gancho ou capa, adaptado a PT-PT.
+- Como fazer / Direcionamento = pontos obrigatórios. É um exemplo, não um roteiro: reescreve na voz da Tânia.
+- Gancho dado pela Sarah = abre com ele.
+- Inspiração: instagram.com/reel ou tiktok = Reels falado; instagram.com/p/ = carrossel. Copia a estrutura, nunca o texto.
+- "Pausa no feed" = só stories nesse dia.
+- O cartão vem em português do Brasil. O copy sai SEMPRE em português de Portugal (tu, stock, telemóvel, equipa, planear, faturação, fato…).
+
+REGRAS DA SARAH (tiradas das correções dela, cumprir todas)
+1. Sem cara de ChatGPT. Leve e espontâneo, como uma conversa com uma dona de marca ao café. Proibido: frases de efeito em cadeia ("Uma vende. A outra avisa."), aforismos, "E se…?" repetido, tom solene ou poético, "Não é X. É Y." mais de uma vez, travessões a separar apartes, listas de três adjetivos.
+2. Gancho firme no primeiro segundo, sem rodeios, "nada de voz morna". Bons: "Andas a copiar a concorrência?", "Vou ensinar-te a quebrar a objeção da compra online.", "Se a tua Black Friday começa em novembro, já estás a perder dinheiro." Mau: "Todas as semanas vejo marcas a…".
+3. Não entregar a resposta no início. A virada vai para o fim.
+4. Ensinar, não só refletir. Se o tema promete "como", entrega passos, perguntas concretas e checklists com exemplos do chão de fábrica, da coleção, da margem e do fornecedor. Não ficar em "falta estrutura / falta clareza / falta critério".
+5. Cumprir o tema à letra. Se o tema é "o que as clientes fizeram", são ações concretas delas.
+6. Nichar o título: tem de ser óbvio que é para uma marca ou loja de moda.
+7. Falar com a dona da marca, não com a marca. Crítica no plural ("vejo-vos a…"), elogio no singular.
+8. Tamanho: Reels até 1:30 (máx. ~200 palavras faladas). Conteúdo de venda direta: curto. Carrossel: 6 a 10 slides, cada slide = título curto em negrito + uma ou duas frases inteiras e fluidas (nada de frases picotadas sem verbo). Junta problema e solução no mesmo slide. Corta slides que repetem.
+9. CTA sempre no fim, ligada ao produto da fase indicado no cartão (FIBRA, Diagnóstico, Imersão, Lista de Fornecedores, Conversa Tramada). Se o cartão não indicar, usa o Método FIBRA ("link na bio" ou "Comenta FIBRA"). A Consultoria Tafetá só se o cartão pedir.
+10. Pontuação, maiúsculas e ortografia impecáveis.
+11. Capa: frase curta e grande (máx. 10 palavras), humana, a partir do tema.
+
+VOZ DA TÂNIA
+- PT-PT, tu, sem gerúndio, frases curtas mas completas, direta, transmontana, com humor seco quando cabe.
+- Reels: gancho, depois "Pega no café e vamos conversar." (quando encaixa), desenvolvimento, fecho com pergunta de autoavaliação ou CTA.
+- Fechos possíveis: "Vamos costurar a tua marca?", "Bora fazer acontecer.", 🧵 no fim. Só um emoji, o 🧵.
+- CTAs de palavra: "Comenta FIBRA", "Comenta DIREÇÃO", "Comenta a palavra X e eu envio-te…".
+- Vocabulário dela: chão de fábrica, margem real, stock parado, coleção, fio condutor, peça âncora, fornecedor, ateliê, ficha técnica, mínimos, confeção, orçamento, "a olhómetro", "em cima do joelho", apagar fogos.
+- Usa situações concretas de produção: fechos que chegam sem medida e atrasam duas semanas, duzentas peças de um modelo não testado, bordado escalado sem confirmar medidas, mínimo do fornecedor, preço feito a comparar com a concorrência.
+- NUNCA inventes clientes, números, resultados, prints ou histórias pessoais. Se o copy precisa de um caso real e a Tânia não o deu, escreve [entre parêntesis retos o que ela tem de preencher].
+- Proibido: diminutivos, "genuinamente", "honestamente", "de certa forma", "nesse sentido", "incrível", floreados, promessas de resultados rápidos.
+
+STORIES
+- Cada linha do checklist da Sarah vira um ou mais stories prontos: diz o tipo (foto, vídeo a falar, enquete, caixinha, depoimento, link) e o texto EXATO a escrever no ecrã ou a dizer.
+- Manhã: rotina real com contexto (nunca só "bom dia"). Tarde: bastidor + conversa, caixinha ou narrativa. Noite: momento pessoal.
+- Enquetes com as opções escritas. Caixinhas com a pergunta exata. Depoimentos contextualizados ("Esta mensagem chegou ontem. Quando a [nome] começou, …"), nunca um print solto. Link no fim da narrativa.
+- Bastidores são respiro: não transformes o dia todo em venda. Máximo 3 stories por bloco de narrativa.
+- Quando a Sarah diz "mostra", indica o que filmar de perto ("filma o ecrã com a ficha de custo, de perto").
+
+EXEMPLOS APROVADOS
+[Carrossel aprovado: "APROVADÍSSIMA"]
+A tua marca de moda não está a falir. Tu só não… / Olhas para o preço antes de produzir. / Dás relevância ao que não vende antes que passe a stock parado. / Sabes a margem de cada peça. / Tens comparação para recusar os valores do fornecedor. / Olhas para os números antes de tomar decisões.
+
+[Reels reescrito pela Sarah]
+Se há uma coisa que vejo repetir-se entre vocês que estão a começar uma marca, é esta: querem ter tudo pronto antes de saber o que funciona. Coleção completa. Embalagem fechada. Site pronto. Redes cheias. Tudo ao mesmo tempo, antes de vender a sério a primeira peça. Já vi vocês produzirem duzentas peças de um modelo que ainda não tinham testado no mercado. Fecharem o fornecedor de embalagem sem saber o volume real de vendas. Escalarem um bordado sem confirmar as medidas e depois ficarem com uma coleção inutilizada por dois centímetros. E isto não é falta de ambição. É falta de critério. Cada decisão tomada cedo demais compromete o teu caixa, o teu stock e a tua margem antes de teres sequer percebido o que funciona. Por isso, se estás a começar, guarda isto: valida primeiro, escala depois.
+
+[Reels reescrito pela Sarah: ensinar com exemplos]
+Detalhes que fazem a tua cliente comprar e a que quase ninguém dá atenção. Mas agora vais dar. Primeiro: faz a tua cliente imaginar-se a usar o teu produto. Uma foto do produto solto mostra o que vendes. Mas quando o colocas num contexto, despertas muito mais desejo. Em vez de dizeres "este casaco é de lã e aguenta até zero graus", mostra o que ela vai viver com ele: "perfeito para a tua próxima viagem de inverno, quente enquanto passeias pela cidade". Depois, mostra as peças mais vendidas: ver que outras escolheram tira insegurança. E facilita a decisão: ela encontra a medida? A composição? Percebe como veste? Consegue falar contigo facilmente? Quando ela compra, a embalagem e o pós-venda continuam a comunicar quem és. Por isso, quando pensares na venda, não olhes só para o produto. Olha para o caminho inteiro. [CTA]
+
+[Carrossel final publicado, versão encurtada pela Sarah]
+Capa: Coisas que podes testar hoje na tua marca de moda, com IA / Em vez de validares uma ideia, põe-na à prova: antes de avançares com uma coleção, pede à IA que questione o preço, a cliente, as quantidades e as tuas escolhas. É melhor encontrar os problemas antes de teres stock parado. / Não te prendas à primeira versão: testa diferentes tecidos, cortes, preços e formas de desenvolver a mesma peça antes de decidires. / … / Garante a tua vaga no link da bio.
+
+[Gancho corrigido pela Sarah]
+Antes: "Nem sabes quantas vezes já ouvi isto. Fundadora com produto bom…" → Depois: "Eu sei que achas que precisas de uma influenciadora para crescer, mas vim fazer-te repensar essa ideia." E a resposta ("a influenciadora és tu") só no fim.
+</script>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const GUIA = $("guia").textContent.trim();
+  const EXEMPLO = `Tema
+Como é a sua resposta quando uma cliente pergunta sobre uma peça que não tem?
+
+Objetivo
+Fazer você perceber que a forma como responde quando não tem uma peça também comunica o posicionamento da sua marca. Uma resposta mal conduzida pode encerrar uma oportunidade de venda; uma resposta estratégica pode manter o interesse da cliente e até abrir espaço para outra compra.
+
+Estratégia
+Partir de uma situação simples do atendimento para mostrar que "não temos" não precisa ser o fim da conversa.
+
+Direcionamento
+- Comece com a pergunta: Quando uma cliente pergunta por uma peça que você não tem, o que você responde?
+- Mostre a diferença entre simplesmente dizer "não temos" e continuar conduzindo a conversa
+- A resposta pode depender da situação: peça esgotada, modelo que saiu de linha, produto que ainda não foi lançado ou peça que a marca nunca trabalhou
+- Mostre como usar a pergunta da cliente para entender o que despertou o interesse nela
+
+Inspiração de conteúdo
+https://vm.tiktok.com/ZN82m6goa/`;
+
+  let sample = null, db = null, uid = null, imagesOk = false;
+  let rules = [];          // {id, texto, ts}
+  let hist = [];           // {id, titulo, texto, ts}
+  let turns = [];          // conversa atual com o Claude
+  let lastText = "";
+  let ctl = null;
+  let usingLocal = false;
+
+  // ---------- exemplo inicial ----------
+  $("brief").value = EXEMPLO;
+  $("brief-tag").innerHTML = '<span class="example-tag">EXEMPLO</span> Cartão real de novembro. Substitui pelo cartão do dia.';
+  $("brief").addEventListener("input", () => { $("brief-tag").textContent = ""; }, { once: true });
+
+  // ---------- modo ----------
+  function modo() { return document.querySelector('input[name="modo"]:checked').value; }
+  function formato() { return document.querySelector('input[name="formato"]:checked').value; }
+  document.querySelectorAll('input[name="modo"]').forEach(r => r.addEventListener("change", () => {
+    const rever = modo() === "rever";
+    $("notas-label").textContent = rever ? "O teu copy (para rever)" : "Os teus dados reais";
+    $("notas").placeholder = rever ? "Cola aqui o copy que escreveste. A app corrige como a Sarah corrigiria." : "Casos, números, nome da cliente, o que se passou esta semana. A app não inventa nada disto.";
+    $("notas").rows = rever ? 8 : 3;
+    $("go").textContent = rever ? "Rever copy" : "Fazer copy";
+  }));
+
+  // ---------- render ----------
+  function esc(s) { return s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+  function inline(s) { return esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>"); }
+  function render(text, done) {
+    const out = $("out");
+    out.innerHTML = "";
+    const parts = text.split(/^##\s+/m);
+    const intro = parts.shift().trim();
+    if (intro) parts.unshift("Copy\n" + intro);
+    if (!parts.length) { out.innerHTML = '<p class="thinking">A escrever…</p>'; return; }
+    parts.forEach(p => {
+      const nl = p.indexOf("\n");
+      const title = (nl === -1 ? p : p.slice(0, nl)).trim();
+      const body = (nl === -1 ? "" : p.slice(nl + 1)).trim();
+      const sec = document.createElement("div");
+      sec.className = "section";
+      const head = document.createElement("div");
+      head.className = "section-head";
+      const h = document.createElement("h3");
+      h.textContent = title.replace(/\*\*/g, "");
+      head.appendChild(h);
+      if (done && body) {
+        const b = document.createElement("button");
+        b.className = "copy"; b.textContent = "Copiar";
+        b.addEventListener("click", () => copyText(body.replace(/\*\*/g, ""), b));
+        head.appendChild(b);
+      }
+      const d = document.createElement("div");
+      d.className = "body";
+      d.innerHTML = inline(body);
+      sec.append(head, d);
+      out.appendChild(sec);
+    });
+  }
+  async function copyText(t, btn) {
+    try { await navigator.clipboard.writeText(t); btn.textContent = "Copiado"; }
+    catch { btn.textContent = "Seleciona e copia"; }
+    setTimeout(() => { btn.textContent = btn.id === "copyall" ? "Copiar tudo" : "Copiar"; }, 1600);
+  }
+  $("copyall").addEventListener("click", (e) => copyText(lastText.replace(/\*\*/g, "").replace(/^##\s+/gm, ""), e.currentTarget));
+
+  // ---------- prompt ----------
+  const FORMATOS = {
+    auto: "Decide tu o formato a partir do cartão e do link de inspiração (reel/tiktok = Reels; /p/ = carrossel). Se o cartão tiver checklist de stories, faz também os stories.",
+    carrossel: "Carrossel.",
+    reels: "Reels falado.",
+    stories: "Só os stories do dia, a partir do checklist 'O que fazer nos stories'.",
+    dia: "O dia completo: o conteúdo de feed (formato pela inspiração) E os stories do checklist."
+  };
+  const ESTRUTURA = `ESTRUTURA DA RESPOSTA (usa "## " no início de cada bloco, nada antes do primeiro bloco, sem explicar o teu processo):
+- Carrossel: "## Capa" (frase da capa + subtítulo opcional), depois "## Slide 2", "## Slide 3"… (cada um: **título curto** numa linha + uma ou duas frases), depois "## Legenda" (3 a 6 linhas, termina com pergunta ou CTA e 3 a 5 hashtags).
+- Reels: "## Texto da capa", "## Roteiro" (texto falado, parágrafos curtos, máx. ~200 palavras), "## Texto no ecrã" (3 a 5 frases curtas para legendar o vídeo), "## Legenda".
+- Stories: "## Stories · Manhã", "## Stories · Tarde", "## Stories · Noite". Dentro, uma linha por story: "Story 1 · [tipo] — texto exato". Enquetes com as opções; caixinhas com a pergunta.
+- No fim, se faltar algum dado real, "## Para confirmar" com no máximo 3 pontos. Se não faltar nada, não incluas este bloco.`;
+
+  function buildPrompt() {
+    const brief = $("brief").value.trim();
+    const insp = $("insp").value.trim();
+    const inspdesc = $("inspdesc").value.trim();
+    const notas = $("notas").value.trim();
+    const extra = rules.length ? "\n\nCORREÇÕES RECENTES DA SARAH (têm prioridade sobre tudo o resto):\n" + rules.map(r => "- " + r.texto).join("\n") : "";
+    let tarefa;
+    if (modo() === "rever") {
+      tarefa = `TAREFA: A Tânia escreveu este copy para o cartão abaixo. Revê-o como a Sarah o reveria: corrige o que viola as regras, mantém a voz e as ideias dela, não acrescentes casos inventados. Devolve a versão corrigida pronta a publicar e, no fim, um bloco "## O que mudei" com no máximo 4 pontos curtos.
+Formato: ${FORMATOS[formato()]}
+
+COPY DA TÂNIA:
+${notas || "(vazio)"}`;
+    } else {
+      tarefa = `TAREFA: Escreve o copy para este cartão.
+Formato: ${FORMATOS[formato()]}
+${notas ? "\nDADOS REAIS DA TÂNIA (usa-os; não inventes outros):\n" + notas : "\nA Tânia não deu casos nem números reais: onde fizerem falta, usa [parêntesis retos]."}`;
+    }
+    return `${GUIA}${extra}
+
+${tarefa}
+
+CARTÃO DA SARAH:
+${brief || "(vazio)"}
+${insp ? "\nLINK DE INSPIRAÇÃO (não consegues abrir; usa só o tipo de link): " + insp : ""}${inspdesc ? "\nO QUE ACONTECE NA INSPIRAÇÃO: " + inspdesc : ""}
+
+${ESTRUTURA}`;
+  }
+
+  // ---------- erros ----------
+  function msgErro(code) {
+    return ({
+      not_granted: "Não deste autorização ao Claude nesta página. Recarrega a página e aceita quando ela perguntar.",
+      rate_limited: "Muitos pedidos seguidos. Espera um minuto e tenta outra vez.",
+      prompt_too_large: "O texto é demasiado grande. Encurta o cartão ou tira as imagens.",
+      image_rejected: "Uma das imagens não foi aceite. Tenta com outra.",
+      session_expired: "A sessão expirou. Recarrega a página.",
+      sampling_disabled: "O acesso ao Claude está desligado para esta conta.",
+      refused: "O Claude não respondeu a este pedido. Reformula o cartão ou as notas.",
+      cancelled: "Parado."
+    })[code] || "Correu mal desta vez. Tenta outra vez daqui a pouco.";
+  }
+
+  // ---------- gerar ----------
+  async function run(input, label) {
+    if (!sample) return;
+    ctl = new AbortController();
+    $("go").disabled = true; $("refine-go").disabled = true;
+    $("stop").hidden = false; $("copyall").hidden = true;
+    $("status").textContent = "";
+    $("out").innerHTML = '<p class="thinking">A pensar no copy… (pode levar até um minuto)</p>';
+    const opts = {
+      signal: ctl.signal, modelTier: "complex", cache: false,
+      onText: ({ text }) => render(text, false)
+    };
+    const files = imagesOk ? Array.from($("imgs").files || []) : [];
+    if (files.length && turns.length <= 1) opts.images = files;
+    try {
+      const { text, truncated } = await sample(input, opts);
+      lastText = text;
+      turns = input.concat([{ role: "assistant", content: text }]);
+      render(text, true);
+      $("copyall").hidden = false;
+      $("refine-box").hidden = false;
+      if (truncated) $("status").textContent = "O copy ficou cortado. Pede uma parte de cada vez (só carrossel, ou só stories).";
+      saveHist(label, text);
+    } catch (e) {
+      if (e && e.text) { lastText = e.text; render(e.text, true); }
+      else if (!e || e.code !== "cancelled") $("out").innerHTML = "";
+      $("status").textContent = msgErro(e && e.code);
+      $("status").className = "note warn";
+    } finally {
+      $("go").disabled = false; $("refine-go").disabled = false; $("stop").hidden = true;
+    }
+  }
+  $("stop").addEventListener("click", () => ctl && ctl.abort());
+  $("go").addEventListener("click", () => {
+    $("status").className = "note";
+    if (!$("brief").value.trim()) { $("status").textContent = "Cola primeiro o cartão da Sarah."; return; }
+    turns = [];
+    const first = $("brief").value.trim().split("\n").find(l => l.trim() && !/^(tema|feed|objetivo)$/i.test(l.trim())) || "Copy";
+    run([{ role: "user", content: buildPrompt() }], first.slice(0, 80));
+  });
+  $("refine-go").addEventListener("click", () => {
+    const r = $("refine").value.trim();
+    if (!r || !turns.length) return;
+    const next = turns.concat([{ role: "user", content: `Afina o copy anterior com esta indicação (se for um comentário da Sarah, aplica-o à letra) e devolve a versão completa na mesma estrutura:\n${r}` }]);
+    $("refine").value = "";
+    run(next, "Afinado: " + r.slice(0, 60));
+  });
+
+  // ---------- correções (db, com recurso local) ----------
+  function renderRules() {
+    $("rules-count").textContent = rules.length;
+    const box = $("rules");
+    box.innerHTML = "";
+    if (!rules.length) { box.innerHTML = '<span class="note">Ainda nenhuma. As regras base da Sarah já estão incluídas.</span>'; return; }
+    rules.slice().sort((a, b) => b.ts - a.ts).forEach(r => {
+      const row = document.createElement("div"); row.className = "rule";
+      const p = document.createElement("p"); p.textContent = r.texto;
+      const b = document.createElement("button"); b.textContent = "Apagar";
+      b.addEventListener("click", () => delRule(r.id));
+      row.append(p, b); box.appendChild(row);
+    });
+  }
+  function localGet(k) { try { return JSON.parse(localStorage.getItem(k) || "[]"); } catch { return []; } }
+  function localSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+  async function addRule() {
+    const t = $("newrule").value.trim();
+    if (!t) return;
+    const item = { tipo: "regra", texto: t.slice(0, 2000), ts: Date.now() };
+    $("newrule").value = "";
+    if (db && uid && !usingLocal) {
+      try { await db.collection("data/users/" + uid).doc("regra_" + item.ts).set(item); $("rules-note").textContent = "Guardada."; return; }
+      catch { $("rules-note").textContent = "Não consegui guardar na nuvem. Fica só neste aparelho."; }
+    }
+    rules.push({ id: "regra_" + item.ts, ...item }); localSet("cf_regras", rules); renderRules();
+  }
+  async function delRule(id) {
+    if (db && uid && !usingLocal) { try { await db.collection("data/users/" + uid).doc(id).delete(); return; } catch {} }
+    rules = rules.filter(r => r.id !== id); localSet("cf_regras", rules); renderRules();
+  }
+  $("addrule").addEventListener("click", addRule);
+
+  function renderHist() {
+    const box = $("hist");
+    box.innerHTML = "";
+    if (!hist.length) { box.innerHTML = '<span class="note">Ainda não há nada guardado.</span>'; return; }
+    hist.slice().sort((a, b) => b.ts - a.ts).slice(0, 15).forEach(h => {
+      const b = document.createElement("button");
+      const d = new Date(h.ts);
+      b.textContent = d.toLocaleDateString("pt-PT", { day: "2-digit", month: "2-digit" }) + " · " + h.titulo;
+      b.addEventListener("click", () => { lastText = h.texto; render(h.texto, true); $("copyall").hidden = false; turns = []; $("refine-box").hidden = true; });
+      box.appendChild(b);
+    });
+  }
+  async function saveHist(titulo, texto) {
+    const item = { tipo: "hist", titulo, texto: texto.slice(0, 60000), ts: Date.now() };
+    if (db && uid && !usingLocal) {
+      try { await db.collection("data/users/" + uid).doc("hist_" + item.ts).set(item); return; } catch {}
+    }
+    hist.push({ id: "hist_" + item.ts, ...item }); hist = hist.slice(-30); localSet("cf_hist", hist); renderHist();
+  }
+
+  // ---------- arranque ----------
+  renderRules(); renderHist();
+  (async () => {
+    if (!window.claude) { $("status").textContent = "Abre esta página no claude.ai para usar."; $("go").disabled = true; return; }
+    sample = await claude.use("sample");
+    if (!sample) { $("status").textContent = "O Claude não está disponível nesta página. Abre-a no claude.ai com a tua conta."; $("status").className = "note warn"; $("go").disabled = true; }
+    else {
+      try { const lim = await sample.limits(); imagesOk = !!(lim && lim.images); } catch { imagesOk = false; }
+      $("imgs-field").hidden = !imagesOk;
+    }
+    const user = await claude.use("user");
+    db = await claude.use("db");
+    try { uid = user ? await user.id() : null; } catch { uid = null; }
+    if (db && uid) {
+      db.collection("data/users/" + uid).onSnapshot((snap) => {
+        const all = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        rules = all.filter(x => x.tipo === "regra");
+        hist = all.filter(x => x.tipo === "hist");
+        renderRules(); renderHist();
+      }, () => { usingLocal = true; rules = localGet("cf_regras"); hist = localGet("cf_hist"); renderRules(); renderHist(); });
+    } else {
+      usingLocal = true;
+      rules = localGet("cf_regras"); hist = localGet("cf_hist"); renderRules(); renderHist();
+      $("rules-note").textContent = "As correções ficam guardadas só neste aparelho.";
+    }
+  })();
+})();
+</script>
