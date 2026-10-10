@@ -109,9 +109,10 @@ details.bloco { background: var(--surface); }
 details.bloco > summary { font: 400 1.1rem var(--f-display); color: var(--brown); }
 details.bloco[open] > summary { margin-bottom: 10px; }
 details.bloco > *:not(summary) + * { margin-top: 10px; }
-.bloco-copy { border: 1px solid var(--line); border-radius: 10px; padding: 14px; background: var(--surface); display: grid; gap: 12px; }
-.bloco-copy.off > :not(:first-child):not(:nth-child(2)) { display: none; }
-.blk-h { font: 400 1.3rem var(--f-display); color: var(--brown); margin: 0; }
+.bloco-copy { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; background: var(--surface); }
+.bloco-copy[open] > * + * { margin-top: 12px; }
+.bloco-copy.off > :not(summary):not(:nth-child(2)) { display: none; }
+.blk-h { font: 400 1.3rem var(--f-display); color: var(--brown); margin: 0; cursor: pointer; }
 .thumbs { display: flex; flex-wrap: wrap; gap: 8px; }
 .thumb { margin: 0; display: grid; gap: 4px; justify-items: start; }
 .thumb img { width: 96px; height: 170px; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); display: block; }
@@ -611,9 +612,9 @@ ${pergunta}`;
   const quemDe = (a) => a === "Sarah" ? "Sarah Moreira" : a === "Tânia" ? "Tânia Silveira" : a;
   function blocoHtml(alvo, d) {
     const nome = alvo === "feed" ? "Feed" : "Stories";
-    return `<section class="bloco-copy" id="blk-${alvo}">
-      <div class="row" style="justify-content:space-between"><h3 class="blk-h">Copy · ${nome}</h3><span class="row"><button class="copy" id="edit-${alvo}">Editar à mão</button></span></div>
-      <div class="row"><button class="primary" id="gen-${alvo}"></button><button class="ghost" id="stop-${alvo}" hidden>Parar</button><span class="note" id="note-${alvo}"></span></div>
+    return `<details class="bloco-copy" id="blk-${alvo}" open>
+      <summary class="blk-h">Copy · ${nome}</summary>
+      <div class="row"><button class="primary" id="gen-${alvo}"></button><button class="copy" id="edit-${alvo}">Editar à mão</button><button class="ghost" id="stop-${alvo}" hidden>Parar</button><span class="note" id="note-${alvo}"></span></div>
       <div id="cp-${alvo}"></div><textarea id="cpt-${alvo}" rows="14" hidden></textarea>
       <div class="field"><span class="label">Comentários · ${nome}</span><div id="coms-${alvo}"></div>
         <div class="row"><label class="note" for="autor-${alvo}">Quem comenta</label><select id="autor-${alvo}" style="width:auto"><option>Sarah</option><option>Tânia</option></select></div>
@@ -622,7 +623,7 @@ ${pergunta}`;
         <label class="note"><input type="checkbox" id="regra-${alvo}"> guardar também como regra para todos os copies</label>
       </div>
       <details id="vers-${alvo}"><summary>Versões anteriores · ${nome} (<span id="nv-${alvo}">0</span>)</summary><div id="vl-${alvo}"></div></details>
-    </section>`;
+    </details>`;
   }
   function openDia(id, src) {
     src = src || "plano";
