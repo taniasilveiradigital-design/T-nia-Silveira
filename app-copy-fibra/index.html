@@ -78,6 +78,50 @@ summary { cursor: pointer; font-weight: 600; }
 .hist { display: grid; gap: 6px; margin-top: 10px; }
 .hist button { text-align: left; font-weight: 500; }
 .example-tag { display: inline-block; font-size: .72rem; background: var(--terra-soft); color: var(--terra); border-radius: 999px; padding: 2px 8px; font-weight: 700; letter-spacing: .04em; }
+nav.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); overflow-x: auto; position: sticky; top: env(safe-area-inset-top, 0px); background: var(--bg); z-index: 5; }
+nav.tabs button { border: 0; border-bottom: 3px solid transparent; border-radius: 0; background: none; color: var(--muted); padding: 10px 14px; white-space: nowrap; }
+nav.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--terra); }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; }
+.filters .field { min-width: 140px; flex: 1 1 140px; }
+select { width: 100%; font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px; }
+.week { display: grid; gap: 8px; }
+.week h3 { font: 400 1.15rem var(--f-display); color: var(--brown); margin: 6px 0 0; }
+.week h3 span { font: 500 .8rem var(--f-body); color: var(--muted); margin-left: 8px; }
+.items { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 8px; }
+.item { text-align: left; display: grid; gap: 4px; padding: 10px 12px; border: 1px solid var(--line); border-left: 4px solid var(--beige); border-radius: 8px; background: var(--surface); font-weight: 500; }
+.item.f-Carrossel { border-left-color: var(--terra); } .item.f-Reels { border-left-color: var(--brown); } .item.f-Live { border-left-color: var(--ok); }
+.item .t { font-weight: 600; overflow-wrap: anywhere; }
+.item .m { display: flex; flex-wrap: wrap; gap: 6px; font-size: .78rem; color: var(--muted); align-items: center; }
+.pill { display: inline-block; border-radius: 999px; padding: 1px 8px; font-size: .72rem; font-weight: 700; background: var(--terra-soft); color: var(--terra); }
+.pill.ok { background: color-mix(in srgb, var(--ok) 15%, transparent); color: var(--ok); }
+.pill.muted { background: var(--line); color: var(--muted); }
+.overlay { position: fixed; inset: 0; background: rgba(30, 20, 15, .45); z-index: 20; display: flex; justify-content: flex-end; }
+.drawer { background: var(--bg); width: min(760px, 100%); height: 100%; overflow: auto; padding: 18px 16px calc(40px + env(safe-area-inset-bottom, 0px)); padding-top: calc(18px + env(safe-area-inset-top, 0px)); display: grid; gap: 14px; align-content: start; }
+.drawer h2 { font: 400 1.5rem/1.2 var(--f-display); color: var(--brown); margin: 0; text-wrap: balance; }
+.grid-f { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+.grid-f input[type="number"] { width: 100%; font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; text-align: right; font-variant-numeric: tabular-nums; }
+.grid-f input[type="date"] { width: 100%; font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+.pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px; max-height: 420px; overflow: auto; font-size: .9rem; }
+.com { border-left: 3px solid var(--terra); padding: 6px 10px; background: var(--surface); border-radius: 0 8px 8px 0; display: grid; gap: 2px; }
+.com b { font-size: .8rem; }
+.links { display: flex; flex-wrap: wrap; gap: 8px; }
+.links a { color: var(--terra); font-weight: 600; font-size: .88rem; overflow-wrap: anywhere; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 2px; }
+.kpi .v { font: 400 1.8rem/1.1 var(--f-display); color: var(--brown); font-variant-numeric: tabular-nums; }
+.kpi .d { font-size: .8rem; color: var(--muted); }
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .88rem; }
+th, td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
+th { font-size: .7rem; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); background: var(--bg); white-space: nowrap; }
+td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+.bar { display: grid; grid-template-columns: minmax(0, 1fr) 64px; gap: 8px; align-items: center; min-width: 120px; }
+.bar .tr { height: 10px; background: var(--terra-soft); border-radius: 5px; overflow: hidden; }
+.bar .tr span { display: block; height: 100%; background: var(--terra); border-radius: 0 5px 5px 0; }
+.bar .v { text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
+.empty { border: 1px dashed var(--line); border-radius: 10px; padding: 20px; color: var(--muted); }
+.ai-out { white-space: pre-wrap; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
 @media (prefers-reduced-motion: no-preference) { button { transition: filter .15s; } button:hover:not(:disabled) { filter: brightness(.96); } }
 </style>
 
@@ -87,7 +131,39 @@ summary { cursor: pointer; font-weight: 600; }
     <p>Cola o cartão da Sarah e recebe o copy pronto: carrossel, Reels ou stories. Segue o guia tirado de todo o Trello, com as correções que ela foi fazendo.</p>
   </header>
 
-  <div class="cols">
+  <nav class="tabs" role="tablist" aria-label="Secções">
+    <button role="tab" id="t-copy" data-tab="copy" aria-selected="true">Copy</button>
+    <button role="tab" id="t-conteudos" data-tab="conteudos" aria-selected="false">Conteúdos</button>
+    <button role="tab" id="t-dados" data-tab="dados" aria-selected="false">Dados</button>
+  </nav>
+
+  <section id="tab-conteudos" class="panel" hidden aria-label="Conteúdos">
+    <div class="filters">
+      <div class="field"><label class="label" for="c-q">Procurar</label><input type="text" id="c-q" placeholder="Tema, palavra do copy…"></div>
+      <div class="field"><label class="label" for="c-mes">Mês</label><select id="c-mes"></select></div>
+      <div class="field"><label class="label" for="c-fmt">Formato</label><select id="c-fmt"></select></div>
+      <div class="field"><label class="label" for="c-est">Estado</label><select id="c-est"></select></div>
+      <div class="field" style="flex:0 0 auto"><span class="label">&nbsp;</span><button id="c-novo">Novo conteúdo</button></div>
+    </div>
+    <p class="note" id="c-info"></p>
+    <div id="c-list"></div>
+  </section>
+
+  <section id="tab-dados" class="panel" hidden aria-label="Dados">
+    <div class="filters">
+      <div class="field"><label class="label" for="d-mes">Período</label><select id="d-mes"></select></div>
+      <div class="field"><label class="label" for="d-met">Ordenar e comparar por</label><select id="d-met"></select></div>
+      <div class="field" style="flex:0 0 auto"><span class="label">&nbsp;</span><button id="d-import-btn">Colar métricas do Instagram</button></div>
+    </div>
+    <div id="d-import" hidden class="panel" style="padding:14px">
+      <p class="note">Cola aqui a exportação do Meta Business Suite ou do Instagram (CSV ou copiado de uma folha de cálculo, com cabeçalho). A app junta cada linha ao conteúdo com a mesma data de publicação. Reconhece colunas como Data, Alcance, Visualizações, Gostos, Comentários, Partilhas, Guardados, Seguidores, Visitas ao perfil, Cliques no link e Mensagens.</p>
+      <textarea id="d-csv" rows="6" placeholder="Data de publicação;Alcance;Gostos;Comentários;Partilhas;Guardados&#10;2026-09-21;1240;56;8;12;31"></textarea>
+      <div class="row"><button class="primary" id="d-csv-go">Juntar métricas</button><span class="note" id="d-csv-note"></span></div>
+    </div>
+    <div id="d-body"></div>
+  </section>
+
+  <div class="cols" id="tab-copy">
     <section class="panel" aria-label="Pedido">
       <div class="field">
         <span class="label">O que queres</span>
@@ -156,7 +232,7 @@ summary { cursor: pointer; font-weight: 600; }
     <section class="panel" aria-label="Copy" aria-live="polite">
       <div class="row" style="justify-content:space-between">
         <span class="label">Copy pronto</span>
-        <button class="copy" id="copyall" hidden>Copiar tudo</button>
+        <span class="row"><button class="copy" id="savecontent" hidden>Guardar nos conteúdos</button><button class="copy" id="copyall" hidden>Copiar tudo</button></span>
       </div>
       <div id="out">
         <div class="out-empty">
@@ -433,6 +509,7 @@ ${ESTRUTURA}`;
       turns = input.concat([{ role: "assistant", content: text }]);
       render(text, true);
       $("copyall").hidden = false;
+      $("savecontent").hidden = false;
       $("refine-box").hidden = false;
       if (truncated) $("status").textContent = "O copy ficou cortado. Pede uma parte de cada vez (só carrossel, ou só stories).";
       saveHist(label, text);
@@ -514,6 +591,12 @@ ${ESTRUTURA}`;
     hist.push({ id: "hist_" + item.ts, ...item }); hist = hist.slice(-30); localSet("cf_hist", hist); renderHist();
   }
 
+  window.CF = {
+    last: () => lastText,
+    brief: () => $("brief").value,
+    insp: () => $("insp").value,
+    fill: (b, i) => { $("brief").value = b || ""; $("insp").value = i || ""; $("brief-tag").textContent = ""; }
+  };
   // ---------- arranque ----------
   renderRules(); renderHist();
   (async () => {
@@ -539,6 +622,270 @@ ${ESTRUTURA}`;
       rules = localGet("cf_regras"); hist = localGet("cf_hist"); renderRules(); renderHist();
       $("rules-note").textContent = "As correções ficam guardadas só neste aparelho.";
     }
+  })();
+})();
+</script>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const MESES = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+  const FORMATOS = ["Carrossel", "Reels", "Só stories", "Live", "Estático", "Por definir"];
+  const ESTADOS = ["Publicado", "Planeado", "Não publicado"];
+  const MET = [["alcance","Alcance"],["visualizacoes","Visualizações"],["gostos","Gostos"],["comentarios","Comentários"],["partilhas","Partilhas"],["guardados","Guardados"],["seguidores","Novos seguidores"],["visitas","Visitas ao perfil"],["cliques","Cliques no link"],["mensagens","Mensagens / DMs"]];
+  const DERIV = [["interacoes","Interações (gostos+coment.+partilhas+guardados)"],["taxa","Taxa de interação (% do alcance)"],["taxaGuard","Taxa de guardados (% do alcance)"]];
+  const fmtD = (s) => { if (!s) return "sem data"; const [y,m,d] = s.split("-").map(Number); return `${d} ${MESES[m-1].slice(0,3)}`; };
+  const fmtN = (v, dec) => v == null || isNaN(v) ? "—" : Number(v).toLocaleString("pt-PT", { maximumFractionDigits: dec ?? 0 });
+  let db = null, sample = null, docs = [], loaded = false, openId = null, aiCtl = null;
+
+  // ---------- tabs ----------
+  const TABS = ["copy", "conteudos", "dados"];
+  function show(t) {
+    TABS.forEach(k => { $("t-" + k).setAttribute("aria-selected", k === t); $("tab-" + k).hidden = k !== t; });
+    try { localStorage.setItem("cf_tab", t); } catch {}
+    if (t === "conteudos") renderList(); if (t === "dados") renderDados();
+  }
+  document.querySelectorAll("nav.tabs button").forEach(b => b.addEventListener("click", () => show(b.dataset.tab)));
+  try { const t = localStorage.getItem("cf_tab"); if (TABS.includes(t)) show(t); } catch {}
+
+  // ---------- derivadas ----------
+  function mets(c) {
+    const m = c.metricas || {};
+    const n = (k) => (m[k] === "" || m[k] == null) ? null : Number(m[k]);
+    const o = {}; MET.forEach(([k]) => o[k] = n(k));
+    const parts = ["gostos","comentarios","partilhas","guardados"].map(k => o[k]);
+    o.interacoes = parts.every(v => v == null) ? null : parts.reduce((a, v) => a + (v || 0), 0);
+    o.taxa = o.alcance ? (o.interacoes || 0) / o.alcance * 100 : null;
+    o.taxaGuard = o.alcance && o.guardados != null ? o.guardados / o.alcance * 100 : null;
+    return o;
+  }
+  const temMet = (c) => MET.some(([k]) => c.metricas && c.metricas[k] !== "" && c.metricas[k] != null);
+  const ehFeed = (c) => c.formato !== "Só stories";
+
+  // ---------- filtros ----------
+  function meses() { return [...new Set(docs.map(c => (c.data || "").slice(0, 7)).filter(Boolean))].sort(); }
+  function fillSelect(el, opts, keep) { const v = el.value; el.innerHTML = opts.map(([v2, l]) => `<option value="${esc(v2)}">${esc(l)}</option>`).join(""); if (keep && [...el.options].some(o => o.value === v)) el.value = v; }
+  function fillFilters() {
+    const ms = meses().map(m => [m, MESES[Number(m.slice(5)) - 1] + " " + m.slice(0, 4)]);
+    fillSelect($("c-mes"), [["", "Todos"], ...ms], true);
+    fillSelect($("c-fmt"), [["", "Todos"], ...FORMATOS.map(f => [f, f])], true);
+    fillSelect($("c-est"), [["", "Todos"], ...ESTADOS.map(f => [f, f])], true);
+    fillSelect($("d-mes"), [["", "Desde o início"], ...ms], true);
+    fillSelect($("d-met"), [...MET, ...DERIV], true);
+    if (!$("d-met").dataset.init) { $("d-met").value = "alcance"; $("d-met").dataset.init = 1; }
+  }
+  ["c-q", "c-mes", "c-fmt", "c-est"].forEach(id => $(id).addEventListener("input", renderList));
+  ["d-mes", "d-met"].forEach(id => $(id).addEventListener("input", renderDados));
+
+  // ---------- lista ----------
+  function renderList() {
+    const box = $("c-list");
+    if (!db) { box.innerHTML = '<div class="empty">Abre esta página no claude.ai com a tua conta para veres os conteúdos.</div>'; return; }
+    if (!loaded) { box.innerHTML = '<div class="empty">A carregar os conteúdos…</div>'; return; }
+    if (!docs.length) { box.innerHTML = '<div class="empty">Ainda não há conteúdos. Carrega em <b>Novo conteúdo</b> ou guarda um copy da aba Copy.</div>'; return; }
+    const q = $("c-q").value.trim().toLowerCase(), mes = $("c-mes").value, fmt = $("c-fmt").value, est = $("c-est").value;
+    const f = docs.filter(c => (!mes || (c.data || "").startsWith(mes)) && (!fmt || c.formato === fmt) && (!est || c.estado === est) &&
+      (!q || [c.titulo, c.tema, c.copy].some(x => (x || "").toLowerCase().includes(q)))).sort((a, b) => (b.data || "").localeCompare(a.data || ""));
+    const pub = docs.filter(c => c.estado === "Publicado" && ehFeed(c)), com = pub.filter(temMet);
+    $("c-info").textContent = `${f.length} de ${docs.length} conteúdos · ${pub.length} publicados no feed · ${com.length} com métricas.`;
+    const weeks = new Map();
+    f.forEach(c => { const k = c.semana || (c.data ? c.data : "sem-data"); if (!weeks.has(k)) weeks.set(k, []); weeks.get(k).push(c); });
+    box.innerHTML = [...weeks.entries()].map(([k, arr]) => {
+      const lab = k === "sem-data" ? "Sem data" : "Semana de " + fmtD(k);
+      const items = arr.sort((a, b) => (a.data || "").localeCompare(b.data || "")).map(c => {
+        const ok = temMet(c);
+        return `<button class="item f-${esc((c.formato || "").replace(/\s/g, "-"))}" data-open="${esc(c.id)}">
+          <span class="m"><span>${esc(c.dia || "")} ${esc(fmtD(c.data))}</span><span class="pill muted">${esc(c.formato || "")}</span>${c.estado === "Publicado" ? (ehFeed(c) ? (ok ? '<span class="pill ok">métricas ✓</span>' : '<span class="pill">sem métricas</span>') : "") : `<span class="pill muted">${esc(c.estado)}</span>`}</span>
+          <span class="t">${esc(c.titulo || c.tema || "Sem título")}</span></button>`;
+      }).join("");
+      return `<div class="week"><h3>${esc(lab)}<span>${arr.length} conteúdos</span></h3><div class="items">${items}</div></div>`;
+    }).join("") || '<div class="empty">Nada corresponde aos filtros.</div>';
+  }
+  $("c-list").addEventListener("click", (e) => { const b = e.target.closest("[data-open]"); if (b) openDrawer(b.dataset.open); });
+
+  // ---------- gaveta ----------
+  function openDrawer(id) {
+    openId = id;
+    const c = docs.find(x => x.id === id); if (!c) return;
+    const m = c.metricas || {};
+    const ov = document.createElement("div"); ov.className = "overlay"; ov.id = "ov";
+    ov.innerHTML = `<div class="drawer" role="dialog" aria-modal="true" aria-label="Conteúdo">
+      <div class="row" style="justify-content:space-between"><span class="label">${esc(c.dia || "")} ${esc(fmtD(c.data))} · ${esc(c.formato || "")}</span><button id="dw-close">Fechar</button></div>
+      <h2>${esc(c.titulo || c.tema || "Sem título")}</h2>
+      <div class="grid-f">
+        <div class="field"><label class="label" for="dw-data">Data</label><input type="date" id="dw-data" value="${esc(c.data || "")}"></div>
+        <div class="field"><label class="label" for="dw-fmt">Formato</label><select id="dw-fmt">${FORMATOS.map(f => `<option${f === c.formato ? " selected" : ""}>${esc(f)}</option>`).join("")}</select></div>
+        <div class="field"><label class="label" for="dw-est">Estado</label><select id="dw-est">${ESTADOS.map(f => `<option${f === c.estado ? " selected" : ""}>${esc(f)}</option>`).join("")}</select></div>
+      </div>
+      <div class="field"><label class="label" for="dw-tit">Título</label><input type="text" id="dw-tit" value="${esc(c.titulo || "")}"></div>
+      ${ehFeed(c) ? `<div class="field"><span class="label">Métricas do post (Instagram)</span><div class="grid-f">${MET.map(([k, l]) => `<div class="field"><label class="label" for="dw-m-${k}">${esc(l)}</label><input type="number" min="0" inputmode="numeric" id="dw-m-${k}" value="${esc(m[k] ?? "")}"></div>`).join("")}</div></div>` : ""}
+      <div class="field"><label class="label" for="dw-obs">Notas (o que achaste, o que a Sarah disse)</label><textarea id="dw-obs" rows="2">${esc(c.notas || "")}</textarea></div>
+      <div class="row"><button class="primary" id="dw-save">Guardar</button><button id="dw-copy">Fazer copy com este cartão</button><span class="note" id="dw-note"></span></div>
+      <div class="field"><label class="label" for="dw-copytxt">Copy final</label><textarea id="dw-copytxt" rows="10">${esc(c.copy || "")}</textarea></div>
+      ${(c.comentarios || []).length ? `<div class="field"><span class="label">Comentários no Trello</span>${c.comentarios.slice().sort((a, b) => a.data.localeCompare(b.data)).map(x => `<div class="com"><b>${esc(x.quem)} · ${esc(fmtD(x.data))}</b><span style="white-space:pre-wrap">${esc(x.texto)}</span></div>`).join("")}</div>` : ""}
+      ${(c.stories || []).length ? `<details><summary>Stories pedidos (${c.stories.length})</summary><ul>${c.stories.map(s => `<li>${esc(s.replace(/\*\*/g, ""))}</li>`).join("")}</ul></details>` : ""}
+      ${c.cartao ? `<details><summary>Cartão da Sarah completo</summary><div class="pre">${esc(c.cartao)}</div></details>` : ""}
+      <div class="links">${c.trello ? `<a href="${esc(c.trello)}" target="_blank" rel="noopener">Abrir no Trello</a>` : ""}${(c.inspiracao || []).map((u, i) => `<a href="${esc(u)}" target="_blank" rel="noopener">Inspiração ${i + 1}</a>`).join("")}${(c.canva || []).map((u, i) => `<a href="${esc(u)}" target="_blank" rel="noopener">Canva ${i + 1}</a>`).join("")}</div>
+      <div class="row"><button id="dw-del" class="ghost">Apagar conteúdo</button><span class="note" id="dw-delnote"></span></div>
+    </div>`;
+    document.body.appendChild(ov);
+    const close = () => { ov.remove(); openId = null; renderList(); if (!$("tab-dados").hidden) renderDados(); };
+    $("dw-close").onclick = close;
+    ov.addEventListener("click", (e) => { if (e.target === ov) close(); });
+    $("dw-save").onclick = async () => {
+      const metricas = {}; MET.forEach(([k]) => { const el = $("dw-m-" + k); if (el && el.value !== "") metricas[k] = Number(el.value); });
+      const d = $("dw-data").value || null;
+      const upd = { titulo: $("dw-tit").value.trim(), data: d, formato: $("dw-fmt").value, estado: $("dw-est").value, copy: $("dw-copytxt").value, notas: $("dw-obs").value, metricas, atualizado: new Date().toISOString() };
+      if (d) { const dt = new Date(d + "T12:00:00"); const wd = (dt.getDay() + 6) % 7; upd.dia = ["Segunda","Terça","Quarta","Quinta","Sexta","Sábado","Domingo"][wd]; const mon = new Date(dt); mon.setDate(dt.getDate() - wd); upd.semana = mon.toISOString().slice(0, 10); }
+      try { await db.collection("conteudos").doc(c.id).update(upd); $("dw-note").textContent = "Guardado."; }
+      catch { $("dw-note").textContent = "Não gravou. Tenta outra vez."; }
+    };
+    $("dw-copy").onclick = () => { if (window.CF) window.CF.fill(c.cartao || c.tema || "", (c.inspiracao || [])[0] || ""); close(); show("copy"); };
+    let armed = false;
+    $("dw-del").onclick = async () => {
+      if (!armed) { armed = true; $("dw-del").textContent = "Confirmar: apagar de vez"; $("dw-delnote").textContent = "Carrega outra vez para apagar."; return; }
+      try { await db.collection("conteudos").doc(c.id).delete(); close(); } catch { $("dw-delnote").textContent = "Não apagou."; }
+    };
+  }
+  $("c-novo").addEventListener("click", async () => {
+    if (!db) return;
+    const id = "n" + Date.now().toString(36);
+    const hoje = new Date().toISOString().slice(0, 10);
+    try { await db.collection("conteudos").doc(id).set({ titulo: "Novo conteúdo", data: hoje, formato: "Por definir", estado: "Planeado", origem: "app", criado: new Date().toISOString() }); openDrawer(id); } catch {}
+  });
+  $("savecontent").addEventListener("click", async (e) => {
+    if (!db || !window.CF) return;
+    const btn = e.currentTarget; const txt = window.CF.last(); if (!txt) return;
+    const brief = window.CF.brief();
+    const linha = (brief.split("\n").find(l => l.trim() && !/^(tema|feed|objetivo)$/i.test(l.trim())) || "Copy").trim().slice(0, 140);
+    const hoje = new Date().toISOString().slice(0, 10);
+    const ex = docs.find(c => c.cartao && brief && c.cartao.trim() === brief.trim());
+    try {
+      if (ex) await db.collection("conteudos").doc(ex.id).update({ copy: txt, atualizado: new Date().toISOString() });
+      else await db.collection("conteudos").doc("n" + Date.now().toString(36)).set({ titulo: linha, data: hoje, formato: "Por definir", estado: "Planeado", copy: txt, cartao: brief, inspiracao: window.CF.insp() ? [window.CF.insp()] : [], origem: "app", criado: new Date().toISOString() });
+      btn.textContent = ex ? "Atualizado no conteúdo" : "Guardado em Conteúdos";
+    } catch { btn.textContent = "Não gravou"; }
+    setTimeout(() => { btn.textContent = "Guardar nos conteúdos"; }, 2200);
+  });
+
+  // ---------- dados ----------
+  function bar(v, max, dec, suf) { const p = max ? Math.max(2, v / max * 100) : 0; return `<div class="bar" title="${esc(fmtN(v, dec) + (suf || ""))}"><div class="tr"><span style="width:${v == null ? 0 : p}%"></span></div><span class="v">${fmtN(v, dec)}${v == null ? "" : (suf || "")}</span></div>`; }
+  const avg = (arr) => { const v = arr.filter(x => x != null && !isNaN(x)); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; };
+  const isPct = (k) => k === "taxa" || k === "taxaGuard";
+  function groupTable(title, rows, key, label) {
+    const dec = isPct(key) ? 1 : 0, suf = isPct(key) ? "%" : "";
+    const max = Math.max(0, ...rows.map(r => r.v || 0));
+    return `<div class="field"><span class="label">${esc(title)}</span><div class="tbl"><table><thead><tr><th>${esc(label)}</th><th class="n">Posts</th><th>Média de ${esc(nomeMet(key).toLowerCase())}</th></tr></thead><tbody>${rows.map(r => `<tr><td>${esc(r.k)}</td><td class="n">${r.n}</td><td>${bar(r.v, max, dec, suf)}</td></tr>`).join("")}</tbody></table></div></div>`;
+  }
+  const nomeMet = (k) => ([...MET, ...DERIV].find(x => x[0] === k) || [k, k])[1].replace(/ \(.*\)/, "");
+  function renderDados() {
+    const body = $("d-body");
+    if (!db) { body.innerHTML = '<div class="empty">Abre esta página no claude.ai com a tua conta.</div>'; return; }
+    if (!loaded) { body.innerHTML = '<div class="empty">A carregar…</div>'; return; }
+    const mes = $("d-mes").value, key = $("d-met").value || "alcance";
+    const pub = docs.filter(c => c.estado === "Publicado" && ehFeed(c) && (!mes || (c.data || "") >= mes));
+    const com = pub.filter(temMet).map(c => ({ c, m: mets(c) }));
+    const kp = (k) => avg(com.map(x => x.m[k]));
+    let html = `<div class="kpis">
+      <div class="kpi"><span class="label">Publicados no feed</span><span class="v">${pub.length}</span><span class="d">${com.length} com métricas</span></div>
+      <div class="kpi"><span class="label">Alcance médio</span><span class="v">${fmtN(kp("alcance"))}</span><span class="d">por post</span></div>
+      <div class="kpi"><span class="label">Guardados médios</span><span class="v">${fmtN(kp("guardados"))}</span><span class="d">${fmtN(kp("taxaGuard"), 1)}% do alcance</span></div>
+      <div class="kpi"><span class="label">Taxa de interação</span><span class="v">${fmtN(kp("taxa"), 1)}%</span><span class="d">gostos, comentários, partilhas e guardados</span></div>
+      <div class="kpi"><span class="label">Novos seguidores</span><span class="v">${fmtN(com.reduce((a, x) => a + (x.m.seguidores || 0), 0))}</span><span class="d">soma dos posts com dados</span></div>
+    </div>`;
+    if (!com.length) {
+      body.innerHTML = html + `<div class="empty"><b>Ainda não há métricas.</b><br>Tens ${pub.length} conteúdos publicados no feed à espera de números. Duas formas de os pôr: abre cada conteúdo em <b>Conteúdos</b> e escreve as métricas do Instagram, ou carrega em <b>Colar métricas do Instagram</b> e cola a exportação do Meta Business Suite. Quando houver dados, aparecem aqui as comparações por formato, dia, mês e o ranking dos posts.</div>`;
+      return;
+    }
+    const by = (fn) => { const g = new Map(); com.forEach(x => { const k = fn(x.c); if (!k) return; if (!g.has(k)) g.set(k, []); g.get(k).push(x.m[key]); }); return [...g.entries()].map(([k, v]) => ({ k, n: v.length, v: avg(v) })); };
+    const dias = ["Segunda","Terça","Quarta","Quinta","Sexta","Sábado","Domingo"];
+    html += `<div class="cols" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))">`
+      + groupTable("Por formato", by(c => c.formato).sort((a, b) => (b.v || 0) - (a.v || 0)), key, "Formato")
+      + groupTable("Por dia da semana", by(c => c.dia).sort((a, b) => dias.indexOf(a.k) - dias.indexOf(b.k)), key, "Dia")
+      + groupTable("Por mês", by(c => (c.data || "").slice(0, 7)).sort((a, b) => a.k.localeCompare(b.k)).map(r => ({ ...r, k: MESES[Number(r.k.slice(5)) - 1] })), key, "Mês")
+      + `</div>`;
+    const dec = isPct(key) ? 1 : 0, suf = isPct(key) ? "%" : "";
+    const rank = com.filter(x => x.m[key] != null).sort((a, b) => b.m[key] - a.m[key]);
+    const max = rank.length ? rank[0].m[key] : 0;
+    html += `<div class="field"><span class="label">Posts ordenados por ${esc(nomeMet(key).toLowerCase())}</span><div class="tbl"><table><thead><tr><th>Data</th><th>Post</th><th>Formato</th><th class="n">Alcance</th><th class="n">Guardados</th><th class="n">Partilhas</th><th>${esc(nomeMet(key))}</th></tr></thead><tbody>${rank.map(x => `<tr><td class="n">${esc(fmtD(x.c.data))}</td><td><button class="ghost" style="padding:0;border:0;text-align:left;font-weight:600" data-open="${esc(x.c.id)}">${esc((x.c.titulo || "").slice(0, 70))}</button></td><td>${esc(x.c.formato)}</td><td class="n">${fmtN(x.m.alcance)}</td><td class="n">${fmtN(x.m.guardados)}</td><td class="n">${fmtN(x.m.partilhas)}</td><td>${bar(x.m[key], max, dec, suf)}</td></tr>`).join("")}</tbody></table></div></div>`;
+    html += `<div class="panel" style="padding:14px"><span class="label">Análise</span><p class="note">O Claude lê os teus números e os temas dos posts e diz-te o que está a funcionar, o que repetir e o que propor à Sarah.</p><div class="row"><button class="primary" id="d-ai" ${sample ? "" : "disabled"}>Analisar os meus conteúdos</button><button class="ghost" id="d-ai-stop" hidden>Parar</button><span class="note" id="d-ai-note">${sample ? "" : "A análise só funciona dentro do claude.ai."}</span></div><div id="d-ai-out"></div></div>`;
+    body.innerHTML = html;
+    if ($("d-ai")) $("d-ai").onclick = analisar;
+    if ($("d-ai-stop")) $("d-ai-stop").onclick = () => aiCtl && aiCtl.abort();
+  }
+  $("d-body").addEventListener("click", (e) => { const b = e.target.closest("[data-open]"); if (b) openDrawer(b.dataset.open); });
+
+  async function analisar() {
+    const mes = $("d-mes").value;
+    const rows = docs.filter(c => c.estado === "Publicado" && ehFeed(c) && temMet(c) && (!mes || (c.data || "") >= mes)).map(c => {
+      const m = mets(c);
+      return [c.data, c.dia, c.formato, (c.titulo || "").slice(0, 90), m.alcance, m.visualizacoes, m.gostos, m.comentarios, m.partilhas, m.guardados, m.seguidores, m.cliques, m.mensagens, m.taxa == null ? "" : m.taxa.toFixed(1)].map(v => v == null ? "" : v).join(" | ");
+    });
+    const prompt = `És analista de conteúdo da Tânia Silveira, estrategista de produto e estrutura para marcas de moda (Método FIBRA). A mentora dela, Sarah Moreira, define o plano no Trello. Analisa os números do Instagram abaixo e responde em português de Portugal, direto, sem floreados, sem inventar números que não estão nos dados.
+
+Estrutura (usa "## " em cada bloco):
+## O que está a funcionar (3 a 5 pontos com números concretos)
+## O que não está a funcionar (2 a 4 pontos)
+## Padrões de tema e formato (que assuntos e formatos trazem mais guardados, partilhas e seguidores)
+## O que repetir nas próximas 4 semanas (5 ideias de conteúdo concretas, no estilo do que funcionou)
+## O que levar à Sarah (3 pontos curtos para a próxima reunião)
+Se houver poucos dados (menos de 10 posts), diz isso no início e trata as conclusões como pistas.
+
+DADOS (data | dia | formato | título | alcance | visualizações | gostos | comentários | partilhas | guardados | novos seguidores | cliques | mensagens | taxa de interação %):
+${rows.join("\n")}`;
+    aiCtl = new AbortController();
+    $("d-ai").disabled = true; $("d-ai-stop").hidden = false; $("d-ai-note").textContent = "";
+    const out = $("d-ai-out"); out.innerHTML = '<p class="thinking">A analisar… (pode levar até um minuto)</p>';
+    const paint = (t) => { out.innerHTML = '<div class="ai-out">' + esc(t).replace(/^## (.*)$/gm, '<strong style="font-family:var(--f-display);font-weight:400;font-size:1.1rem;color:var(--brown)">$1</strong>').replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>") + "</div>"; };
+    try { const { text } = await sample(prompt, { signal: aiCtl.signal, modelTier: "complex", cache: false, onText: ({ text }) => paint(text) }); paint(text); }
+    catch (e) { if (e && e.text) paint(e.text); else out.innerHTML = ""; $("d-ai-note").textContent = e && e.code === "cancelled" ? "Parado." : e && e.code === "not_granted" ? "Não deste autorização ao Claude. Recarrega a página e aceita." : "A análise falhou. Tenta outra vez daqui a pouco."; }
+    finally { const b = $("d-ai"); if (b) b.disabled = false; const s = $("d-ai-stop"); if (s) s.hidden = true; }
+  }
+
+  // ---------- importar CSV ----------
+  $("d-import-btn").addEventListener("click", () => { $("d-import").hidden = !$("d-import").hidden; });
+  const COLS = [["data", /data|date|publica/i], ["alcance", /alcance|reach|contas alcan/i], ["visualizacoes", /visualiza|views|impress|reprodu/i], ["gostos", /gost|like|reac/i], ["comentarios", /coment/i], ["partilhas", /partilh|compartilh|share|envio/i], ["guardados", /guard|salv|save/i], ["seguidores", /seguid|follow/i], ["visitas", /visita|perfil|profile/i], ["cliques", /clique|click|link/i], ["mensagens", /mensag|dm|messag|respost/i]];
+  function parseNum(s) { s = String(s || "").trim().replace(/\s/g, ""); if (!s) return null; if (/^\d{1,3}(\.\d{3})+(,\d+)?$/.test(s)) s = s.replace(/\./g, "").replace(",", "."); else s = s.replace(",", "."); const n = Number(s); return isNaN(n) ? null : n; }
+  function parseDate(s) {
+    s = String(s || "").trim(); let m;
+    if ((m = s.match(/(\d{4})-(\d{2})-(\d{2})/))) return `${m[1]}-${m[2]}-${m[3]}`;
+    if ((m = s.match(/(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})/))) { let y = m[3].length === 2 ? "20" + m[3] : m[3]; let a = Number(m[1]), b = Number(m[2]); if (b > 12) [a, b] = [b, a]; return `${y}-${String(b).padStart(2, "0")}-${String(a).padStart(2, "0")}`; }
+    return null;
+  }
+  $("d-csv-go").addEventListener("click", async () => {
+    const raw = $("d-csv").value.trim(); const note = $("d-csv-note");
+    if (!raw) { note.textContent = "Cola primeiro os dados."; return; }
+    const lines = raw.split(/\r?\n/).filter(l => l.trim());
+    const sep = lines[0].includes("\t") ? "\t" : (lines[0].split(";").length > lines[0].split(",").length ? ";" : ",");
+    const split = (l) => l.split(sep).map(x => x.replace(/^"|"$/g, ""));
+    const head = split(lines[0]);
+    const idx = {}; COLS.forEach(([k, re]) => { const i = head.findIndex((h, j) => re.test(h) && !Object.values(idx).includes(j)); if (i >= 0) idx[k] = i; });
+    if (idx.data == null) { note.textContent = "Não encontrei a coluna da data. O cabeçalho tem de ter uma coluna chamada Data."; return; }
+    let ok = 0, sem = [];
+    for (const l of lines.slice(1)) {
+      const r = split(l); const d = parseDate(r[idx.data]); if (!d) continue;
+      const alvo = docs.filter(c => c.data === d && ehFeed(c)).sort((a, b) => (a.formato === "Por definir") - (b.formato === "Por definir"))[0];
+      if (!alvo) { sem.push(d); continue; }
+      const metricas = { ...(alvo.metricas || {}) };
+      MET.forEach(([k]) => { if (idx[k] != null) { const v = parseNum(r[idx[k]]); if (v != null) metricas[k] = v; } });
+      try { await db.collection("conteudos").doc(alvo.id).update({ metricas, estado: "Publicado", atualizado: new Date().toISOString() }); ok++; } catch {}
+    }
+    note.textContent = `${ok} conteúdos atualizados.` + (sem.length ? ` Sem conteúdo nessa data: ${[...new Set(sem)].slice(0, 8).map(fmtD).join(", ")}${sem.length > 8 ? "…" : ""}.` : "");
+  });
+
+  // ---------- arranque ----------
+  (async () => {
+    if (!window.claude) { renderList(); renderDados(); return; }
+    db = await claude.use("db");
+    sample = await claude.use("sample");
+    if (!db) { renderList(); renderDados(); return; }
+    db.collection("conteudos").onSnapshot((snap) => {
+      docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      loaded = true; fillFilters();
+      if (!$("tab-conteudos").hidden && !openId) renderList();
+      if (!$("tab-dados").hidden && !document.activeElement?.closest?.("#tab-dados textarea")) renderDados();
+    }, () => { loaded = true; renderList(); renderDados(); });
   })();
 })();
 </script>
