@@ -112,6 +112,10 @@ details.bloco > *:not(summary) + * { margin-top: 10px; }
 .bloco-copy { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; background: var(--surface); }
 .bloco-copy[open] > * + * { margin-top: 12px; }
 .bloco-copy.off > :not(summary):not(:nth-child(2)) { display: none; }
+.coms-box { border: 0; padding: 0; background: none; }
+.coms-box > summary { cursor: pointer; }
+.coms-box[open] > summary { margin-bottom: 8px; }
+#coms-feed, #coms-stories { display: grid; gap: 8px; }
 .blk-h { font: 400 1.3rem var(--f-display); color: var(--brown); margin: 0; cursor: pointer; }
 .thumbs { display: flex; flex-wrap: wrap; gap: 8px; }
 .thumb { margin: 0; display: grid; gap: 4px; justify-items: start; }
@@ -616,7 +620,7 @@ ${pergunta}`;
       <summary class="blk-h">Copy · ${nome}</summary>
       <div class="row"><button class="primary" id="gen-${alvo}"></button><button class="copy" id="edit-${alvo}">Editar à mão</button><button class="ghost" id="stop-${alvo}" hidden>Parar</button><span class="note" id="note-${alvo}"></span></div>
       <div id="cp-${alvo}"></div><textarea id="cpt-${alvo}" rows="14" hidden></textarea>
-      <div class="field"><span class="label">Comentários · ${nome}</span><div id="coms-${alvo}"></div>
+      <div class="field"><details class="coms-box" open><summary class="label">Comentários · ${nome} (<span id="nc-${alvo}">0</span>)</summary><div id="coms-${alvo}"></div></details>
         <div class="row"><label class="note" for="autor-${alvo}">Quem comenta</label><select id="autor-${alvo}" style="width:auto"><option>Sarah</option><option>Tânia</option></select></div>
         <textarea id="com-${alvo}" rows="3" placeholder="Cola os comentários da Sarah (podem ser vários) ou faz uma pergunta sobre este copy."></textarea>
         <div class="row"><button class="primary" id="redo-${alvo}">Refazer com os comentários</button><button id="ask-${alvo}">Perguntar (não mexe no copy)</button><button class="ghost" id="add-${alvo}">Só guardar comentário</button></div>
@@ -735,6 +739,7 @@ ${pergunta}`;
       if ($("cpt-" + a).hidden) renderCopyBlocks(d[k], $("cp-" + a));
       const cs = d.comentarios.map((c, i) => [c, i]).filter(([c]) => c.alvo === a);
       $("coms-" + a).innerHTML = cs.map(([c, i]) => `<div class="com${c.tipo === "resposta" ? " resp" : ""}"><b>${esc(c.tipo === "resposta" ? "Resposta do Claude" : c.autor + (c.tipo === "pergunta" ? " · pergunta" : ""))} · ${esc(fmtD((c.data || "").slice(0, 10)))}${c.aplicado && !c.tipo ? " · aplicado" : !c.tipo ? " · por aplicar" : ""}</b><span style="white-space:pre-wrap">${esc(c.texto)}</span><button class="ghost copy" data-delcom="${i}" style="justify-self:start">Apagar</button></div>`).join("") || '<p class="note">Sem comentários.</p>';
+      $("nc-" + a).textContent = cs.length;
       $("coms-" + a).querySelectorAll("[data-delcom]").forEach(b => b.onclick = async () => { d.comentarios.splice(Number(b.dataset.delcom), 1); paintBloco(a); await save(); });
       $("redo-" + a).disabled = busy[a] || so; $("ask-" + a).disabled = busy[a];
       const vs = d[ALVO[a].vers];
