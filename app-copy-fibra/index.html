@@ -651,7 +651,7 @@ ${ESTRUTURA}`;
   const HOJE = new Date().toISOString().slice(0, 10);
   const MESES = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
   const DIAS = ["Segunda","Terça","Quarta","Quinta","Sexta","Sábado","Domingo"];
-  const FORMATOS = ["Reels", "Carrossel", "Só stories", "Estático", "Live", "Por definir"];
+  const FORMATOS = ["Reels", "Carrossel", "Fotos", "Só stories", "Estático", "Live", "Por definir"];
   const EST_CONT = ["Publicado", "Agendado", "Não publicado"];
   const EST_PLANO = ["Por fazer", "Rascunho", "Para a Sarah", "Aprovado", "Em conteúdos"];
   const fmtD = (s) => { if (!s) return "sem data"; const [, m, d] = s.split("-").map(Number); return `${d} ${MESES[m-1].slice(0,3)}`; };
@@ -764,7 +764,9 @@ ${ESTRUTURA}`;
     cand.forEach(c => { const w = ((c.titulo || "") + " " + (c.copy || "").slice(0, 600)).toLowerCase().match(/[a-zà-ú]{5,}/g) || []; c._s = w.filter(x => words.has(x)).length + ((c.comentarios || []).some(x => /aprovad/i.test(x.texto)) ? 3 : 0) + (c.data > "2026-07-20" ? 2 : 0); });
     return cand.sort((a, b) => b._s - a._s).slice(0, 3);
   }
-  function promptDia(d, modo) {
+  let imgsOk2 = false;
+  const fotosDe = () => { const el = $("pd-fotos"); return imgsOk2 && el ? Array.from(el.files || []).slice(0, 10) : []; };
+  function promptDia(d, modo, nFotos) {
     const CF = window.CF || {};
     const regras = (CF.regras ? CF.regras() : []);
     const fmt = d.formato || "Por definir";
@@ -801,6 +803,7 @@ O QUE A SARAH PEDE PARA OS STORIES:
 ${d.stories || "(não colado)"}
 
 ${CF.estrutura || ""}
+- Fotos (carrossel de fotos pessoais): "## Foto 1", "## Foto 2"… uma por foto, pela ordem, cada uma com uma legenda curta (uma ou duas frases, leve, na primeira pessoa, sem lição de negócio), depois "## Legenda". Escreve só sobre o que se vê na foto ou o que a Tânia disse dela; nunca inventes o momento.${nFotos ? `\n- A Tânia juntou ${nFotos} foto(s), pela ordem do carrossel. Faz uma legenda para cada uma.` : d.formato === "Fotos" ? "\n- Não há fotos juntas: usa as descrições que a Tânia deu nos dados reais; se não houver, deixa [descreve a foto] em cada uma." : ""}
 - Depois do bloco do feed (ou só isto, se for dia só de stories): "## Stories · Manhã", "## Stories · Tarde", "## Stories · Noite".`;
   }
 
@@ -854,14 +857,22 @@ ${pergunta}`;
     return { ov, close };
   }
 
-  function openDia(id) {
+  const autorDe = (x) => x.autor || (/sarah/i.test(x.quem || "") ? "Sarah" : /t[âa]nia/i.test(x.quem || "") ? "Tânia" : (x.quem || "Tânia"));
+  function openDia(id, src) {
+    src = src || "plano";
+    const ehC = src === "conteudos";
     openId = id;
-    const d0 = plano.find(x => x.id === id); if (!d0) return;
+    const d0 = (ehC ? conts : plano).find(x => x.id === id); if (!d0) return;
     const d = JSON.parse(JSON.stringify(d0));
+    if (ehC) {
+      d.stories = d.storiesTxt || (Array.isArray(d.stories) ? d.stories.join("\n") : "");
+      d.notas = d.dadosReais || "";
+      d.comentarios = (d.comentarios || []).map(x => ({ ...x, autor: autorDe(x) }));
+    }
     const { ov, close } = overlay(`
-      <div class="row" style="justify-content:space-between"><span class="label">${esc(d.dia)} · ${esc(fmtD(d.data))} · semana de ${esc(semanaLabel(d.semana))}</span><button data-close>Fechar</button></div>
+      <div class="row" style="justify-content:space-between"><span class="label">${ehC ? "Conteúdo · " : ""}${esc(d.dia || "")} · ${esc(fmtD(d.data))}${d.semana ? " · semana de " + esc(semanaLabel(d.semana)) : ""}</span><span class="row">${ehC ? '<button id="pd-back-c">Voltar ao conteúdo</button>' : ""}<button data-close>Fechar</button></span></div>
       <h2 id="pd-h">${esc(d.titulo || "Dia por preencher")}</h2>
-      <div class="row" id="pd-estado"></div>
+      <div class="row" id="pd-estado" ${ehC ? "hidden" : ""}></div>
       <div class="grid-f">
         <div class="field"><label class="label" for="pd-fmt">Formato do feed</label><select id="pd-fmt"><option value="">Escolhe</option>${FORMATOS.map(f => `<option${f === d.formato ? " selected" : ""}>${esc(f)}</option>`).join("")}</select></div>
         <div class="field" style="grid-column:span 2"><label class="label" for="pd-tit">Tema / título</label><input type="text" id="pd-tit" value="${esc(d.titulo || "")}"></div>
@@ -871,7 +882,8 @@ ${pergunta}`;
       <div class="field"><label class="label" for="pd-insp">Inspiração (um link por linha)</label><textarea id="pd-insp" rows="2">${esc((d.inspiracao || []).join("\n"))}</textarea></div>
       <div class="field"><label class="label" for="pd-inspdesc">O que acontece na inspiração</label><textarea id="pd-inspdesc" rows="2" placeholder="A app não abre links do Instagram. Descreve numa frase.">${esc(d.inspDesc || "")}</textarea></div>
       <div class="field"><label class="label" for="pd-stories">O que fazer nos stories (cartão da Sarah)</label><textarea id="pd-stories" rows="6" placeholder="Cola aqui a checklist dos stories: Manhã, Tarde, Noite…">${esc(d.stories || "")}</textarea></div>
-      <div class="field"><label class="label" for="pd-notas">Os teus dados reais (casos, números, nomes)</label><textarea id="pd-notas" rows="2">${esc(d.notas || "")}</textarea></div>
+      <div class="field"><label class="label" for="pd-notas">Os teus dados reais (casos, números, nomes, o que se passa em cada foto)</label><textarea id="pd-notas" rows="2">${esc(d.notas || "")}</textarea></div>
+      ${imgsOk2 ? `<div class="field"><label class="label" for="pd-fotos">Fotos ou prints (opcional)</label><input type="file" id="pd-fotos" accept="image/*" multiple><small class="note">Pela ordem do carrossel. O Claude vê-as para escrever a legenda de cada uma. Não ficam guardadas.</small></div>` : ""}
       <div class="row"><button class="primary" id="pd-gen">${d.copy ? "Refazer copy do zero" : "Fazer copy"}</button><button id="pd-save">Guardar</button><button class="ghost" id="pd-stop" hidden>Parar</button><span class="note" id="pd-note"></span></div>
       <div class="field"><div class="row" style="justify-content:space-between"><span class="label">Copy</span><button class="copy" id="pd-edit">Editar à mão</button></div><div id="pd-copy"></div><textarea id="pd-copytxt" rows="14" hidden></textarea></div>
       <div class="field"><span class="label">Comentários</span><div id="pd-coms"></div>
@@ -892,9 +904,13 @@ ${pergunta}`;
     };
     const save = async (extra) => {
       readForm(); Object.assign(d, extra || {}); d.atualizado = nowIso();
-      if (d.estado === "Por fazer" && (d.cartao || d.copy)) d.estado = "Rascunho";
-      const { id: _, ...body } = d;
-      try { await db.collection("plano").doc(id).set(body); $("pd-note").textContent = "Guardado."; return true; }
+      if (!ehC && d.estado === "Por fazer" && (d.cartao || d.copy)) d.estado = "Rascunho";
+      try {
+        if (ehC) {
+          const coms = (d.comentarios || []).map(x => ({ ...x, quem: x.autor === "Sarah" ? "Sarah Moreira" : x.autor === "Tânia" ? "Tânia Silveira" : x.autor }));
+          await db.collection("conteudos").doc(id).update({ titulo: d.titulo || d0.titulo || "", formato: d.formato || "Por definir", cartao: d.cartao || "", secoes: d.secoes, inspiracao: d.inspiracao, inspDesc: d.inspDesc || "", storiesTxt: d.stories || "", dadosReais: d.notas || "", copy: d.copy || "", versoes: d.versoes || [], comentarios: coms, atualizado: d.atualizado });
+        } else { const { id: _, ...body } = d; await db.collection("plano").doc(id).set(body); }
+        $("pd-note").textContent = "Guardado."; return true; }
       catch { $("pd-note").textContent = "Não gravou. Tenta outra vez."; return false; }
     };
     const paintSec = () => { $("pd-sec").innerHTML = secoesHtml(secoes($("pd-cartao").value)) || '<p class="note">Cola a descrição para a ver por secções.</p>'; };
@@ -931,7 +947,8 @@ ${pergunta}`;
       ctl = new AbortController(); $("pd-gen").disabled = $("pd-redo").disabled = true; $("pd-stop").hidden = false; $("pd-note").textContent = "";
       $("pd-copy").innerHTML = '<p class="thinking">A escrever… (pode levar até um minuto)</p>';
       try {
-        const { text } = await sample(promptDia(d, modo), { signal: ctl.signal, modelTier: "complex", cache: false, onText: ({ text }) => renderCopyBlocks(text, $("pd-copy")) });
+        const fotos = fotosDe(); const op = { signal: ctl.signal, modelTier: "complex", cache: false, onText: ({ text }) => renderCopyBlocks(text, $("pd-copy")) }; if (fotos.length) op.images = fotos;
+        const { text } = await sample(promptDia(d, modo, fotos.length), op);
         d.copy = text;
         if (modo === "refazer") d.comentarios = (d.comentarios || []).map(c => ({ ...c, aplicado: true }));
         renderCopyBlocks(text, $("pd-copy")); $("pd-copytxt").value = text; paintComs();
@@ -950,13 +967,14 @@ ${pergunta}`;
       const t = $("pd-com").value.trim(); if (!t) { $("pd-note").textContent = "Escreve a pergunta na caixa."; return; }
       readForm();
       if (!sample) { $("pd-note").textContent = "O Claude só funciona dentro do claude.ai."; return; }
-      d.comentarios = [...(d.comentarios || []), { autor: $("pd-autor").value, texto: t, data: nowIso(), tipo: "pergunta" }];
+      d.comentarios = [...(d.comentarios || []), { autor: "Tânia", texto: t, data: nowIso(), tipo: "pergunta" }];
       $("pd-com").value = ""; paintComs();
       const resp = document.createElement("div"); resp.className = "com resp"; resp.innerHTML = '<b>Resposta do Claude</b><span class="thinking" style="white-space:pre-wrap">A pensar…</span>';
       $("pd-coms").appendChild(resp); const span = resp.querySelector("span");
       $("pd-ask").disabled = true;
       try {
-        const { text } = await sample(promptPergunta(d, t), { modelTier: "complex", cache: false, onText: ({ text }) => { span.className = ""; span.textContent = text; } });
+        const fotos = fotosDe(); const op = { modelTier: "complex", cache: false, onText: ({ text }) => { span.className = ""; span.textContent = text; } }; if (fotos.length) op.images = fotos;
+        const { text } = await sample(promptPergunta(d, t) + (fotos.length ? `\n\n(A Tânia juntou ${fotos.length} foto(s), pela ordem.)` : ""), op);
         d.comentarios = [...d.comentarios, { autor: "Claude", texto: text.trim(), data: nowIso(), tipo: "resposta" }];
         paintComs(); await save();
       } catch (e) {
@@ -972,7 +990,8 @@ ${pergunta}`;
     };
     $("pd-cartao").addEventListener("change", paintSec);
     $("pd-sec-box").addEventListener("toggle", paintSec);
-    renderCopyBlocks(d.copy, $("pd-copy")); paintComs(); paintEstado();
+    renderCopyBlocks(d.copy, $("pd-copy")); paintComs(); if (!ehC) paintEstado();
+    if (ehC) $("pd-back-c").onclick = () => { close(); openConteudo(id); };
   }
 
   // ---------- CONTEÚDOS ----------
@@ -1011,14 +1030,15 @@ ${pergunta}`;
       </div>
       <div class="field"><span class="label">Métricas (preenche à mão ou importa da Meta na aba Dados)</span>${ehFeed(c) ? metInputs(c, "ig") : ""}${metInputs(c, "st")}${ehFeed(c) ? metInputs(c, "fb") : ""}</div>
       <div class="field"><label class="label" for="cd-notas">As tuas notas sobre este conteúdo</label><textarea id="cd-notas" rows="2">${esc(c.notas || "")}</textarea></div>
-      <div class="row"><button class="primary" id="cd-save">Guardar</button><span class="note" id="cd-note"></span></div>
+      <div class="row"><button class="primary" id="cd-save">Guardar</button><button id="cd-work">${c.copy ? "Retificar copy" : "Fazer copy"}</button><span class="note" id="cd-note"></span></div>
       <h3 style="font:400 1.2rem var(--f-display);color:var(--brown);margin:8px 0 0">Cartão da Sarah</h3>
       ${secoesHtml(secs) || '<p class="note">Sem descrição no Trello.</p>'}
       ${c.textoCanva ? `<div class="field"><span class="label">Texto final no Canva (o que foi publicado)</span><div class="pre">${md(c.textoCanva)}</div></div>` : ""}
       ${c.storiesTxt ? `<div class="field"><span class="label">O que fazer nos stories</span><div class="pre">${md(c.storiesTxt)}</div></div>` : ""}
       ${(c.comentarios || []).length ? `<div class="field"><span class="label">Comentários</span>${c.comentarios.slice().sort((a, b) => (a.data || "").localeCompare(b.data || "")).map(x => `<div class="com"><b>${esc(x.quem)} · ${esc(fmtD(x.data))}</b><span style="white-space:pre-wrap">${esc(x.texto)}</span></div>`).join("")}</div>` : ""}
-      ${c.origem === "plano" && c.copy ? `<div class="field"><span class="label">Copy aprovado</span><div class="pre">${md(c.copy)}</div></div>` : ""}
+      ${c.copy && (c.origem === "plano" || (c.versoes || []).length) ? `<div class="field"><span class="label">Copy</span><div class="pre">${md(c.copy)}</div></div>` : ""}
       <div class="links">${c.trello ? `<a href="${esc(c.trello)}" target="_blank" rel="noopener">Abrir no Trello</a>` : ""}${(c.inspiracao || []).map((u, i) => `<a href="${esc(u)}" target="_blank" rel="noopener">Inspiração ${i + 1}</a>`).join("")}${(c.canva || []).map((u, i) => `<a href="${esc(u)}" target="_blank" rel="noopener">Canva ${i + 1}</a>`).join("")}</div>`);
+    $("cd-work").onclick = () => { close(); openDia(id, "conteudos"); };
     $("cd-save").onclick = async () => {
       const metricas = {};
       ["ig", "st", "fb"].forEach(p => MET[p].campos.forEach(([k]) => { const el = $(`cm-${p}-${k}`); if (el && el.value !== "") { (metricas[p] = metricas[p] || {})[k] = Number(el.value); } }));
@@ -1164,6 +1184,7 @@ ${rows.join("\n")}`;
   (async () => {
     if (!window.claude) { renderAll(); return; }
     db = await claude.use("db"); sample = await claude.use("sample");
+    if (sample) { try { const lim = await sample.limits(); imgsOk2 = !!(lim && lim.images); } catch { imgsOk2 = false; } }
     if (!db) { renderAll(); return; }
     db.collection("conteudos").onSnapshot((snap) => { conts = snap.docs.map(d => ({ id: d.id, ...d.data() })); loaded.c = true; fillFilters(); if (!openId) renderAll(); }, () => { loaded.c = true; renderAll(); });
     db.collection("plano").onSnapshot((snap) => { plano = snap.docs.map(d => ({ id: d.id, ...d.data() })); loaded.p = true; fillFilters(); if (!openId) renderAll(); }, () => { loaded.p = true; renderAll(); });
