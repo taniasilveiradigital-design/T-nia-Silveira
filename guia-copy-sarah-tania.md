@@ -88,3 +88,18 @@ Detalhes que fazem a tua cliente comprar e a que quase ninguém dá atenção. M
 
 **Reescrita da Sarah — "Influenciadora" (gancho e ordem)**
 "Eu sei que achas que precisas de uma influenciadora para crescer, mas vim fazer-te repensar essa ideia." […] o porquê → o que o cliente precisa → quem melhor para mostrar? TU. → como fazer (reunião, viagem, combinações) → fecho.
+
+---
+
+## 6. Plano Estratégico da Sarah (PDF "Plano de Posicionamento")
+
+- **Posicionamento:** estrategista de produto e estrutura para marcas de moda cansadas de andar às cegas. "És muito mais estratégica do que a tua comunicação mostra": o copy tem de mostrar o raciocínio, não só o resultado.
+- **Pilares inegociáveis:** estrutura antes do crescimento · produto antes da comunicação · clareza antes da execução · decisão antes da ação · autoridade com verdade.
+- **Personas, que são três níveis do mesmo problema:**
+  - **Ana** ainda não começou. "Não sabes por onde começar?"
+  - **Maria** já vende, mas sem margem e a depender de desconto. "Já vendes, mas não sabes para onde vais?"
+  - **Sofia** tem uma marca validada que depende dela para tudo. "Cresceste, mas viraste o gargalo?"
+- **Linha editorial:** Diagnóstico do mercado · Estrutura de negócio · Método e raciocínio · Rotina e rituais.
+- **Tríade:** conexão (a Tânia) · autoridade (a marca e a visão) · venda (FIBRA com prova social de processo).
+- **Esteira:** Diagnóstico Estratégico (porta de entrada) → Tafetá 360 (downsell) → Método FIBRA (principal).
+- **Quadro semanal:** "Pano para Mangas", a análise de uma marca real.
