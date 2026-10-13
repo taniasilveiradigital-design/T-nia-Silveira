@@ -85,12 +85,15 @@ nav.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: 
 .filters .field { min-width: 140px; flex: 1 1 140px; }
 select { width: 100%; font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px; }
 .week { display: grid; gap: 8px; }
-details.week { display: block; border: 0; padding: 0; background: none; }
+details.week { margin-bottom: 8px; display: block; border: 0; padding: 0; background: none; }
 details.week > summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 10px; }
 details.week > summary::-webkit-details-marker { display: none; }
 details.week > summary::before { content: ""; width: 8px; height: 8px; border-right: 2px solid var(--terra); border-bottom: 2px solid var(--terra); transform: rotate(-45deg); flex: none; margin-top: 6px; }
 details.week[open] > summary::before { transform: rotate(45deg); margin-top: 2px; }
 details.week[open] > summary { margin-bottom: 8px; }
+details.week > summary { border: 1px solid var(--line); border-radius: 8px; background: var(--terra-soft); padding: 8px 12px; }
+details.week[open] > summary { border-color: var(--terra); }
+details.week > summary h3 { margin: 0; }
 .week h3 { font: 400 1.15rem var(--f-display); color: var(--brown); margin: 6px 0 0; }
 .week h3 span { font: 500 .8rem var(--f-body); color: var(--muted); margin-left: 8px; }
 .items { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 8px; }
@@ -529,7 +532,7 @@ Antes: "Nem sabes quantas vezes já ouvi isto. Fundadora com produto bom…" →
   ["d-mes", "d-met"].forEach(id => $(id).addEventListener("input", renderDados));
 
   const pillEst = (e) => `<span class="pill ${e === "Aprovado" || e === "Em conteúdos" || e === "Publicado" ? "ok" : e === "Por fazer" || e === "Não publicado" ? "muted" : ""}">${esc(e)}</span>`;
-  const semanaLabel = (mon) => { const a = new Date(mon + "T12:00:00"), b = new Date(a); b.setDate(a.getDate() + 5); return `${a.getDate()} a ${b.getDate()} de ${MESES[b.getMonth()]}`; };
+  const semanaLabel = (mon) => { const a = new Date(mon + "T12:00:00"), b = new Date(a); b.setDate(a.getDate() + 5); return a.getMonth() === b.getMonth() ? `${a.getDate()} a ${b.getDate()} de ${MESES[b.getMonth()]}` : `${a.getDate()} de ${MESES[a.getMonth()]} a ${b.getDate()} de ${MESES[b.getMonth()]}`; };
 
   // ---------- PLANO ----------
   let ABERTAS = {}; try { ABERTAS = JSON.parse(localStorage.getItem("cf_semanas") || "{}"); } catch {}
