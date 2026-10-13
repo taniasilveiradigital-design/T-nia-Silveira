@@ -146,6 +146,52 @@ tr:last-child td { border-bottom: 0; }
 .empty { border: 1px dashed var(--line); border-radius: 10px; padding: 20px; color: var(--muted); }
 .ai-out { white-space: pre-wrap; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
 @media (prefers-reduced-motion: no-preference) { button { transition: filter .15s; } button:hover:not(:disabled) { filter: brightness(.96); } }
+.rd-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; align-items: end; }
+.rd-weeks { display: flex; gap: 6px; overflow-x: auto; padding-top: 6px; }
+.rd-wk { flex: none; text-align: left; display: grid; gap: 1px; padding: 8px 12px; min-width: 120px; }
+.rd-wk small { font-weight: 500; font-size: .74rem; color: var(--muted); }
+.rd-wk[aria-pressed="true"] { background: var(--brown); border-color: var(--brown); color: var(--surface); }
+.rd-wk[aria-pressed="true"] small { color: var(--terra-soft); }
+.rd-lead { background: var(--terra); color: #fff; border-radius: 10px; padding: 18px 20px; display: grid; gap: 6px; }
+.rd-lead .label { color: #fff; opacity: .85; }
+.rd-lead h2 { font: 400 1.6rem/1.15 var(--f-display); margin: 0; text-wrap: balance; }
+.rd-lead p { margin: 0; max-width: 70ch; }
+.rd-h { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 10px; }
+.rd-h h2 { font: 400 1.45rem var(--f-display); color: var(--brown); margin: 0; }
+.rd-news { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 10px; }
+.rd-n { border: 1px solid var(--line); border-left: 4px solid var(--beige); border-radius: 8px; padding: 12px 14px; background: var(--surface); display: grid; gap: 6px; min-width: 0; }
+.rd-n.r-Portugal { border-left-color: var(--terra); } .rd-n.r-Mundo { border-left-color: var(--brown); } .rd-n.r-IA { border-left-color: var(--ok); }
+.rd-n h3 { font: 600 1rem/1.3 var(--f-body); margin: 0; }
+.rd-n p { margin: 0; font-size: .9rem; }
+.rd-n .imp { color: var(--terra); font-weight: 600; }
+.rd-n a { font-size: .8rem; color: var(--muted); }
+.rd-a { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); padding: 14px 16px; display: grid; gap: 10px; }
+.rd-a h3 { font: 400 1.3rem/1.2 var(--f-display); color: var(--brown); margin: 0; }
+.rd-a .hook { font: italic 400 1.1rem/1.35 var(--f-display); border-left: 3px solid var(--terra); padding-left: 12px; }
+.rd-a ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.rd-out { border-top: 1px dashed var(--line); padding-top: 10px; display: grid; gap: 8px; }
+details.rd-sec { border: 0; padding: 0; background: none; }
+details.rd-sec > summary { cursor: pointer; list-style: none; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 2px 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+details.rd-sec > summary::-webkit-details-marker { display: none; }
+details.rd-sec > summary > .note { grid-column: 2; }
+details.rd-sec[open] > summary { margin-bottom: 14px; }
+.rd-st { font: 400 1.45rem var(--f-display); color: var(--brown); }
+.rd-arrow { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); display: inline-grid; place-items: center; flex: none; }
+.rd-arrow::before { content: ""; width: 8px; height: 8px; border-right: 2px solid var(--terra); border-bottom: 2px solid var(--terra); transform: rotate(-45deg); margin-right: 2px; transition: transform .15s; }
+details.rd-sec[open] .rd-arrow::before { transform: rotate(45deg); margin: 0 0 3px; }
+@media (prefers-reduced-motion: reduce) { .rd-arrow::before { transition: none; } }
+.rd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 12px; margin-bottom: 8px; }
+.rd-road { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px; margin-bottom: 8px; }
+#rd-dest, #rd-plan { display: grid; gap: 10px; }
+.rd-steps { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.rd-tv { display: grid; gap: 2px; border-left: 3px solid var(--warn); padding: 4px 0 4px 10px; }
+.rd-tv.rd-a { border-left: 4px solid var(--warn); padding: 12px 14px; }
+.tv-p { margin: 0; font-weight: 600; color: var(--warn); }
+.tv-s { margin: 0; color: var(--ok); }
+.tv-s::before { content: "Como resolver: "; font-weight: 700; }
+.rd-ck { display: flex; gap: 8px; align-items: flex-start; cursor: pointer; }
+.rd-ck input { margin-top: 4px; accent-color: var(--terra); }
+.rd-ck input:checked + span { text-decoration: line-through; color: var(--muted); }
 </style>
 
 <div class="wrap">
@@ -156,6 +202,7 @@ tr:last-child td { border-bottom: 0; }
 
   <nav class="tabs" role="tablist" aria-label="Secções">
     <button role="tab" id="t-plano" data-tab="plano" aria-selected="true">Plano</button>
+    <button role="tab" id="t-radar" data-tab="radar" aria-selected="false">Radar da semana</button>
     <button role="tab" id="t-conteudos" data-tab="conteudos" aria-selected="false">Conteúdos</button>
     <button role="tab" id="t-dados" data-tab="dados" aria-selected="false">Dados</button>
   </nav>
@@ -183,6 +230,16 @@ tr:last-child td { border-bottom: 0; }
         <div class="rules" id="rules"></div>
       </details>
     <div id="p-list"></div>
+  </section>
+
+  <section id="tab-radar" class="panel" hidden aria-label="Radar da semana">
+    <div class="rd-top">
+      <div>
+        <span class="label">Do Radar Têxtil · entra uma semana nova às segundas</span>
+        <div class="rd-weeks" id="rd-weeks" role="group" aria-label="Escolher a semana"></div>
+      </div>
+    </div>
+    <div id="rd-body"><div class="empty">A carregar o radar…</div></div>
   </section>
 
   <section id="tab-conteudos" class="panel" hidden aria-label="Conteúdos">
@@ -444,14 +501,14 @@ Antes: "Nem sabes quantas vezes já ouvi isto. Fundadora com produto bom…" →
   let db = null, sample = null, conts = [], plano = [], loaded = { c: false, p: false }, openId = null, aiCtl = null;
 
   // ---------- tabs ----------
-  const TABS = ["plano", "conteudos", "dados"];
+  const TABS = ["plano", "radar", "conteudos", "dados"];
   function show(t) {
     TABS.forEach(k => { $("t-" + k).setAttribute("aria-selected", k === t); $("tab-" + k).hidden = k !== t; });
     try { localStorage.setItem("cf_tab2", t); } catch {}
     renderAll();
   }
   document.querySelectorAll("nav.tabs button").forEach(b => b.addEventListener("click", () => show(b.dataset.tab)));
-  function renderAll() { if (!$("tab-plano").hidden) renderPlano(); if (!$("tab-conteudos").hidden) renderList(); if (!$("tab-dados").hidden) renderDados(); }
+  function renderAll() { if (!$("tab-plano").hidden) renderPlano(); if (!$("tab-radar").hidden && window.renderRadar) window.renderRadar(); if (!$("tab-conteudos").hidden) renderList(); if (!$("tab-dados").hidden) renderDados(); }
 
   function fillSelect(el, opts) { const v = el.value; el.innerHTML = opts.map(([a, b]) => `<option value="${esc(a)}">${esc(b)}</option>`).join(""); if ([...el.options].some(o => o.value === v)) el.value = v; }
   function fillFilters() {
@@ -1097,6 +1154,230 @@ Se as imagens não forem stories, diz isso e não inventes.`, { images: blobs, m
     db.collection("config").onSnapshot((snap) => { const d = snap.docs.find(x => x.id === "estilo"); if (d) { const v = d.data(); estilo = { prints: v.prints || [], texto: v.texto || "" }; } paintEstilo(); }, () => paintEstilo());
     paintEstilo();
     db.collection("plano").onSnapshot((snap) => { plano = snap.docs.map(d => ({ id: d.id, ...d.data() })); loaded.p = true; fillFilters(); if (!openId) renderAll(); }, () => { loaded.p = true; renderAll(); });
+  })();
+})();
+</script>
+
+<script>
+(() => {
+  // ---------- RADAR DA SEMANA (vem do Radar Têxtil, escrito todas as segundas) ----------
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  let rdb = null, rsample = null, weeks = [], cur = null, pinned = false, filt = "Tudo", loaded = false, copies = {}, busy = {};
+
+  function cartaoDe(a) {
+    return `Tema
+${a.titulo}
+
+Objetivo
+${a.objetivo || ""}
+
+Estratégia
+${a.posicao}
+
+Como fazer
+${(a.pontos || []).map(p => "- " + p).join("\n")}
+
+Gancho
+${a.gancho}
+
+Formato
+${a.formato}${a.cta ? "\n\nCTA\n" + a.cta : ""}`;
+  }
+
+  function promptAngulo(w, a) {
+    const CF = window.CF || {};
+    const regras = CF.regras ? CF.regras() : [];
+    return `${CF.guia || ""}${regras.length ? "\n\nCORREÇÕES RECENTES DA SARAH (prioridade máxima):\n" + regras.map(r => "- " + r).join("\n") : ""}
+
+TAREFA: Escreve o copy de um conteúdo de autoridade a partir das notícias desta semana do setor têxtil. Não há cartão da Sarah: o ângulo abaixo faz de cartão. A Tânia quer ser a referência em comunicação de produto têxtil; o conteúdo tem de mostrar a leitura dela, de quem conhece o chão de fábrica, e não um resumo de notícia.
+Regras extra para este tipo de conteúdo:
+- Usa SÓ os factos da notícia de base. Não inventes números, empresas, citações nem casos. Onde precisares de um caso real da Tânia, usa [parêntesis retos].
+- A notícia entra em uma ou duas frases. O resto é a posição da Tânia e o que a dona da marca faz com isto.
+- Indica a fonte na legenda (ex.: "Fonte: Portugal Têxtil").
+Formato: ${a.formato}.
+
+ÂNGULO (faz de cartão):
+${cartaoDe(a)}
+
+NOTÍCIA DE BASE (factos confirmados):
+${a.factos || ""}${a.fonte ? "\nFonte: " + a.fonte : ""}
+
+LEITURA DA SEMANA (contexto):
+${(w.leitura && w.leitura.title) || ""} ${(w.leitura && w.leitura.text) || ""}
+
+${CF.estrutura || ""}`;
+  }
+
+  function renderCopy(text, el) {
+    el.innerHTML = "";
+    const parts = String(text || "").split(/^##\s+/m); const intro = parts.shift().trim(); if (intro) parts.unshift("Copy\n" + intro);
+    parts.forEach(p => {
+      const nl = p.indexOf("\n"); const t = (nl < 0 ? p : p.slice(0, nl)).trim(), body = (nl < 0 ? "" : p.slice(nl + 1)).trim();
+      const sec = document.createElement("div"); sec.className = "section";
+      sec.innerHTML = `<div class="section-head"><h3>${esc(t.replace(/\*\*/g, ""))}</h3>${body ? '<button class="copy">Copiar</button>' : ""}</div><div class="body">${esc(body).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")}</div>`;
+      const b = sec.querySelector("button"); if (b) b.onclick = () => copiar(body.replace(/\*\*/g, ""), b, "Copiar");
+      el.appendChild(sec);
+    });
+  }
+  async function copiar(t, b, lbl) { try { await navigator.clipboard.writeText(t); b.textContent = "Copiado"; } catch { b.textContent = "Seleciona e copia"; } setTimeout(() => b.textContent = lbl, 1500); }
+
+  function week() { return weeks.find(w => w.id === cur) || null; }
+
+  let plan = null, planDone = {}, planFrente = "marcas";
+  try { planFrente = localStorage.getItem("cf_rd_frente") || "marcas"; } catch {}
+  function savePlanDone() {
+    if (!rdb) return;
+    rdb.collection("estrategia").doc("progresso").set({ done: planDone, em: new Date().toISOString() }).catch(() => {
+      const n = $("rd-plan-note"); if (n) n.textContent = "Não ficou guardado. Tenta outra vez.";
+    });
+  }
+  function renderPlan() {
+    const box = $("rd-plan"); if (!box) return;
+    if (!plan) { box.innerHTML = '<div class="empty">A carregar o plano…</div>'; return; }
+    const fr = (plan.frentes || []).find(f => f.id === planFrente) || (plan.frentes || [])[0];
+    const all = (plan.processo || []).flatMap(f => f.passos || []);
+    const feitos = all.filter(p => planDone[p.id]).length;
+    box.innerHTML = `
+      <div class="rd-lead" style="background:var(--brown)"><span class="label">O objetivo</span><h2>${esc(plan.objetivo || "")}</h2></div>
+      <div class="rd-h" style="margin-top:6px"><h2>Onde podes ser referência</h2><div class="seg" id="rd-fr">${(plan.frentes || []).map(f => `<label><input type="radio" name="rd-fr" value="${esc(f.id)}" ${f.id === (fr && fr.id) ? "checked" : ""}><span>${esc(f.nome)}</span></label>`).join("")}</div></div>
+      <div class="rd-grid">${((fr && fr.areas) || []).map(a => `
+        <article class="rd-a">
+          <span class="pill" style="justify-self:start">${esc(fr.nome)} · ${esc(a.nome)}</span>
+          <h3>${esc(a.onde)}</h3>
+          <div class="field"><span class="label">Os passos</span><ol class="rd-steps">${(a.passos || []).map(p => `<li><b>${esc(p.t)}.</b> ${esc(p.d)}</li>`).join("")}</ol></div>
+          <div class="field"><span class="label">A prova de que és referência</span><p style="margin:0;font-weight:600">${esc(a.prova || "")}</p></div>
+          <div class="field"><span class="label">O que pode travar e como resolver</span>${(a.travoes || []).map(t => `<div class="rd-tv"><p class="tv-p">${esc(t.p)}</p><p class="tv-s">${esc(t.s)}</p></div>`).join("")}</div>
+        </article>`).join("")}</div>
+      <div class="rd-h"><h2>O processo</h2><span class="note"><span id="rd-plan-count">${feitos} de ${all.length}</span> passos feitos · marca à medida que avanças <span id="rd-plan-note"></span></span></div>
+      <div class="rd-road">${(plan.processo || []).map(f => `<article class="rd-a"><span class="label">${esc(f.quando)}</span><h3>${esc(f.titulo)}</h3><div style="display:grid;gap:6px">${(f.passos || []).map(p => `<label class="rd-ck"><input type="checkbox" id="pl-${esc(p.id)}" data-pid="${esc(p.id)}" ${planDone[p.id] ? "checked" : ""}><span>${esc(p.t)}</span></label>`).join("")}</div></article>`).join("")}</div>
+      <div class="rd-h"><h2>O que te pode travar a ti</h2></div>
+      <div class="rd-grid">${(plan.travoesGerais || []).map(t => `<div class="rd-tv rd-a"><p class="tv-p">${esc(t.p)}</p><p class="tv-s">${esc(t.s)}</p></div>`).join("")}</div>`;
+    box.querySelectorAll('input[name="rd-fr"]').forEach(r => r.onchange = () => { planFrente = r.value; try { localStorage.setItem("cf_rd_frente", planFrente); } catch {} renderPlan(); });
+    box.querySelectorAll("[data-pid]").forEach(c => c.onchange = () => {
+      if (c.checked) planDone[c.dataset.pid] = true; else delete planDone[c.dataset.pid];
+      const n = all.filter(p => planDone[p.id]).length; $("rd-plan-count").textContent = `${n} de ${all.length}`;
+      savePlanDone();
+    });
+  }
+
+  function renderDestaque(w) {
+    const box = $("rd-dest"); if (!box) return;
+    const d = w.destaque;
+    if (!d) { box.innerHTML = '<div class="empty">Esta semana ainda não tem este bloco. Entra com a próxima semana do radar.</div>'; return; }
+    const lista = (arr) => `<ul>${(arr || []).map(x => `<li>${esc(x)}</li>`).join("")}</ul>`;
+    box.innerHTML = `
+      ${d.foco ? `<div class="rd-lead" style="background:var(--brown)"><span class="label">O foco desta semana</span><h2>${esc(d.foco)}</h2></div>` : ""}
+      <div class="rd-h" style="margin-top:6px"><h2>O que fazer esta semana</h2></div>
+      <div class="rd-grid">${(d.acoes || []).map((a, i) => `<article class="rd-a"><span class="pill" style="justify-self:start">${i + 1} · ${esc(a.quando || "")}</span><h3>${esc(a.titulo)}</h3><p style="margin:0">${esc(a.porque || "")}</p><div class="field"><span class="label">Como</span>${lista(a.como)}</div></article>`).join("")}</div>
+      <div class="rd-h"><h2>Pessoas e entidades a abordar</h2><span class="note">Contactos profissionais públicos, tirados das notícias da semana.</span></div>
+      <div class="rd-grid">${(d.pessoas || []).map(p => `<article class="rd-a"><span class="pill muted" style="justify-self:start">${esc(p.tipo || "")}</span><h3>${esc(p.quem)}</h3><p style="margin:0">${esc(p.porque)}</p><div class="field"><span class="label">Onde e como</span><p style="margin:0">${esc(p.como)}</p></div>${p.mensagem ? `<div class="field"><span class="label">Primeira mensagem</span><p class="hook" style="margin:0">${esc(p.mensagem)}</p><div class="row"><button class="copy" data-msg="${esc(p.mensagem)}">Copiar mensagem</button></div></div>` : ""}</article>`).join("")}</div>
+      <div class="rd-h"><h2>Produtos que podes criar</h2></div>
+      <div class="rd-grid">${(d.produtos || []).map(p => `<article class="rd-a">${p.tipo ? `<span class="pill muted" style="justify-self:start">${esc(p.tipo)}</span>` : ""}<h3>${esc(p.nome)}</h3><p style="margin:0">${esc(p.oque)}</p><div class="field"><span class="label">Para quem</span><p style="margin:0">${esc(p.para)}</p></div><div class="field"><span class="label">Encaixe na tua escada</span><p style="margin:0">${esc(p.encaixe || "")}</p></div><div class="field"><span class="label">Primeiro passo</span><p style="margin:0;font-weight:600">${esc(p.primeiro)}</p></div>${p.risco ? `<p class="note warn" style="margin:0">Atenção: ${esc(p.risco)}</p>` : ""}</article>`).join("")}</div>
+      <div class="rd-h"><h2>Para seres a referência nesta vanguarda</h2></div>
+      <div class="rd-road">${(d.referencia || []).map((r, i) => `<article class="rd-a"><span class="label">${esc(r.quando || "Passo " + (i + 1))}</span><h3>${esc(r.titulo)}</h3>${lista(r.passos)}</article>`).join("")}</div>
+      ${(d.evitar || []).length ? `<div class="rd-a" style="border-left:4px solid var(--warn)"><h3>O que te pode travar</h3>${lista(d.evitar)}</div>` : ""}`;
+    box.querySelectorAll("[data-msg]").forEach(b => b.onclick = () => copiar(b.dataset.msg, b, "Copiar mensagem"));
+  }
+
+  function renderWeeks() {
+    const box = $("rd-weeks"); box.innerHTML = "";
+    weeks.forEach((w, i) => {
+      const b = document.createElement("button");
+      b.className = "rd-wk"; b.setAttribute("aria-pressed", w.id === cur ? "true" : "false");
+      b.innerHTML = `<span>${esc(w.short || w.label || w.id)}</span><small>${i === 0 ? "Semana atual" : esc(w.label || "")}</small>`;
+      b.onclick = () => { cur = w.id; pinned = true; window.renderRadar(); };
+      box.appendChild(b);
+    });
+  }
+
+  window.renderRadar = function () {
+    const body = $("rd-body");
+    if (!rdb) { body.innerHTML = '<div class="empty">Abre esta página no claude.ai com a tua conta.</div>'; return; }
+    if (!loaded) { body.innerHTML = '<div class="empty">A carregar o radar…</div>'; return; }
+    renderWeeks();
+    const w = week();
+    if (!w) { body.innerHTML = '<div class="empty"><b>Ainda não há semanas no radar.</b> A próxima entra na segunda às 6h53, ao mesmo tempo que no Radar Têxtil.</div>'; return; }
+    const news = (w.mundo || []).filter(n => filt === "Tudo" || n.r === filt);
+    body.innerHTML = `
+      <div class="rd-lead"><span class="label">A leitura da semana · ${esc(w.label || "")}</span><h2>${esc((w.leitura && w.leitura.title) || "")}</h2><p>${esc((w.leitura && w.leitura.text) || "")}</p></div>
+      <details class="rd-sec" data-sec="mundo"><summary><span class="rd-arrow" aria-hidden="true"></span><span class="rd-st">O que o mundo anda a falar</span><span class="note">${(w.mundo || []).length} notícias</span></summary>
+      <div class="seg" id="rd-filt" style="margin-bottom:12px">${["Tudo", "Portugal", "Mundo", "IA"].map(x => `<label><input type="radio" name="rd-f" value="${x}" ${x === filt ? "checked" : ""}><span>${x}</span></label>`).join("")}</div>
+      ${filt === "IA" && w.aiNote ? `<p class="note warn">${esc(w.aiNote)}</p>` : ""}
+      <div class="rd-news">${news.map(n => `<article class="rd-n r-${esc(n.r)}"><span class="pill muted" style="justify-self:start">${esc(n.r)}</span><h3>${esc(n.t)}</h3><p>${esc(n.d)}</p><p class="imp">${esc(n.w)}</p>${n.u ? `<a href="${esc(n.u)}" target="_blank" rel="noopener">${esc(n.s || "Fonte")}</a>` : `<span class="note">${esc(n.s || "")}</span>`}</article>`).join("") || '<div class="empty">Nada neste filtro.</div>'}</div>
+      </details>
+      <details class="rd-sec" data-sec="mesa"><summary><span class="rd-arrow" aria-hidden="true"></span><span class="rd-st">O que podes trazer para cima da mesa</span><span class="note">${(w.mesa || []).length} ângulos · cada um já é um cartão</span></summary>
+        <div style="display:grid;gap:12px" id="rd-mesa"></div>
+      </details>
+      <details class="rd-sec" data-sec="dest"><summary><span class="rd-arrow" aria-hidden="true"></span><span class="rd-st">Como me destaco</span><span class="note">o que fazer · quem abordar · que produtos criar · ser referência</span></summary>
+        <div id="rd-dest"></div>
+      </details>
+      <details class="rd-sec" data-sec="plano"><summary><span class="rd-arrow" aria-hidden="true"></span><span class="rd-st">Plano para ser referência</span><span class="note">marcas e indústria · produto, digital, comunicação · processo · travões e soluções</span></summary>
+        <div id="rd-plan"></div>
+      </details>`;
+    body.querySelectorAll('input[name="rd-f"]').forEach(r => r.onchange = () => { filt = r.value; window.renderRadar(); });
+    body.querySelectorAll("details.rd-sec").forEach(dt => {
+      const k = "cf_rd_" + dt.dataset.sec;
+      let st = null; try { st = localStorage.getItem(k); } catch {}
+      dt.open = st === "1";
+      dt.addEventListener("toggle", () => { try { localStorage.setItem(k, dt.open ? "1" : "0"); } catch {} });
+    });
+    renderDestaque(w);
+    renderPlan();
+    const mesa = $("rd-mesa");
+    (w.mesa || []).forEach((a, i) => {
+      const key = w.id + "_" + i;
+      const card = document.createElement("article"); card.className = "rd-a";
+      card.innerHTML = `
+        <div class="row" style="gap:6px">${a.n1 ? '<span class="pill">Prioridade da semana</span>' : ""}<span class="pill muted">${esc(a.formato)}</span>${a.pilar ? `<span class="pill muted">${esc(a.pilar)}</span>` : ""}${a.para ? `<span class="pill muted">Para: ${esc(a.para)}</span>` : ""}</div>
+        <h3>${esc(a.titulo)}</h3>
+        <p class="hook">“${esc(a.gancho)}”</p>
+        <div class="field"><span class="label">A tua posição</span><p style="margin:0">${esc(a.posicao)}</p></div>
+        <div class="field"><span class="label">O que tem de entrar</span><ul>${(a.pontos || []).map(p => `<li>${esc(p)}</li>`).join("")}</ul></div>
+        <p class="note">Base: ${esc(a.fonte || "")}${a.cta ? " · CTA: " + esc(a.cta) : ""}</p>
+        <div class="row"><button class="primary" data-gen>${copies[key] ? "Refazer copy" : "Fazer copy"}</button><button data-card>Copiar como cartão</button><button class="ghost" data-stop hidden>Parar</button><span class="note" data-note></span></div>
+        <div class="rd-out" data-out ${copies[key] ? "" : "hidden"}></div>`;
+      mesa.appendChild(card);
+      const out = card.querySelector("[data-out]"), note = card.querySelector("[data-note]"), gen = card.querySelector("[data-gen]"), stop = card.querySelector("[data-stop]");
+      if (copies[key]) renderCopy(copies[key].copy, out);
+      card.querySelector("[data-card]").onclick = (e) => copiar(cartaoDe(a), e.currentTarget, "Copiar como cartão");
+      let ctl = null;
+      stop.onclick = () => ctl && ctl.abort();
+      gen.disabled = !!busy[key];
+      gen.onclick = async () => {
+        if (!rsample) { note.textContent = "O Claude só funciona dentro do claude.ai."; return; }
+        busy[key] = true; gen.disabled = true; stop.hidden = false; note.textContent = ""; out.hidden = false;
+        out.innerHTML = '<p class="thinking">A escrever… (pode levar até um minuto)</p>';
+        ctl = new AbortController();
+        try {
+          const { text } = await rsample(promptAngulo(w, a), { signal: ctl.signal, modelTier: "complex", cache: false, onText: ({ text }) => renderCopy(text, out) });
+          const doc = { semana: w.id, idx: i, titulo: a.titulo, copy: text.trim(), em: new Date().toISOString() };
+          copies[key] = doc; renderCopy(doc.copy, out);
+          try { await rdb.collection("radarCopy").doc(key).set(doc); note.textContent = "Guardado."; } catch { note.textContent = "O copy não ficou guardado. Copia-o já."; }
+        } catch (e) {
+          if (e && e.text) renderCopy(e.text, out);
+          note.textContent = e && e.code === "cancelled" ? "Parado." : e && e.code === "not_granted" ? "Não deste autorização ao Claude. Recarrega e aceita." : e && e.code === "rate_limited" ? "Muitos pedidos seguidos. Espera um minuto." : "Correu mal. Tenta outra vez.";
+        } finally { busy[key] = false; gen.disabled = false; stop.hidden = true; gen.textContent = copies[key] ? "Refazer copy" : "Fazer copy"; }
+      };
+    });
+  };
+
+  (async () => {
+    if (!window.claude) return;
+    rdb = await claude.use("db"); rsample = await claude.use("sample");
+    if (!rdb) { if (!$("tab-radar").hidden) window.renderRadar(); return; }
+    rdb.collection("radar").orderBy("order", "desc").onSnapshot((snap) => {
+      weeks = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      if (!pinned || !week()) cur = weeks.length ? weeks[0].id : null;
+      loaded = true; if (!$("tab-radar").hidden) window.renderRadar();
+    }, () => { loaded = true; if (!$("tab-radar").hidden) window.renderRadar(); });
+    rdb.collection("estrategia").onSnapshot((snap) => {
+      snap.docs.forEach(d => { if (d.id === "plano") plan = d.data(); if (d.id === "progresso") planDone = { ...((d.data() || {}).done || {}) }; });
+      if (!$("tab-radar").hidden && $("rd-plan")) renderPlan();
+    }, () => {});
+    rdb.collection("radarCopy").onSnapshot((snap) => {
+      snap.docs.forEach(d => { if (!busy[d.id]) copies[d.id] = d.data(); });
+    }, () => {});
   })();
 })();
 </script>
