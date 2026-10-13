@@ -115,6 +115,8 @@ details.week > summary h3 { margin: 0; }
 .com.resp { border-left-color: var(--brown); background: var(--terra-soft); margin-left: 18px; }
 .com b { font-size: .8rem; }
 details.bloco { background: var(--surface); }
+.rev { margin: 0; font-size: .8rem; color: var(--muted); font-weight: 600; }
+.rev:empty { display: none; }
 details.nota-sem { border-left: 4px solid var(--terra); }
 details.bloco > summary { font: 400 1.1rem var(--f-display); color: var(--brown); }
 details.bloco[open] > summary { margin-bottom: 10px; }
@@ -552,7 +554,7 @@ Antes: "Nem sabes quantas vezes já ouvi isto. Fundadora com produto bom…" →
     const atual = [...weeks.keys()].find(w => { const b = new Date(w + "T12:00:00"); b.setDate(b.getDate() + 6); return b.toISOString().slice(0, 10) >= HOJE; }) || [...weeks.keys()][0];
     box.innerHTML = [...weeks.entries()].map(([w, arr]) => `<details class="week" data-wk="p${esc(w)}" ${semAberta("p" + w, w === atual) ? "open" : ""}><summary><h3>${esc(semanaLabel(w))}<span>${arr.filter(d => d.estado === "Aprovado" || d.estado === "Em conteúdos").length}/${arr.length} aprovados</span></h3></summary><div class="items">${arr.map(d => `
       <button class="item f-${esc((d.formato || "").replace(/\s/g, "-"))}" data-plano="${esc(d.id)}">
-        <span class="m"><span>${esc(d.dia)} ${esc(fmtD(d.data))}</span>${d.formato ? `<span class="pill muted">${esc(d.formato)}</span>` : ""}${pillEst(d.estado)}${(d.comentarios || []).length ? `<span>💬 ${d.comentarios.length}</span>` : ""}</span>
+        <span class="m"><span>${esc(d.dia)} ${esc(fmtD(d.data))}</span>${d.formato ? `<span class="pill muted">${esc(d.formato)}</span>` : ""}${pillEst(d.estado)}${(d.comentarios || []).length ? `<span>💬 ${d.comentarios.length}</span>` : ""}${(() => { const r = [d.copyRev, d.copyStoriesRev].filter(x => x && x.em).map(x => x.em).sort().pop(); return r ? `<span title="Última revisão do copy">✎ ${esc(fmtDH(r))}</span>` : ""; })()}</span>
         <span class="t">${esc(d.titulo || (d.cartao ? "Cartão colado" : "Por preencher"))}</span></button>`).join("")}</div></details>`).join("") || '<div class="empty">Nada neste filtro.</div>';
   }
   $("p-list").addEventListener("click", (e) => { const b = e.target.closest("[data-plano]"); if (b) openDia(b.dataset.plano); });
@@ -579,7 +581,9 @@ Antes: "Nem sabes quantas vezes já ouvi isto. Fundadora com produto bom…" →
     return { lista: [...prints, ...fotos], nPrints: prints.length, nFotos: fotos.length };
   }
   const notaImgs = (im) => (im.nPrints ? `\n\nIMAGENS JUNTAS: as primeiras ${im.nPrints} são prints da INSPIRAÇÃO (vê o formato, a estrutura, o texto no ecrã e o ritmo; copia a estrutura, nunca o texto).` : "") + (im.nFotos ? `${im.nPrints ? " As" : "\n\nIMAGENS JUNTAS: as"} ${im.nFotos} seguintes são FOTOS da Tânia para o post, pela ordem.` : "");
-  const ALVO = { feed: { nome: "feed", copy: "copy", vers: "versoes" }, stories: { nome: "stories", copy: "copyStories", vers: "versoesStories" } };
+  const ALVO = { feed: { nome: "feed", copy: "copy", vers: "versoes", rev: "copyRev" }, stories: { nome: "stories", copy: "copyStories", vers: "versoesStories", rev: "copyStoriesRev" } };
+  const fmtDH = (iso) => { try { return new Date(iso).toLocaleString("pt-PT", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }); } catch { return ""; } };
+  const revTxt = (rev, vers, temCopy) => rev && rev.em ? `Última revisão: ${fmtDH(rev.em)}${rev.como ? " · " + rev.como : ""}` : temCopy && (vers || []).length ? `Última revisão: cerca de ${fmtDH(vers[vers.length - 1].em)}` : temCopy ? "Última revisão: sem data (copy anterior a esta função)" : "";
   const alvoDe = (c) => c.alvo || "feed";
   const linhasCom = (arr) => arr.map(c => `- ${c.tipo === "resposta" ? "Claude" : c.autor}${c.tipo === "pergunta" ? " (pergunta)" : ""}: ${c.texto}`).join("\n");
   function promptDia(d, modo, alvo, nFotos) {
@@ -693,6 +697,7 @@ ${pergunta}`;
     return `<details class="bloco-copy" id="blk-${alvo}" open>
       <summary class="blk-h">Copy · ${nome}</summary>
       <div class="row"><button class="primary" id="gen-${alvo}"></button><button class="copy" id="edit-${alvo}">Editar à mão</button><button class="ghost" id="stop-${alvo}" hidden>Parar</button><span class="note" id="note-${alvo}"></span></div>
+      <p class="rev" id="rev-${alvo}"></p>
       <div id="cp-${alvo}"></div><textarea id="cpt-${alvo}" rows="14" hidden></textarea>
       <div class="field"><details class="coms-box" open><summary class="label">Comentários · ${nome} (<span id="nc-${alvo}">0</span>)</summary><div id="coms-${alvo}"></div></details>
         <div class="row"><label class="note" for="autor-${alvo}">Quem comenta</label><select id="autor-${alvo}" style="width:auto"><option>Sarah</option><option>Tânia</option></select></div>
@@ -765,7 +770,7 @@ ${pergunta}`;
       try {
         if (ehC) {
           const coms = d.comentarios.map(x => ({ ...x, quem: quemDe(x.autor) }));
-          await db.collection("conteudos").doc(id).update({ titulo: d.titulo || d0.titulo || "", formato: d.formato || "Por definir", cartao: d.cartao || "", secoes: d.secoes, inspiracao: d.inspiracao, inspDesc: d.inspDesc || "", inspPrints: d.inspPrints || [], storiesTxt: d.stories || "", dadosReais: d.notas || "", copy: d.copy || "", copyStories: d.copyStories || "", versoes: d.versoes, versoesStories: d.versoesStories, comentarios: coms, atualizado: d.atualizado });
+          await db.collection("conteudos").doc(id).update({ titulo: d.titulo || d0.titulo || "", formato: d.formato || "Por definir", cartao: d.cartao || "", secoes: d.secoes, inspiracao: d.inspiracao, inspDesc: d.inspDesc || "", inspPrints: d.inspPrints || [], storiesTxt: d.stories || "", dadosReais: d.notas || "", copy: d.copy || "", copyStories: d.copyStories || "", copyRev: d.copyRev || null, copyStoriesRev: d.copyStoriesRev || null, versoes: d.versoes, versoesStories: d.versoesStories, comentarios: coms, atualizado: d.atualizado });
         } else { const { id: _, ...body } = d; await db.collection("plano").doc(id).set(body); }
         $("pd-note").textContent = "Guardado."; return true;
       } catch { $("pd-note").textContent = "Não gravou. Tenta outra vez."; return false; }
@@ -814,6 +819,7 @@ ${pergunta}`;
       $("pd-all").hidden = !!((d.copy || d.formato === "Só stories") && d.copyStories);
       $("pd-all").textContent = !d.copy && !d.copyStories ? "Fazer feed e stories" : "Fazer o que falta";
       if ($("cpt-" + a).hidden) renderCopyBlocks(d[k], $("cp-" + a));
+      $("rev-" + a).textContent = busy[a] ? "" : revTxt(d[ALVO[a].rev], d[ALVO[a].vers], !!d[k]);
       const cs = d.comentarios.map((c, i) => [c, i]).filter(([c]) => c.alvo === a);
       $("coms-" + a).innerHTML = cs.map(([c, i]) => `<div class="com${c.tipo === "resposta" ? " resp" : ""}"><b>${esc(c.tipo === "resposta" ? "Resposta do Claude" : c.autor + (c.tipo === "pergunta" ? " · pergunta" : ""))} · ${esc(fmtD((c.data || "").slice(0, 10)))}${c.aplicado && !c.tipo ? " · aplicado" : !c.tipo ? " · por aplicar" : ""}</b><span style="white-space:pre-wrap">${esc(c.texto)}</span><button class="ghost copy" data-delcom="${i}" style="justify-self:start">Apagar</button></div>`).join("") || '<p class="note">Sem comentários.</p>';
       $("nc-" + a).textContent = cs.length;
@@ -821,10 +827,10 @@ ${pergunta}`;
       $("redo-" + a).disabled = busy[a] || so; $("ask-" + a).disabled = busy[a];
       const vs = d[ALVO[a].vers];
       $("nv-" + a).textContent = vs.length;
-      $("vl-" + a).innerHTML = vs.slice().reverse().map((v, j) => `<div class="field"><div class="row" style="justify-content:space-between"><span class="label">${esc(new Date(v.em).toLocaleString("pt-PT"))}</span><button class="ghost copy" data-repor="${vs.length - 1 - j}">Repor esta versão</button></div><div class="pre">${md(v.copy)}</div></div>`).join("") || '<p class="note">Ainda não há.</p>';
-      $("vl-" + a).querySelectorAll("[data-repor]").forEach(b => b.onclick = async () => { const v = vs[Number(b.dataset.repor)]; guardaVersao(a); d[ALVO[a].copy] = v.copy; paintBloco(a); await save(); });
+      $("vl-" + a).innerHTML = vs.slice().reverse().map((v, j) => `<div class="field"><div class="row" style="justify-content:space-between"><span class="label">${v.feito ? "Feita a " + esc(fmtDH(v.feito)) + (v.como ? " · " + esc(v.como) : "") + " · " : ""}substituída a ${esc(fmtDH(v.em))}</span><button class="ghost copy" data-repor="${vs.length - 1 - j}">Repor esta versão</button></div><div class="pre">${md(v.copy)}</div></div>`).join("") || '<p class="note">Ainda não há.</p>';
+      $("vl-" + a).querySelectorAll("[data-repor]").forEach(b => b.onclick = async () => { const v = vs[Number(b.dataset.repor)]; guardaVersao(a); d[ALVO[a].copy] = v.copy; d[ALVO[a].rev] = { em: nowIso(), como: "versão anterior reposta" }; paintBloco(a); await save(); });
     };
-    const guardaVersao = (a) => { const k = ALVO[a].copy, vk = ALVO[a].vers; if (d[k]) d[vk] = [...d[vk], { em: nowIso(), copy: d[k] }].slice(-12); };
+    const guardaVersao = (a) => { const k = ALVO[a].copy, vk = ALVO[a].vers, r = d[ALVO[a].rev] || {}; if (d[k]) d[vk] = [...d[vk], { em: nowIso(), copy: d[k], ...(r.em ? { feito: r.em, como: r.como || "" } : {}) }].slice(-12); };
     const busy = { feed: false, stories: false }; const ctl = {};
     const erroMsg = (e) => e && e.code === "cancelled" ? "Parado." : e && e.code === "not_granted" ? "Não deste autorização ao Claude. Recarrega e aceita." : e && e.code === "rate_limited" ? "Muitos pedidos seguidos. Espera um minuto." : "Correu mal. Tenta outra vez.";
     const juntaComentario = (a, tipo) => {
@@ -846,7 +852,7 @@ ${pergunta}`;
         const im = a === "feed" ? await imagensDia(d) : { lista: [], nPrints: 0, nFotos: 0 };
         const op = { signal: ctl[a].signal, modelTier: "complex", cache: false, onText: ({ text }) => renderCopyBlocks(text, $("cp-" + a)) }; if (im.lista.length) op.images = im.lista;
         const { text } = await sample(promptDia(d, modo, a, im.nFotos) + notaImgs(im), op);
-        d[k] = text.trim();
+        d[k] = text.trim(); d[ALVO[a].rev] = { em: nowIso(), como: modo === "refazer" ? "refeito com os comentários" : "feito pelo Claude" };
         d.comentarios = d.comentarios.map(c => c.alvo === a ? { ...c, aplicado: true } : c);
         $("cpt-" + a).value = d[k];
         await save(); return true;
@@ -881,7 +887,7 @@ ${pergunta}`;
       $("edit-" + a).onclick = () => {
         const ta = $("cpt-" + a), k = ALVO[a].copy;
         if (ta.hidden) { ta.value = d[k] || ""; ta.hidden = false; $("cp-" + a).hidden = true; $("edit-" + a).textContent = "Ver formatado"; }
-        else { if (ta.value !== (d[k] || "")) { guardaVersao(a); d[k] = ta.value; } ta.hidden = true; $("cp-" + a).hidden = false; $("edit-" + a).textContent = "Editar à mão"; paintBloco(a); save(); }
+        else { if (ta.value !== (d[k] || "")) { guardaVersao(a); d[k] = ta.value; d[ALVO[a].rev] = { em: nowIso(), como: "editado à mão" }; } ta.hidden = true; $("cp-" + a).hidden = false; $("edit-" + a).textContent = "Editar à mão"; paintBloco(a); save(); }
       };
     });
     $("pd-all").onclick = async () => {
@@ -908,7 +914,7 @@ ${pergunta}`;
       if (!d.copy && !d.copyStories) { $("pd-note").textContent = "Falta o copy."; return; }
       const cid = "p" + d.data;
       const doc = { data: d.data, dia: d.dia, semana: d.semana, titulo: d.titulo || "Sem título", formato: d.formato || "Por definir", estado: d.data <= HOJE ? "Publicado" : "Agendado",
-        cartao: d.cartao, secoes: d.secoes, copy: d.copy || "", copyStories: d.copyStories || "", versoes: d.versoes, versoesStories: d.versoesStories, stories: [], storiesTxt: d.stories, inspiracao: d.inspiracao, inspDesc: d.inspDesc || "", inspPrints: d.inspPrints || [], canva: [], dadosReais: d.notas || "",
+        cartao: d.cartao, secoes: d.secoes, copy: d.copy || "", copyStories: d.copyStories || "", copyRev: d.copyRev || null, copyStoriesRev: d.copyStoriesRev || null, versoes: d.versoes, versoesStories: d.versoesStories, stories: [], storiesTxt: d.stories, inspiracao: d.inspiracao, inspDesc: d.inspDesc || "", inspPrints: d.inspPrints || [], canva: [], dadosReais: d.notas || "",
         comentarios: d.comentarios.map(c => ({ ...c, quem: c.tipo === "resposta" ? "Claude" : quemDe(c.autor), data: (c.data || "").slice(0, 10) })),
         trello: d.trello || "", origem: "plano", planoId: id, metricas: {}, criado: nowIso() };
       try { await db.collection("conteudos").doc(cid).set(doc); d.estado = "Em conteúdos"; d.conteudoId = cid; await save(); paintEstado(); $("pd-note").textContent = "Passou para Conteúdos."; }
@@ -963,8 +969,8 @@ ${pergunta}`;
       ${(c.inspPrints || []).length ? `<div class="field"><span class="label">Prints da inspiração</span><div class="thumbs">${c.inspPrints.map((pid, i) => `<figure class="thumb"><a href="/_blob/${esc(pid)}" target="_blank" rel="noopener"><img src="/_blob/${esc(pid)}" alt="Print ${i + 1}" loading="lazy"></a></figure>`).join("")}</div></div>` : ""}
       ${c.storiesTxt ? `<div class="field"><span class="label">O que fazer nos stories</span><div class="pre">${md(c.storiesTxt)}</div></div>` : ""}
       ${(c.comentarios || []).length ? `<div class="field"><span class="label">Comentários</span>${c.comentarios.slice().sort((a, b) => (a.data || "").localeCompare(b.data || "")).map(x => `<div class="com"><b>${esc(x.quem)} · ${esc(fmtD(x.data))}</b><span style="white-space:pre-wrap">${esc(x.texto)}</span></div>`).join("")}</div>` : ""}
-      ${c.copy && (c.origem === "plano" || (c.versoes || []).length) ? `<div class="field"><span class="label">Copy · feed</span><div class="pre">${md(c.copy)}</div></div>` : ""}
-      ${c.copyStories ? `<div class="field"><span class="label">Copy · stories</span><div class="pre">${md(c.copyStories)}</div></div>` : ""}
+      ${c.copy && (c.origem === "plano" || (c.versoes || []).length) ? `<div class="field"><span class="label">Copy · feed</span><p class="rev">${esc(revTxt(c.copyRev, c.versoes, !!c.copy))}</p><div class="pre">${md(c.copy)}</div></div>` : ""}
+      ${c.copyStories ? `<div class="field"><span class="label">Copy · stories</span><p class="rev">${esc(revTxt(c.copyStoriesRev, c.versoesStories, !!c.copyStories))}</p><div class="pre">${md(c.copyStories)}</div></div>` : ""}
       <div class="links">${c.trello ? `<a href="${esc(c.trello)}" target="_blank" rel="noopener">Abrir no Trello</a>` : ""}${(c.inspiracao || []).map((u, i) => `<a href="${esc(u)}" target="_blank" rel="noopener">Inspiração ${i + 1}</a>`).join("")}${(c.canva || []).map((u, i) => `<a href="${esc(u)}" target="_blank" rel="noopener">Canva ${i + 1}</a>`).join("")}</div>`);
     $("cd-work").onclick = () => { close(); openDia(id, "conteudos"); };
     $("cd-save").onclick = async () => {
