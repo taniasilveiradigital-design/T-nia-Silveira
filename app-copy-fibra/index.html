@@ -115,6 +115,7 @@ details.week > summary h3 { margin: 0; }
 .com.resp { border-left-color: var(--brown); background: var(--terra-soft); margin-left: 18px; }
 .com b { font-size: .8rem; }
 details.bloco { background: var(--surface); }
+details.nota-sem { border-left: 4px solid var(--terra); }
 details.bloco > summary { font: 400 1.1rem var(--f-display); color: var(--brown); }
 details.bloco[open] > summary { margin-bottom: 10px; }
 details.bloco > *:not(summary) + * { margin-top: 10px; }
@@ -620,7 +621,7 @@ ${ex.map(c => `--- ${c.formato} · ${c.titulo}\n${(c.copy || "").slice(0, 1500)}
 
 ` : ""}${tarefa}${dados}
 
-DIA: ${d.dia}, ${fmtD(d.data)}
+DIA: ${d.dia}, ${fmtD(d.data)}${d.semanaNota ? "\nNOTA DA SARAH PARA ESTA SEMANA (fase e orientação; cumpre-a):\n" + d.semanaNota : ""}
 CARTÃO DA SARAH (descrição):
 ${d.cartao || "(vazio)"}
 ${(d.inspiracao || []).length ? "\nINSPIRAÇÃO (não consegues abrir o link; usa o tipo de link e os prints, se houver): " + d.inspiracao.join(" ") : ""}${d.inspDesc ? "\nO QUE ACONTECE NA INSPIRAÇÃO: " + d.inspDesc : ""}
@@ -644,7 +645,7 @@ Como responder:
 - Se não souberes, diz que não sabes. Não inventes.
 - Curto: até 200 palavras, a não ser que a pergunta peça mais.
 
-DIA: ${d.dia}, ${fmtD(d.data)} · Formato: ${d.formato || "por definir"}
+DIA: ${d.dia}, ${fmtD(d.data)} · Formato: ${d.formato || "por definir"}${d.semanaNota ? "\nNOTA DA SARAH PARA ESTA SEMANA:\n" + d.semanaNota : ""}
 CARTÃO DA SARAH:
 ${d.cartao || "(vazio)"}
 
@@ -728,6 +729,8 @@ ${pergunta}`;
         ${imgsOk2 ? `<div class="field"><label class="label" for="pd-fotos">Fotos do post (opcional)</label><input type="file" id="pd-fotos" accept="image/*" multiple><small class="note">Pela ordem do carrossel. O Claude vê-as para escrever a legenda de cada uma. Não ficam guardadas.</small></div>` : ""}
       </details>
       <div class="row"><button class="primary" id="pd-all">Fazer feed e stories</button><button id="pd-save">Guardar</button><span class="note" id="pd-note"></span></div>
+      ${d.semanaNota ? `<details class="bloco nota-sem" open><summary>Nota da Sarah para esta semana</summary><div class="pre">${md(d.semanaNota)}</div></details>` : ""}
+      ${d.cartaoTrello && d.cartaoTrello !== d.cartao ? `<p class="note warn">A Sarah mudou este cartão no Trello depois de o teres editado aqui. <button class="copy" id="pd-usa-trello">Usar a versão do Trello</button></p>` : ""}
       <details class="bloco" ${d.cartao ? "" : "open"}><summary>Cartão da Sarah · feed</summary>
         <div id="pd-sec"></div>
         <div class="row"><button class="copy" id="pd-edit-cartao">Editar descrição</button></div>
@@ -774,6 +777,7 @@ ${pergunta}`;
     $("pd-edit-cartao").onclick = toggleEdit($("pd-edit-cartao"), $("pd-cartao"), $("pd-sec"), paintSec);
     $("pd-edit-stories").onclick = toggleEdit($("pd-edit-stories"), $("pd-stories"), $("pd-stories-view"), paintStoriesView);
     if (!d.cartao) $("pd-edit-cartao").click();
+    if ($("pd-usa-trello")) $("pd-usa-trello").onclick = async () => { $("pd-cartao").value = d.cartaoTrello; d.cartaoTrello = ""; paintSec(); await save(); $("pd-usa-trello").parentElement.remove(); };
     if (!d.stories) $("pd-edit-stories").click();
 
     // ---- prints da inspiração ----
