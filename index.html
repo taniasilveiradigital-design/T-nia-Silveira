@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portal FIBRA · Tânia Silveira</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Raleway:wght@400;500;600;700&family=Dr+Sugiyama&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="portal">
+
+<!-- ENTRAR / ATIVAR -->
+<section id="auth" class="auth" hidden>
+  <div class="auth-card">
+    <div class="eyebrow">Universo FIBRA</div>
+    <h1>Portal FIBRA</h1>
+    <div class="sig">Tânia Silveira</div>
+
+    <div class="switch" role="tablist">
+      <button type="button" id="swEntrar" role="tab" aria-selected="true">Já tenho conta</button>
+      <button type="button" id="swAtivar" role="tab" aria-selected="false">Tenho um código</button>
+    </div>
+
+    <form id="entrarForm" novalidate>
+      <label class="f" for="eEmail">Email</label>
+      <input type="email" id="eEmail" autocomplete="email" required>
+      <label class="f" for="ePass">Password</label>
+      <input type="password" id="ePass" autocomplete="current-password" required>
+      <div style="margin-top:18px"><button class="btn" type="submit">Entrar</button></div>
+      <button type="button" class="linkbtn" id="forgotBtn">Esqueci-me da password</button>
+      <div class="msg" id="entrarMsg" role="status"></div>
+    </form>
+
+    <form id="ativarForm" hidden novalidate>
+      <p class="small muted" id="ativarIntro">Usa o email da tua compra. Escolhe uma password para voltares a entrar quando quiseres.</p>
+      <label class="f" for="aEmail">Email</label>
+      <input type="email" id="aEmail" autocomplete="email" required>
+      <label class="f" for="aPass">Escolhe uma password (mínimo 8 caracteres)</label>
+      <input type="password" id="aPass" autocomplete="new-password" minlength="8" required>
+      <label class="f" for="aCod">Código</label>
+      <input type="text" id="aCod" autocomplete="off" required>
+      <div style="margin-top:18px"><button class="btn" type="submit">Criar conta e desbloquear</button></div>
+      <div class="msg" id="ativarMsg" role="status"></div>
+    </form>
+
+    <form id="novaPassForm" hidden novalidate>
+      <p class="small">Escolhe a tua nova password (mínimo 8 caracteres).</p>
+      <label class="f" for="nPass">Nova password</label>
+      <input type="password" id="nPass" autocomplete="new-password" minlength="8" required>
+      <div style="margin-top:18px"><button class="btn" type="submit">Guardar password</button></div>
+      <div class="msg" id="novaPassMsg" role="status"></div>
+    </form>
+
+    <p class="legal">O acesso é pessoal e dura 6 meses a partir da compra. Os contactos são para uso da tua marca e não podem ser partilhados.</p>
+  </div>
+</section>
+
+<!-- PORTAL -->
+<div id="app" class="shell" hidden>
+  <header class="topbar">
+    <button class="burger" id="burger" type="button" aria-label="Abrir menu">☰</button>
+    <a class="logo" href="./"><span>FIBRA</span><small>Tânia Silveira</small></a>
+    <label class="search"><span class="sr">Pesquisar</span><input type="search" id="q" placeholder="Pesquisar"><span class="lupa" aria-hidden="true">⌕</span></label>
+  </header>
+  <div class="body">
+    <aside class="side" id="side">
+      <nav id="tabs" role="tablist">
+        <button class="tab side-item" role="tab" data-tab="areas" aria-selected="true"><i aria-hidden="true">⌂</i>Conteúdos</button>
+        <button class="tab side-item admin" role="tab" data-tab="acessos" aria-selected="false" hidden><i aria-hidden="true">☰</i>Acessos</button>
+        <button class="side-item" id="ativarOutro" type="button"><i aria-hidden="true">＋</i>Tenho outro código</button>
+        <button class="side-item" id="logoutBtn" type="button"><i aria-hidden="true">↩</i>Sair</button>
+      </nav>
+      <div class="side-who"><span class="eyebrow">A tua conta</span><span id="whoEmail"></span></div>
+    </aside>
+    <main class="content" id="view"></main>
+  </div>
+</div>
+
+<div id="loading" class="auth"><p class="muted">A abrir…</p></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<script src="portal.js"></script>
+</body>
+</html>
