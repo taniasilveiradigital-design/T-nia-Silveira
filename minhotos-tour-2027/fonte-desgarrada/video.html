@@ -1,0 +1,177 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}</style></head>
+<body><canvas id="c"></canvas>
+<script>
+const W = 1080, H = 1920;
+const c = document.getElementById('c'); c.width = W; c.height = H;
+const x = c.getContext('2d');
+const RED = '#d62027', CREAM = '#fff4ea', FONT = '"Inter Display", Inter, sans-serif';
+const LETRA = {
+  ele1: ['Já fiz dezoito, menina,', 'já posso entrar no baile:', 'quem quiser que me acompanhe,', 'quem não quiser, que se cale!'],
+  ela1: ['Dezoito anos, rapaz,', 'não te ponhas com vaidade,', 'que eu já danço a desgarrada', 'desde antes da maioridade!'],
+  ele2: ['Ó menina, não me tentes,', 'que eu sou diabo do Minho:', 'trago os cornos, trago o rabo', 'e a festa pelo caminho!'],
+  ela2: ['Se és diabo, eu sou diaba,', 'e de nós dois a pior:', 'tu tens cornos de enfeite,', 'eu tenho o rabo maior!'],
+  refrao1: ['Viramos? Viramos, sim!', 'Dezoito anos a virar,', 'Tour 18+ na estrada,', 'ninguém fica sem dançar!'],
+  refrao2: ['Viramos? Viramos, sim!', 'Põe o lenço, aperta o laço,', 'que em vinte e sete os diabos', 'vão virar de braço em braço!'],
+};
+const SEC = [['intro', 0], ['ele1', 8], ['ela1', 16], ['ele2', 24], ['ela2', 32], ['refrao1', 40], ['refrao2', 48], ['fim', 56]];
+let ELE, ELA, LOGO;
+const img = s => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = s; });
+const clamp = (v, a = 0, z = 1) => Math.max(a, Math.min(z, v));
+const prog = (t, a, z) => clamp((t - a) / (z - a));
+const eOut = v => 1 - Math.pow(1 - v, 3);
+const eBack = v => { const c1 = 1.9, c3 = c1 + 1; return 1 + c3 * Math.pow(v - 1, 3) + c1 * Math.pow(v - 1, 2); };
+const rnd = n => { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
+
+function section(t) { let s = SEC[0]; for (const q of SEC) if (t >= q[1]) s = q; return { nome: s[0], lt: t - s[1] }; }
+// pulso de tempo: 3 tempos por compasso de 1 s
+function hop(t, phase = 0) { const p = ((t * 3 + phase) % 1 + 1) % 1; return Math.sin(Math.PI * p); }
+function land(t, phase = 0) { const p = ((t * 3 + phase) % 1 + 1) % 1; return Math.exp(-p * 9); }
+
+function radial(cx, cy, r, a) {
+  const g = x.createRadialGradient(cx, cy, 0, cx, cy, r);
+  g.addColorStop(0, RED); g.addColorStop(1, 'rgba(0,0,0,0)');
+  x.save(); x.globalAlpha = a; x.fillStyle = g; x.fillRect(0, 0, W, H); x.restore();
+}
+function beams(t, a) {
+  x.save(); x.globalCompositeOperation = 'lighter'; x.globalAlpha = a;
+  for (let i = 0; i < 4; i++) {
+    const ox = W * (.12 + i * .25), ang = Math.sin(t * 1.4 + i * 1.9) * .5, len = H * 1.2, wd = 170;
+    x.save(); x.translate(ox, -30); x.rotate(ang);
+    const g = x.createLinearGradient(0, 0, 0, len); g.addColorStop(0, 'rgba(214,32,39,.5)'); g.addColorStop(1, 'rgba(214,32,39,0)');
+    x.fillStyle = g; x.beginPath(); x.moveTo(-8, 0); x.lineTo(8, 0); x.lineTo(wd, len); x.lineTo(-wd, len); x.closePath(); x.fill(); x.restore();
+  }
+  x.restore();
+}
+function confetti(t, a) {
+  x.save(); x.globalAlpha = a;
+  for (let i = 0; i < 70; i++) {
+    const sp = 120 + rnd(i) * 220, px = rnd(i * 3) * W + Math.sin(t * 2 + i) * 30;
+    const py = ((rnd(i * 7) * H + t * sp) % (H + 40)) - 20;
+    x.save(); x.translate(px, py); x.rotate(t * 3 + i);
+    x.fillStyle = i % 3 === 0 ? CREAM : (i % 3 === 1 ? RED : '#ff5a5f');
+    x.fillRect(-7, -3.5, 14, 7); x.restore();
+  }
+  x.restore();
+}
+// desenha mascote com pés em (fx, fy), altura h
+function mascot(im, fx, fy, h, { rot = 0, sq = 0, alpha = 1, flip = false, dim = 0 } = {}) {
+  const w = h * im.width / im.height;
+  x.save(); x.globalAlpha = clamp(alpha); x.translate(fx, fy); x.rotate(rot);
+  x.scale((flip ? -1 : 1) * (1 + sq * .06), 1 - sq * .06);
+  if (dim > 0) x.filter = `brightness(${1 - dim})`;
+  x.drawImage(im, -w / 2, -h, w, h); x.filter = 'none';
+  x.restore();
+}
+function fitFont(text, weight, size, maxW) { x.font = `${weight} ${size}px ${FONT}`; const w = x.measureText(text).width; return w > maxW ? size * maxW / w : size; }
+function text(t, cx, cy, size, { weight = 900, color = '#fff', alpha = 1, ls = 0, maxW = W * .88 } = {}) {
+  const s = fitFont(t, weight, size, maxW);
+  x.save(); x.globalAlpha = clamp(alpha); x.font = `${weight} ${s}px ${FONT}`; x.fillStyle = color;
+  x.textAlign = 'center'; x.textBaseline = 'middle'; if ('letterSpacing' in x) x.letterSpacing = ls + 'px';
+  x.fillText(t, cx, cy); x.restore();
+}
+function pill(label, cx, cy, fill, color, alpha = 1) {
+  x.save(); x.globalAlpha = clamp(alpha); x.font = `900 40px ${FONT}`; if ('letterSpacing' in x) x.letterSpacing = '6px';
+  const w = x.measureText(label).width + 70;
+  x.fillStyle = fill; x.beginPath(); x.roundRect(cx - w / 2, cy - 34, w, 68, 34); x.fill();
+  x.fillStyle = color; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(label, cx + 3, cy + 2); x.restore();
+}
+// karaoke: linha atual com palavras a acender ao longo de 1.6 s
+function karaoke(lines, lt, baseY, accent) {
+  const li = Math.min(3, Math.floor(lt / 2)), into = lt - li * 2;
+  for (let k = 0; k <= li; k++) {
+    const line = lines[k], cur = k === li;
+    const yy = cur ? baseY : baseY - 110 - (li - k - 1) * 64;
+    const size = cur ? 74 : 44;
+    const s = fitFont(line, 900, size, W * .9);
+    x.save(); x.font = `900 ${s}px ${FONT}`; x.textBaseline = 'middle';
+    const words = line.split(' '); const total = x.measureText(line).width; let px = W / 2 - total / 2;
+    const chars = line.length; let acc = 0;
+    const rise = cur ? eOut(prog(into, 0, .2)) : 1;
+    for (const wd of words) {
+      const ww = x.measureText(wd + ' ').width;
+      const on = cur ? prog(into, (acc / chars) * 1.5, (acc / chars) * 1.5 + .12) : 1;
+      x.globalAlpha = cur ? rise : Math.max(0, .45 - (li - k) * .12);
+      x.fillStyle = cur ? (on > .5 ? '#fff' : 'rgba(255,255,255,.35)') : CREAM;
+      if (cur && on > .5) { x.shadowColor = accent; x.shadowBlur = 24; } else x.shadowBlur = 0;
+      x.fillText(wd, px, yy + (1 - rise) * 30 - (cur ? on * (1 - prog(into, (acc / chars) * 1.5 + .12, (acc / chars) * 1.5 + .35)) * 10 : 0));
+      px += ww; acc += wd.length + 1;
+    }
+    x.restore();
+  }
+}
+
+function frame(t) {
+  x.setTransform(1, 0, 0, 1, 0, 0); x.globalAlpha = 1; x.globalCompositeOperation = 'source-over';
+  x.fillStyle = '#000'; x.fillRect(0, 0, W, H);
+  const { nome, lt } = section(t);
+  const beatGlow = land(t) * (t % 1 < 1 / 3 ? 1 : .5);
+  const groundY = 1290;
+  // fundo
+  radial(W / 2, 760, 900, .22 + beatGlow * .18);
+  if (nome.startsWith('refrao') || nome === 'fim') { beams(t, .5); }
+  // chão
+  x.save(); const gg = x.createLinearGradient(0, groundY - 20, 0, H); gg.addColorStop(0, 'rgba(120,10,15,.55)'); gg.addColorStop(.3, 'rgba(0,0,0,0)');
+  x.fillStyle = gg; x.fillRect(0, groundY - 20, W, H); x.restore();
+
+  // logótipo topo
+  const lh = 120, lw = lh * LOGO.width / LOGO.height;
+  x.save(); x.globalAlpha = nome === 'intro' ? prog(t, .2, .8) : .9;
+  x.drawImage(LOGO, W / 2 - lw / 2, 70 + land(t) * 4, lw, lh); x.restore();
+
+  let shake = [0, 0];
+  if (nome === 'intro') {
+    text('DESGARRADA', W / 2, 330, 120, { alpha: prog(lt, .4, .9), ls: 6 });
+    text('DOS DIABOS', W / 2, 455, 120, { color: RED, alpha: prog(lt, .9, 1.4), ls: 6 });
+    text('um vira para a Tour 18+ · 2027', W / 2, 560, 42, { weight: 600, color: CREAM, alpha: prog(lt, 1.5, 2) });
+    const inE = eBack(prog(lt, 2.5, 3.3)), inA = eBack(prog(lt, 3.3, 4.1));
+    mascot(ELE, -300 + (330 + 300) * inE, groundY - hop(t) * 26 * inE, 640, { rot: Math.sin(t * Math.PI * 2 / 1) * .04, sq: land(t) });
+    mascot(ELA, W + 300 - (W + 300 - 760) * inA, groundY - hop(t, .5) * 26 * inA, 640, { rot: -Math.sin(t * Math.PI * 2) * .04, sq: land(t, .5) });
+    text('ELE  vs  ELA', W / 2, 1480, 64, { alpha: prog(lt, 5, 5.5), ls: 8 });
+    text('quem ganha a desgarrada?', W / 2, 1570, 46, { weight: 600, color: CREAM, alpha: prog(lt, 5.6, 6.1) });
+  } else if (nome.startsWith('ele') || nome.startsWith('ela')) {
+    const ele = nome.startsWith('ele');
+    const [sing, other] = ele ? [ELE, ELA] : [ELA, ELE];
+    const li = Math.floor(lt / 2), into = lt - li * 2;
+    const enter = eBack(prog(lt, 0, .45));
+    const punch = li === 3 ? Math.max(0, 1 - Math.max(0, into - .9) * 2.5) * (into > .9 ? 1 : 0) : 0; // remate
+    shake = punch > 0 ? [(rnd(Math.floor(t * 60)) - .5) * 26 * punch, (rnd(Math.floor(t * 60) + 4) - .5) * 26 * punch] : [0, 0];
+    const singX = ele ? 410 : 670, otherX = ele ? 900 : 180;
+    // o outro reage: abana a cabeça nas linhas 3-4, encolhe-se no remate
+    const react = li >= 2 ? Math.sin(t * 14) * .06 : Math.sin(t * Math.PI * 2) * .02;
+    const shrink = punch * .12;
+    mascot(other, otherX + shake[0] * .5, groundY + 10 - hop(t, .5) * 8, 470 * (1 - shrink), { rot: react, dim: .45, flip: false });
+    const big = 1000 * (.85 + .15 * enter) * (1 + punch * .08);
+    mascot(sing, singX + (ele ? -1 : 1) * (1 - enter) * 500 + shake[0], groundY - hop(t) * 34 + shake[1], big,
+      { rot: Math.sin(t * Math.PI * 2 / 2) * .05, sq: land(t), alpha: prog(lt, 0, .15) });
+    pill(ele ? 'ELE' : 'ELA', W / 2, 1365, ele ? CREAM : RED, ele ? '#000' : '#fff', prog(lt, .1, .4));
+    karaoke(LETRA[nome], lt, 1720, RED);
+    if (punch > 0) radial(W / 2, 1720, 700, punch * .5);
+  } else if (nome.startsWith('refrao')) {
+    const sw = Math.sin(t * Math.PI) * .07;
+    mascot(ELE, 300, groundY - hop(t) * 40, 800, { rot: sw, sq: land(t) });
+    mascot(ELA, 765, groundY - hop(t, .5) * 40, 800, { rot: -sw, sq: land(t, .5) });
+    confetti(t, nome === 'refrao2' ? 1 : .7);
+    pill('OS DOIS', W / 2, 1365, RED, '#fff', prog(lt, 0, .3));
+    karaoke(LETRA[nome], lt, 1720, '#fff');
+  } else { // fim
+    const p = eBack(prog(lt, 0, .5));
+    mascot(ELE, 300, groundY - hop(t) * 30, 700 * p, { sq: land(t) });
+    mascot(ELA, 790, groundY - hop(t, .5) * 30, 700 * p, { sq: land(t, .5) });
+    text('TOUR 18+ · 2027', W / 2, 360, 92, { alpha: prog(lt, .2, .5), ls: 4 });
+    x.save(); x.globalAlpha = prog(lt, .5, .8); x.fillStyle = RED; x.fillRect(W / 2 - 430, 1420, 860, 120); x.restore();
+    text('Reserva já a tua data.', W / 2, 1482, 68, { alpha: prog(lt, .5, .8), maxW: 800 });
+    text('minhotosmarotos.com', W / 2, 1620, 46, { weight: 600, color: CREAM, alpha: prog(lt, .9, 1.2), ls: 3 });
+    const fo = prog(t, 59, 60); x.save(); x.globalAlpha = fo; x.fillStyle = '#000'; x.fillRect(0, 0, W, H); x.restore();
+  }
+  // vinheta
+  const g = x.createRadialGradient(W / 2, H / 2, W * .45, W / 2, H / 2, H * .75);
+  g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.55)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+}
+window.renderAt = frame;
+window.ready = (async () => {
+  for (const w of [500, 600, 900]) await document.fonts.load(`${w} 100px "Inter Display"`);
+  [ELE, ELA, LOGO] = await Promise.all([img('ele.png'), img('ela.png'), img('logo_red.png')]);
+  return true;
+})();
+</script></body></html>
