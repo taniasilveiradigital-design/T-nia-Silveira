@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<title>Carrossel</title>
+<link rel="stylesheet" href="marca.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1350px;overflow:hidden;background:var(--escuro)}
+#stage{position:relative;width:1080px;height:1350px;overflow:hidden;background:var(--escuro);color:var(--creme);font-family:Texto,sans-serif;--ac:var(--claro)}
+#stage.destaque{background:var(--destaque);color:var(--sobre-destaque);--ac:var(--ac-destaque)}
+#stage.papel{background:var(--papel);color:var(--escuro);--ac:var(--destaque-papel)}
+#content{position:absolute;inset:0}
+.abs{position:absolute}
+.cena{position:absolute;left:0;top:0;width:1080px;height:1350px;transform-origin:50% 38%}
+.cena img{position:absolute;display:block;object-fit:cover;object-position:50% 25%;filter:var(--foto)}
+.tras{position:absolute;inset:0}
+.cima{position:absolute;inset:0;background:linear-gradient(180deg,rgba(var(--escuro-rgb),.6),rgba(var(--escuro-rgb),0) 34%)}
+.scrim{position:absolute;inset:0}
+.titulo{font-family:Titulo;font-weight:400;letter-spacing:-.02em;font-variant-numeric:lining-nums}
+.titulo i,i{font-style:italic}
+.ac{color:var(--ac)}
+.texto{font-family:Texto;font-weight:500}
+.etiqueta{font-family:Etiqueta;font-weight:500}
+.handle{position:absolute;left:64px;top:1240px;font:600 28px Texto}
+.seta{position:absolute;left:420px;top:1240px;font:500 28px Texto;display:flex;gap:14px;align-items:center}
+.seta b{display:inline-block;font-weight:500}
+.marcador{background:var(--marcador);color:var(--escuro);padding:0 26px 10px;display:inline-block}
+.luz{position:absolute;width:640px;height:1120px;border-radius:50%;pointer-events:none;background:radial-gradient(closest-side,rgba(var(--claro-rgb),.7),rgba(var(--destaque-rgb),.26) 56%,rgba(var(--destaque-rgb),0));mix-blend-mode:screen}
+#stage.papel .luz{mix-blend-mode:multiply;background:radial-gradient(closest-side,rgba(var(--destaque-rgb),.24),rgba(var(--destaque-rgb),.06) 56%,rgba(var(--destaque-rgb),0))}
+#grao{position:absolute;left:0;top:0;width:1080px;height:1350px;mix-blend-mode:overlay;opacity:.24;pointer-events:none}
+.tira{position:absolute;left:0;width:1080px;height:178px;background:var(--escuro);overflow:hidden}
+.furos{position:absolute;left:0;right:0;height:10px;background:repeating-linear-gradient(90deg,rgba(var(--creme-rgb),.4) 0 12px,transparent 12px 28px)}
+.cel{position:absolute;top:28px;width:96px;height:122px;border-radius:6px;overflow:hidden;background:var(--escuro2)}
+.cel i{position:absolute;left:34px;width:28px;height:28px;border-radius:50%;background:var(--claro);display:block}
+.cartao{position:absolute;top:560px;width:456px;height:640px;border-radius:18px;overflow:hidden;background-size:560px auto;background-position:50% 12%;background-repeat:no-repeat}
+.cartao:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(var(--escuro-rgb),.7),rgba(var(--escuro-rgb),.08) 28%,rgba(var(--escuro-rgb),.2))}
+.etq{position:absolute;z-index:2;background:var(--creme);color:var(--escuro);font:600 30px Texto;padding:8px 18px;border-radius:40px;white-space:nowrap}
+.rot{position:absolute;z-index:2;left:26px;top:22px;font:500 30px Etiqueta}
+.linha{position:absolute;left:64px;width:952px;display:flex;gap:36px;align-items:flex-start}
+.num{width:82px;height:82px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;font:400 64px/1 Titulo;font-variant-numeric:lining-nums;padding-bottom:6px}
+.linha b{display:block;font:400 62px/1.04 Titulo;letter-spacing:-.01em}
+.linha span{display:block;font:400 31px/1.3 Texto;margin-top:4px;opacity:.82}
+.vidro{position:absolute;left:64px;width:952px;background:rgba(var(--escuro-rgb),.72);border:1px solid rgba(var(--creme-rgb),.28);border-radius:20px;padding:24px 32px}
+.caret{display:inline-block;width:4px;height:.95em;background:var(--claro);vertical-align:-.1em;margin-left:3px}
+.caixa{position:absolute;left:64px;width:952px;height:116px;border-radius:58px;background:var(--creme);color:var(--escuro)}
+.placa{position:absolute;width:0;height:0}
+.placa svg{position:absolute;left:-225px;top:0;overflow:visible}
+.face{position:absolute;left:0;top:0;width:300px;height:300px;transform-origin:0 0;transform:matrix(.75,.375,-.75,.375,0,0);padding:26px;color:var(--creme);overflow:hidden}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="content"></div>
+</div>
+<script src="marca.js"></script>
+<script src="engine.js"></script>
+<script src="slides.js"></script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "nome": "Nome da aluna",
+  "handle": "@a_tua_conta",
+  "idioma": "pt-PT",
+  "negocio": "O que faz e o que vende, numa frase.",
+  "publico": "Para quem fala, numa frase.",
+  "cores": {
+    "escuro": "#14161f",
+    "destaque": "#6c7cff",
+    "claro": "#b9c2ff",
+    "creme": "#f4f4f8",
+    "papel": "#eceef6",
+    "marcador": "#fff3a0"
+  },
+  "fontes": {
+    "titulo": "Instrument Serif",
+    "texto": "Inter",
+    "etiqueta": "Inter"
+  },
+  "voz": {
+    "tom": "Como soa, em duas ou três palavras.",
+    "regras": ["O que faz sempre ao escrever."],
+    "evitar": ["Palavras ou expressões que não usa."],
+    "exemplos": ["Uma ou duas frases escritas por ela, tal e qual."]
+  }
+}

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<title>Vista do carrossel</title>
+<style>
+body{margin:0;min-height:100vh;background:#111;color:#eee;font:15px system-ui;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+#row{width:min(432px,92vw);aspect-ratio:4/5;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;border-radius:8px;scrollbar-width:none}
+#row video{flex:0 0 100%;width:100%;scroll-snap-align:start;display:block}
+button{font:inherit;padding:8px 16px;border-radius:20px;border:1px solid #555;background:#222;color:#eee;cursor:pointer}
+</style>
+</head>
+<body>
+<div id="row"></div>
+<div><button id="prev">Anterior</button> <button id="next">Seguinte</button> <span id="n"></span></div>
+<script>
+const row = document.getElementById('row');
+const vids = [];
+const N = __TOTAL__;
+for (let i = 1; i <= N; i++) {
+  const v = document.createElement('video');
+  v.src = `entrega/${String(i).padStart(2, '0')}.mp4`; v.loop = true; v.muted = true; v.playsInline = true;
+  row.appendChild(v); vids.push(v);
+}
+let cur = 0;
+function show() {
+  vids.forEach((v, i) => {
+    if (i === cur) { v.currentTime = 0; v.play(); } else v.pause();
+  });
+  document.getElementById('n').textContent = `${cur + 1}/${N}`;
+}
+const go = (i) => { row.scrollTo({ left: i * row.clientWidth, behavior: 'smooth' }); };
+row.addEventListener('scrollend', () => { const i = Math.round(row.scrollLeft / row.clientWidth); if (i !== cur) { cur = i; show(); } });
+document.getElementById('prev').onclick = () => go(Math.max(0, cur - 1));
+document.getElementById('next').onclick = () => go(Math.min(N - 1, cur + 1));
+show();
+</script>
+</body>
+</html>
