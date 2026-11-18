@@ -27,7 +27,7 @@ def stories_txt(cid):
     return '\n\n'.join(out)
 # notas de semana: cartões da lista que não são dia nem cabeçalho
 wk_re = re.compile(r'(\d+)\s+(?:de|se)\s+(\w+)\s+a\s+(\d+)\s+de\s+(\w+)', re.I)
-day_re = re.compile(r'^(segunda|terça|terca|quarta|quinta|sexta|sábado|sabado)\b', re.I)
+day_re = re.compile(r'^(segunda|terça|terca|quarta|quinta|sexta|sábado|sabado|domingo)\b', re.I)
 notas = {}  # semana -> text
 by_list_week = {}
 for o in cards.values():

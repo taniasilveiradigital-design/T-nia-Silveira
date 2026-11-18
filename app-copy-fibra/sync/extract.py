@@ -8,7 +8,7 @@ for a in d['actions']:
 cl={}
 for c in d['checklists']: cl.setdefault(c['idCard'],[]).append(c)
 MES={'janeiro':1,'fevereiro':2,'março':3,'abril':4,'maio':5,'junho':6,'julho':7,'agosto':8,'setembro':9,'outubro':10,'novembro':11,'dezembro':12}
-DIA={'segunda':0,'terça':1,'terca':1,'quarta':2,'quinta':3,'sexta':4,'sábado':5,'sabado':5}
+DIA={'segunda':0,'terça':1,'terca':1,'quarta':2,'quinta':3,'sexta':4,'sábado':5,'sabado':5,'domingo':6}
 SKIP={'Seu plano de ação','Seus materiais','Já Postados','Estratégias','Conteúdos','segunda semana','quarta semana','quinta seman','.'}
 cards=sorted([c for c in d['cards'] if not lists[c['idList']]['closed'] and lists[c['idList']]['name'] not in SKIP],key=lambda c:(lists[c['idList']]['pos'],c['pos']))
 out=[];week=None;wk_re=re.compile(r'(\d+)\s+(?:de|se)\s+(\w+)\s+a\s+(\d+)\s+de\s+(\w+)',re.I)
@@ -30,7 +30,7 @@ for c in cards:
     n=c['name'].strip(); L=lists[c['idList']]['name']
     if c['closed'] or wk_re.search(n): continue
     week=lw.get(c['idList'],(None,))[0]
-    dm=re.match(r'^(segunda|terça|terca|quarta|quinta|sexta|sábado|sabado)\s*:?\s*(.*)$',n,re.I)
+    dm=re.match(r'^(segunda|terça|terca|quarta|quinta|sexta|sábado|sabado|domingo)\s*:?\s*(.*)$',n,re.I)
     if not dm and not n.lower().startswith('conversa'): continue
     desc=c['desc'] or ''
     if dm:
