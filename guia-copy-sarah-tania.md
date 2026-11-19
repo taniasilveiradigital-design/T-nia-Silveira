@@ -12,7 +12,7 @@ Fonte: o Trello "Plano de Escalada" completo (abril a novembro 2026). São 307 c
 - Lê a peça e a ficha como alguém da fábrica. Não mede nem cose: lê, decide e planeia.
 - Contra: coleção feita por gosto, desconto como estratégia, comunicação que tapa produto fraco.
 - Prova com casos reais: 568 peças paradas, 150 sweats perdidas, bordado não escalado (2 cm), 6.550 € em stock, produção avançada sem marca registada.
-- Palavra proibida: "estrutura". CTA única até ao fim do ano: "Comenta DIAGNÓSTICO".
+- Palavra proibida: "estrutura". CTA variado (a Sarah não quer o mesmo em todos): DIAGNÓSTICO no máximo 1 a 2 vezes por semana, mensagem com a foto da peça, guardar e partilhar, pergunta.
 - Reels de 30 a 45 segundos. Conversa corrida, sem "primeiro, segundo".
 
 ---
