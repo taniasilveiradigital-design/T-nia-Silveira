@@ -1,0 +1,179 @@
+<title>Diagnóstico de Produção</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500&family=Raleway:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout: ficha de entrada em produção — à esquerda o que acontece, à direita a ficha a preencher. */
+:root{
+  --bg:#fbf8f4; --paper:#ffffff; --linen:#efe6dc; --ink:#2b1c15; --soft:#6b5446;
+  --terra:#b26d47; --terra-ink:#9a5634; --sand:#bfa795; --line:#e3d6c8; --field:#fffdfb;
+  --display:"Cormorant Garamond",Georgia,serif; --body:Raleway,"Segoe UI",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1b1310; --paper:#251a15; --linen:#2f221b; --ink:#f2e8de; --soft:#c4ae9e;
+  --terra:#d58a62; --terra-ink:#e29b74; --sand:#8d7766; --line:#43322a; --field:#1f1612; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1b1310; --paper:#251a15; --linen:#2f221b; --ink:#f2e8de; --soft:#c4ae9e;
+  --terra:#d58a62; --terra-ink:#e29b74; --sand:#8d7766; --line:#43322a; --field:#1f1612; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:17px/1.6 var(--body)}
+.in{max-width:1160px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.05;margin:0;text-wrap:balance}
+h1{font-size:clamp(40px,5.6vw,66px)}
+h1 em{font-style:italic;color:var(--terra-ink)}
+h2{font-size:clamp(26px,3vw,34px)}
+p{margin:0;max-width:60ch}
+.eyebrow{font:500 12.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--terra-ink)}
+.lead{font-size:clamp(18px,1.6vw,20px);color:var(--soft)}
+a{color:inherit}
+
+.top{border-bottom:1px solid var(--line)}
+.top .in{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:64px}
+.logo{font:600 23px var(--display);text-decoration:none}
+.top a.back{font-size:14px;font-weight:600;text-decoration:none;color:var(--soft)}
+
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(32px,5vw,72px);align-items:start;padding-block:clamp(40px,6vw,88px)}
+@media(max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}}
+.side{display:grid;gap:28px;align-content:start}
+@media(min-width:901px){.side{position:sticky;top:24px}}
+.facts{display:flex;flex-wrap:wrap;gap:8px}
+.facts span{font:500 13px var(--mono);border:1px solid var(--line);padding:6px 10px;background:var(--paper)}
+.flow{list-style:none;margin:0;padding:0;display:grid;gap:0;border-top:1px solid var(--ink)}
+.flow li{display:grid;grid-template-columns:5.5em minmax(0,1fr);gap:14px;padding:16px 0;border-bottom:1px solid var(--line)}
+.flow b{font:500 13px var(--mono);color:var(--terra-ink);padding-top:3px}
+.flow strong{display:block;font-weight:700}
+.flow p{color:var(--soft);font-size:15.5px}
+.who{background:var(--linen);padding:20px 22px;display:grid;gap:8px}
+.who p{font-size:15.5px}
+
+/* ficha */
+form{background:var(--paper);border:1px solid var(--line);position:relative;padding:clamp(22px,3.5vw,40px);display:grid;gap:26px}
+form::before{content:"";position:absolute;inset:8px;border:1px dashed var(--sand);pointer-events:none}
+.fhead{display:flex;justify-content:space-between;gap:12px;font:500 13px var(--mono);color:var(--soft);border-bottom:1px solid var(--line);padding-bottom:14px}
+.fhead b{color:var(--terra-ink);font-weight:500}
+fieldset{border:0;margin:0;padding:0;display:grid;gap:14px;min-width:0}
+legend{font:600 22px var(--display);margin-bottom:4px;padding:0}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media(max-width:560px){.two{grid-template-columns:minmax(0,1fr)}}
+label.f{display:grid;gap:6px;font-size:14.5px;font-weight:600}
+label.f small{font-weight:400;color:var(--soft)}
+input[type=text],input[type=email],input[type=tel],select,textarea{width:100%;font:16px var(--body);color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:2px;padding:12px 14px;min-height:48px}
+textarea{min-height:96px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--terra);outline-offset:1px;border-color:var(--terra)}
+.tel{display:grid;grid-template-columns:7.5em minmax(0,1fr);gap:8px}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);background:var(--field);padding:12px 14px;cursor:pointer;font-size:15.5px}
+.opt input{margin-top:4px;accent-color:var(--terra);width:18px;height:18px;flex:none}
+.opt:has(input:checked){border-color:var(--terra);background:var(--linen)}
+.opt:has(input:focus-visible){outline:2px solid var(--terra);outline-offset:2px}
+.opt small{display:block;color:var(--soft);font-size:13.5px}
+.notyet{border-left:3px solid var(--terra);background:var(--linen);padding:14px 16px;font-size:15.5px}
+.notyet a{font-weight:700;color:var(--terra-ink)}
+button.send{font:600 16px var(--body);min-height:54px;border:0;background:var(--terra);color:#fff;cursor:pointer;border-radius:2px}
+button.send:hover{background:var(--terra-ink)}
+button.send:focus-visible{outline:2px solid var(--terra);outline-offset:3px}
+.fine{font-size:13.5px;color:var(--soft)}
+.err{color:var(--terra-ink);font-size:14px;font-weight:600}
+.done{display:grid;gap:14px}
+.done h2{font-size:clamp(30px,3.4vw,40px)}
+footer{border-top:1px solid var(--line);font-size:13.5px;color:var(--soft)}
+footer .in{padding-block:22px}
+</style>
+
+<header class="top"><div class="in">
+  <a class="logo" href="https://taniasilveira.pt/">Tânia Silveira</a>
+  <a class="back" href="https://taniasilveira.pt/">← Voltar ao site</a>
+</div></header>
+
+<main class="in grid">
+  <div class="side">
+    <span class="eyebrow">Diagnóstico · sem custo</span>
+    <h1>30 minutos para encontrar <em>onde</em> perdes margem.</h1>
+    <p class="lead">Preenches a ficha. Eu leio antes da chamada. Na conversa vamos direto ao ponto onde a produção te está a custar dinheiro.</p>
+    <div class="facts"><span>30 min</span><span>videochamada</span><span>sem custo</span><span>resposta em 2 dias úteis</span></div>
+    <ol class="flow">
+      <li><b>Antes</b><div><strong>Leio a tua ficha.</strong><p>Chego à chamada a saber o teu negócio. Não gastamos tempo com apresentações.</p></div></li>
+      <li><b>Durante</b><div><strong>Vamos ao ponto de perda.</strong><p>Custo, prazo, subcontratados ou produto. Um problema, a fundo.</p></div></li>
+      <li><b>Depois</b><div><strong>Recebes a resposta por escrito.</strong><p>Se consigo ajudar, digo com quê e quanto custa. Se não for comigo, digo-te também.</p></div></li>
+    </ol>
+    <div class="who"><strong>Para quem é</strong><p>Confeções, fábricas com marca própria e marcas de moda que já vendem. Se ainda não lançaste, há um passo antes deste: a Lista de Fornecedores.</p></div>
+  </div>
+
+  <div id="area">
+  <form id="ficha" novalidate>
+    <div class="fhead"><span>Ficha de entrada</span><b>Diagnóstico 2027</b></div>
+
+    <fieldset>
+      <legend>Quem és</legend>
+      <div class="two">
+        <label class="f">Nome<input type="text" id="nome" name="nome" autocomplete="name" required></label>
+        <label class="f">Empresa ou marca<input type="text" id="empresa" name="empresa" autocomplete="organization" required></label>
+      </div>
+      <div class="two">
+        <label class="f">Email<input type="email" id="email" name="email" autocomplete="email" required></label>
+        <label class="f">Telemóvel
+          <span class="tel"><select id="indicativo" name="indicativo" aria-label="Indicativo"><option>🇵🇹 +351</option><option>🇪🇸 +34</option><option>🇫🇷 +33</option><option>🇬🇧 +44</option><option>🇧🇷 +55</option></select><input type="tel" id="telemovel" name="telemovel" autocomplete="tel-national" required></span>
+        </label>
+      </div>
+      <label class="f">Site ou Instagram <small>opcional</small><input type="text" id="online" name="online" placeholder="taniasilveira.pt ou @marca"></label>
+    </fieldset>
+
+    <fieldset>
+      <legend>O teu negócio</legend>
+      <div class="opts" role="radiogroup" aria-label="Tipo de negócio">
+        <label class="opt"><input type="radio" name="tipo" value="confecao" id="t1" required><span>Confeção ou fábrica<small>produzo para outras marcas</small></span></label>
+        <label class="opt"><input type="radio" name="tipo" value="fabrica-marca" id="t2"><span>Fábrica com marca própria<small>produzo e vendo com a minha marca</small></span></label>
+        <label class="opt"><input type="radio" name="tipo" value="marca" id="t3"><span>Marca de moda que já vende<small>produção feita por terceiros</small></span></label>
+        <label class="opt"><input type="radio" name="tipo" value="por-lancar" id="t4"><span>Marca ainda por lançar</span></label>
+      </div>
+      <p class="notyet" id="notyet" hidden>Nesta fase o diagnóstico ainda não é o passo certo. Começa pela <a href="https://taniasilveira.pt/lista-estrategica-de-fornecedores/">Lista Estratégica de Fornecedores</a>, com contactos de revenda e produção, desde 37 €.</p>
+      <label class="f">Faturação anual aproximada
+        <select id="faturacao" name="faturacao" required>
+          <option value="">Escolhe uma opção</option>
+          <option>Até 50.000 €</option><option>50.000 € a 150.000 €</option><option>150.000 € a 500.000 €</option><option>Mais de 500.000 €</option><option>Prefiro dizer na chamada</option>
+        </select>
+      </label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Onde dói</legend>
+      <label class="f">O que te está a custar mais dinheiro hoje?
+        <select id="dor" name="dor" required>
+          <option value="">Escolhe uma opção</option>
+          <option>Não sei o custo real por peça</option><option>Prazos e planeamento</option><option>Subcontratados e qualidade</option><option>Produto e coleção</option><option>Outra coisa</option>
+        </select>
+      </label>
+      <label class="f">Conta-me numa ou duas frases <small>opcional</small><textarea id="contexto" name="contexto" placeholder="Ex.: A última encomenda saiu com 3 semanas de atraso e ainda não sei se ganhei dinheiro com ela."></textarea></label>
+      <label class="f">Quando queres resolver isto?
+        <select id="quando" name="quando" required>
+          <option value="">Escolhe uma opção</option>
+          <option>Este mês</option><option>Nos próximos 3 meses</option><option>Ainda estou a avaliar</option>
+        </select>
+      </label>
+    </fieldset>
+
+    <p class="err" id="err" role="alert" hidden></p>
+    <button class="send" type="submit" id="send">Enviar ficha e marcar diagnóstico</button>
+    <p class="fine">Uso estes dados só para preparar a chamada. Não entram em listas de email.</p>
+  </form>
+  </div>
+</main>
+
+<footer><div class="in">© 2027 Tânia Silveira · Planeamento e produção têxtil 🧵</div></footer>
+
+<script>
+{
+const f=document.getElementById('ficha'),ny=document.getElementById('notyet'),err=document.getElementById('err'),send=document.getElementById('send');
+f.querySelectorAll('input[name=tipo]').forEach(r=>r.addEventListener('change',()=>{
+  const lancar=f.tipo.value==='por-lancar';ny.hidden=!lancar;send.disabled=lancar;send.style.opacity=lancar?.45:1;
+}));
+f.addEventListener('submit',e=>{
+  e.preventDefault();
+  const falta=[...f.querySelectorAll('[required]')].filter(i=>i.type==='radio'?!f.tipo.value:!i.value.trim());
+  const mailOk=/^\S+@\S+\.\S+$/.test(f.email.value.trim());
+  if(falta.length||!mailOk){err.textContent=!mailOk&&f.email.value?'O email não parece completo. Confirma e tenta outra vez.':'Faltam campos por preencher. Estão todos na ficha, menos os opcionais.';err.hidden=false;(falta[0]||f.email).focus();return}
+  const nome=f.nome.value.trim().split(' ')[0];
+  document.getElementById('area').innerHTML=`<div class="done"><span class="eyebrow">Ficha recebida</span><h2>Obrigada, ${nome.replace(/[<>&"]/g,'')}.</h2><p class="lead">Leio a tua ficha e respondo em 2 dias úteis com duas datas para a chamada.</p><p class="fine">Pré-visualização: nesta versão a ficha não é enviada. O envio real acontece na página do Base44.</p></div>`;
+});
+}
+</script>
