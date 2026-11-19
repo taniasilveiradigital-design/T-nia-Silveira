@@ -7,7 +7,7 @@ Fonte: o Trello "Plano de Escalada" completo (abril a novembro 2026). São 307 c
 
 ## 0. Linha de 2027 (manda sobre o resto deste guia)
 
-- A estrategista que lê a peça. 7 anos de chão de fábrica, mais de 10 no têxtil. Planeamento e produção, com a IA como ferramenta.
+- A estrategista que lê a peça. 10 anos de chão de fábrica. Planeamento e produção, com a IA como ferramenta.
 - Público: marcas que já vendem, confeções e fábricas com marca própria. Não falar para quem ainda não começou.
 - Lê a peça e a ficha como alguém da fábrica. Não mede nem cose: lê, decide e planeia.
 - Contra: coleção feita por gosto, desconto como estratégia, comunicação que tapa produto fraco.
