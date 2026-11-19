@@ -1,0 +1,297 @@
+<title>Tânia Silveira 2027</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Planeamento, custo por peça e produção para confeções e marcas de moda que já vendem. Tânia Silveira, Guimarães.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Raleway:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout: ordem de produção — o topo é uma ficha técnica, as secções são etapas da linha, os preços são etiquetas cosidas. */
+:root{
+  --bg:#fbf8f4; --paper:#ffffff; --linen:#efe6dc; --ink:#2b1c15; --soft:#6b5446;
+  --brown:#5c3b2e; --terra:#b26d47; --terra-ink:#9a5634; --sand:#bfa795; --line:#e3d6c8;
+  --on-brown:#f6ede4;
+  --display:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --body:Raleway,"Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1b1310; --paper:#251a15; --linen:#2f221b; --ink:#f2e8de; --soft:#c4ae9e;
+  --brown:#3a261d; --terra:#d58a62; --terra-ink:#e29b74; --sand:#8d7766; --line:#43322a;
+  --on-brown:#f2e8de; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1b1310; --paper:#251a15; --linen:#2f221b; --ink:#f2e8de; --soft:#c4ae9e;
+  --brown:#3a261d; --terra:#d58a62; --terra-ink:#e29b74; --sand:#8d7766; --line:#43322a;
+  --on-brown:#f2e8de; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--bg);color:var(--ink);font:17px/1.65 var(--body)}
+h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.05;margin:0;text-wrap:balance}
+h1{font-size:clamp(40px,6.4vw,76px);letter-spacing:-.01em}
+h2{font-size:clamp(32px,4.4vw,50px)}
+h3{font-size:clamp(24px,2.6vw,30px)}
+p{margin:0;max-width:62ch}
+a{color:inherit}
+.in{max-width:1160px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+section>.in{padding-block:clamp(56px,8vw,112px)}
+.eyebrow{font:500 12.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--terra-ink)}
+.stack{display:grid;gap:18px}
+.lead{font-size:clamp(18px,1.6vw,20px);color:var(--soft)}
+
+/* botões */
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 22px;border-radius:2px;font:600 15px var(--body);text-decoration:none;border:1.5px solid var(--terra);transition:background .2s,color .2s}
+.btn.solid{background:var(--terra);color:#fff}
+.btn.solid:hover{background:var(--terra-ink);border-color:var(--terra-ink)}
+.btn.ghost{color:var(--ink);border-color:var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:var(--bg)}
+.btn:focus-visible,.nav a:focus-visible,button:focus-visible{outline:2px solid var(--terra);outline-offset:3px}
+.row{display:flex;flex-wrap:wrap;gap:12px}
+
+/* navegação */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--bg);border-bottom:1px solid var(--line)}
+header.top .in{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:68px}
+.logo{font:600 24px var(--display);text-decoration:none;white-space:nowrap}
+.nav{display:flex;gap:4px;align-items:center;overflow-x:auto}
+.nav a{font-size:14.5px;font-weight:600;text-decoration:none;padding:10px 12px;white-space:nowrap}
+.nav a:hover{color:var(--terra-ink)}
+.nav .btn{min-height:42px;padding:0 16px;margin-left:6px}
+@media(max-width:820px){.nav a:not(.btn){display:none}}
+
+/* hero */
+.hero .in{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:clamp(32px,5vw,72px);align-items:center;padding-block:clamp(48px,7vw,96px)}
+@media(max-width:900px){.hero .in{grid-template-columns:minmax(0,1fr)}}
+.hero h1 em{font-style:italic;color:var(--terra-ink)}
+.ficha{background:var(--paper);border:1px solid var(--line);font:400 13.5px/1.5 var(--mono);position:relative}
+.ficha::before{content:"";position:absolute;inset:8px;border:1px dashed var(--sand);pointer-events:none}
+.ficha header{display:flex;justify-content:space-between;gap:12px;padding:20px 24px 14px;border-bottom:1px solid var(--line)}
+.ficha header b{font-weight:500;color:var(--terra-ink)}
+.ficha dl{margin:0;padding:6px 24px 20px}
+.ficha .r{display:grid;grid-template-columns:9.5em minmax(0,1fr);gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.ficha .r:last-child{border-bottom:0}
+.ficha dt{color:var(--soft)}
+.ficha dd{margin:0;color:var(--ink)}
+.ficha .warn{color:var(--terra-ink);font-weight:500}
+@media(max-width:460px){.ficha .r{grid-template-columns:minmax(0,1fr);gap:2px}}
+
+/* perdas */
+.alt{background:var(--linen)}
+.losses{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:1px solid var(--ink);margin-top:40px}
+.losses article{padding:28px 28px 8px 0;display:grid;gap:12px;align-content:start}
+.losses article+article{padding-left:28px;border-left:1px solid var(--line)}
+.losses .mark{font:500 13px var(--mono);color:var(--terra-ink)}
+@media(max-width:820px){.losses{grid-template-columns:minmax(0,1fr)}.losses article,.losses article+article{padding:24px 0;border-left:0;border-bottom:1px solid var(--line)}}
+
+/* serviços */
+.svc{display:grid;gap:20px;margin-top:40px}
+.offer{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) auto;gap:clamp(20px,3vw,40px);align-items:start;background:var(--paper);border:1px solid var(--line);padding:clamp(22px,3vw,34px)}
+.offer.main{border:1.5px solid var(--terra)}
+.offer .for{font-size:15px;color:var(--soft);margin-top:10px}
+.offer ul{margin:0;padding-left:1.1em;display:grid;gap:6px}
+.tagp{display:grid;gap:6px;justify-items:end;text-align:right;min-width:11em}
+.price{font:600 34px/1 var(--display);color:var(--terra-ink);white-space:nowrap}
+.unit{font:400 12.5px var(--mono);color:var(--soft);white-space:nowrap}
+.tagp .btn{margin-top:10px}
+@media(max-width:900px){.offer{grid-template-columns:minmax(0,1fr)}.tagp{justify-items:start;text-align:left}}
+.lista{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;margin-top:8px;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.lista p{color:var(--soft);font-size:15.5px}
+.lista a{font-weight:600;color:var(--terra-ink)}
+
+/* processo */
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:40px;counter-reset:s}
+.step{border-top:3px solid var(--terra);padding-top:18px;display:grid;gap:10px;align-content:start}
+.step .n{font:500 13px var(--mono);color:var(--terra-ink)}
+@media(max-width:820px){.steps{grid-template-columns:minmax(0,1fr)}}
+
+/* casos */
+.dark{background:var(--brown);color:var(--on-brown)}
+.dark .eyebrow{color:var(--sand)}
+.dark .lead{color:var(--on-brown);opacity:.82}
+.cases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:40px}
+.case{border:1px solid rgba(246,237,228,.22);padding:26px;display:grid;gap:14px;align-content:start}
+.case .k{font:500 12.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--sand)}
+.case blockquote{margin:0;font:italic 500 23px/1.25 var(--display)}
+.case p{font-size:15.5px;opacity:.88}
+@media(max-width:900px){.cases{grid-template-columns:minmax(0,1fr)}}
+
+/* sobre */
+.about .in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:clamp(32px,5vw,72px)}
+@media(max-width:820px){.about .in{grid-template-columns:minmax(0,1fr)}}
+.route{list-style:none;margin:0;padding:0;border-left:2px dashed var(--terra);display:grid;gap:18px}
+.route li{padding-left:20px;position:relative}
+.route li::before{content:"";position:absolute;left:-7px;top:8px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--terra)}
+.route b{display:block;font:500 13px var(--mono);color:var(--terra-ink)}
+
+/* não é para ti */
+.notfor{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin-top:32px}
+.notfor div{background:var(--paper);border:1px solid var(--line);padding:24px;display:grid;gap:10px;align-content:start}
+.notfor h3{font-size:24px}
+@media(max-width:720px){.notfor{grid-template-columns:minmax(0,1fr)}}
+
+/* contacto */
+.contact .in{display:grid;gap:28px}
+.lines{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:1px solid var(--ink)}
+.lines div{padding:20px 20px 20px 0;display:grid;gap:6px}
+.lines div+div{padding-left:20px;border-left:1px solid var(--line)}
+.lines small{font:500 12px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--soft)}
+.lines span,.lines a{font-weight:600;word-break:break-word}
+.copy{justify-self:start;font:600 13px var(--body);background:none;border:1px solid var(--line);color:var(--ink);padding:6px 12px;min-height:36px;cursor:pointer}
+@media(max-width:720px){.lines{grid-template-columns:minmax(0,1fr)}.lines div,.lines div+div{padding:16px 0;border-left:0;border-bottom:1px solid var(--line)}}
+footer.end{border-top:1px solid var(--line);font-size:13.5px;color:var(--soft)}
+footer.end .in{padding-block:24px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
+</style>
+
+<header class="top"><div class="in">
+  <a class="logo" href="#topo">Tânia Silveira</a>
+  <nav class="nav" aria-label="Menu">
+    <a href="#servicos">Serviços</a><a href="#casos">Casos</a><a href="#sobre">Sobre</a><a href="#contacto">Contacto</a>
+    <a class="btn solid" href="https://sessaodiagnostico.base44.app/" target="_blank" rel="noopener">Marcar diagnóstico</a>
+  </nav>
+</div></header>
+
+<main id="topo">
+
+<section class="hero"><div class="in">
+  <div class="stack" style="gap:26px">
+    <span class="eyebrow">Planeamento e produção têxtil · Guimarães</span>
+    <h1>A margem perde-se <em>antes</em> de a peça chegar à mesa de corte.</h1>
+    <p class="lead">Ponho ordem no planeamento, no custo por peça e na relação com subcontratados. Para confeções, fábricas com marca própria e marcas de moda que já vendem.</p>
+    <div class="row">
+      <a class="btn solid" href="https://sessaodiagnostico.base44.app/" target="_blank" rel="noopener">Marcar diagnóstico de 30 min</a>
+      <a class="btn ghost" href="#servicos">Ver serviços e preços</a>
+    </div>
+  </div>
+  <aside class="ficha" aria-label="Exemplo de ficha de diagnóstico">
+    <header><span>Ficha de diagnóstico · exemplo</span><b>Nº 2027-001</b></header>
+    <dl>
+      <div class="r"><dt>Cliente</dt><dd>Confeção · 40 pessoas</dd></div>
+      <div class="r"><dt>Encomenda</dt><dd>1.200 peças · malha</dd></div>
+      <div class="r"><dt>Custo por peça</dt><dd class="warn">calculado por estimativa</dd></div>
+      <div class="r"><dt>Prazos</dt><dd class="warn">controlados de cabeça</dd></div>
+      <div class="r"><dt>Subcontratados</dt><dd class="warn">sem ficha técnica fechada</dd></div>
+      <div class="r"><dt>Próximo passo</dt><dd>mapa de perdas + plano de 90 dias</dd></div>
+    </dl>
+  </aside>
+</div></section>
+
+<section class="alt"><div class="in">
+  <span class="eyebrow">Onde o dinheiro fica pelo caminho</span>
+  <h2 style="margin-top:14px">Três perdas que vejo em quase todas as produções.</h2>
+  <div class="losses">
+    <article><span class="mark">Perda 01 · Custo</span><h3>Preço feito por estimativa.</h3><p>Sem custo real por peça, cada encomenda é uma aposta. Às vezes ganhas. Muitas vezes pagas para produzir.</p></article>
+    <article><span class="mark">Perda 02 · Prazo</span><h3>Planeamento na cabeça de uma pessoa.</h3><p>Quando ela falta, a linha para. O atraso não nasce na costura. Nasce na ordem que ninguém escreveu.</p></article>
+    <article><span class="mark">Perda 03 · Comunicação</span><h3>Fichas técnicas abertas.</h3><p>Uma medida mal passada ao subcontratado e o lote inteiro fica na prateleira. Já vi 150 sweats perdidas assim.</p></article>
+  </div>
+</div></section>
+
+<section id="servicos"><div class="in">
+  <span class="eyebrow">Serviços e preços</span>
+  <h2 style="margin-top:14px">Escolhe por onde entras.</h2>
+  <p class="lead" style="margin-top:14px">Todas as propostas começam com um diagnóstico de 30 minutos. Sem custo, sem compromisso.</p>
+  <div class="svc">
+    <div class="offer main">
+      <div><span class="eyebrow">Para confeções e fábricas</span><h3 style="margin-top:10px">Auditoria de Planeamento</h3><p class="for">Para quem produz e não sabe ao certo quanto ganha em cada encomenda.</p></div>
+      <ul>
+        <li>Mapa do fluxo, da encomenda à expedição.</li>
+        <li>Custo real por peça, linha a linha.</li>
+        <li>Pontos de perda com valor em euros.</li>
+        <li>Ferramenta de controlo em Excel, com IA, pronta a usar.</li>
+        <li>Plano de 90 dias com responsáveis e datas.</li>
+      </ul>
+      <div class="tagp"><span class="unit">desde</span><span class="price">1.500 €</span><span class="unit">+ IVA · valor fechado</span><a class="btn solid" href="https://sessaodiagnostico.base44.app/" target="_blank" rel="noopener">Pedir proposta</a></div>
+    </div>
+    <div class="offer">
+      <div><span class="eyebrow">Depois da auditoria</span><h3 style="margin-top:10px">Acompanhamento de Produção</h3><p class="for">Para manter o planeamento a funcionar sem depender de uma pessoa.</p></div>
+      <ul>
+        <li>Revisão mensal de custos e prazos.</li>
+        <li>Apoio na negociação com subcontratados.</li>
+        <li>Passaporte Digital do Produto: preparar a fábrica para o que aí vem.</li>
+      </ul>
+      <div class="tagp"><span class="unit">desde</span><span class="price">600 €</span><span class="unit">+ IVA · por mês</span><a class="btn ghost" href="#contacto">Falar comigo</a></div>
+    </div>
+    <div class="offer">
+      <div><span class="eyebrow">Para marcas que já vendem</span><h3 style="margin-top:10px">Consultoria Tafetá 360</h3><p class="for">Um pilar da marca analisado a fundo: produto, margem ou produção.</p></div>
+      <ul>
+        <li>Sessão de 2 horas, preparada com os teus números.</li>
+        <li>Plano de ação escrito.</li>
+        <li>Sessão de seguimento de 1 hora, um mês depois.</li>
+      </ul>
+      <div class="tagp"><span class="price">400 €</span><span class="unit">+ IVA</span><a class="btn ghost" href="https://calendar.app.google/B5q9q8hBqUVsdThx7" target="_blank" rel="noopener">Agendar</a></div>
+    </div>
+    <div class="lista">
+      <p>Ainda não lançaste a marca? Começa pela <b>Lista Estratégica de Fornecedores</b>: contactos de revenda e produção, desde 37 €.</p>
+      <a href="https://taniasilveira.pt/lista-estrategica-de-fornecedores/">Ver a Lista →</a>
+    </div>
+  </div>
+</div></section>
+
+<section class="alt"><div class="in">
+  <span class="eyebrow">Como trabalho</span>
+  <h2 style="margin-top:14px">Primeiro à mão. Depois a ferramenta.</h2>
+  <div class="steps">
+    <div class="step"><span class="n">Passo 1 · 30 min</span><h3>Diagnóstico</h3><p>Dizes-me onde dói. Eu digo-te se consigo ajudar e com quê. Se não for comigo, digo-te isso também.</p></div>
+    <div class="step"><span class="n">Passo 2 · no terreno</span><h3>Auditoria</h3><p>Vou à fábrica, vejo a linha, abro os números. Sais com o mapa das perdas e o plano.</p></div>
+    <div class="step"><span class="n">Passo 3 · mensal</span><h3>Acompanhamento</h3><p>O plano só vale se for cumprido. Fico ao lado até o sistema andar sozinho.</p></div>
+  </div>
+</div></section>
+
+<section class="dark" id="casos"><div class="in">
+  <span class="eyebrow">Casos reais</span>
+  <h2 style="margin-top:14px">O que já vi correr mal, e o que mudou.</h2>
+  <div class="cases">
+    <article class="case"><span class="k">SAL Beach Couture</span><blockquote>568 peças paradas e tecido em armazém.</blockquote><p>Sem site e com o feed sem direção. Fechámos o posicionamento, "para quem o mar não é fundo de foto", e passámos a edição limitada, sem reposição.</p></article>
+    <article class="case"><span class="k">Chão de fábrica</span><blockquote>"Não foi má fé. Foi falta de rigor."</blockquote><p>150 sweats perdidas por uma comunicação mal feita com a fábrica. Ninguém mentiu. Ninguém escreveu o que tinha de estar escrito.</p></article>
+    <article class="case"><span class="k">Chão de fábrica</span><blockquote>2 centímetros.</blockquote><p>Um bordado que não foi escalado aos tamanhos inutilizou uma coleção inteira. É por isto que a ficha técnica fecha antes de a produção abrir.</p></article>
+  </div>
+</div></section>
+
+<section class="about" id="sobre"><div class="in">
+  <div class="stack" style="align-content:start">
+    <span class="eyebrow">Sobre</span>
+    <h2>Do chão de fábrica para o teu planeamento.</h2>
+    <p class="lead">Nasci em Chaves, cresci em Carrazedo de Montenegro e trabalho a partir de Guimarães, no meio do Vale do Ave.</p>
+  </div>
+  <div class="stack" style="gap:28px">
+    <p>Passei mais de 10 anos no têxtil. Entrei numa fábrica e passei por matérias-primas, armazém, planeamento, produção e comercial. No planeamento recuperei faturação que a empresa não via há anos. Foi aí que percebi onde está o dinheiro de uma fábrica: na ordem com que as coisas acontecem.</p>
+    <p>Hoje uso IA para pôr essa ordem a funcionar mais depressa. A decisão continua a ser de quem conhece a produção.</p>
+    <ul class="route">
+      <li><b>Indústria têxtil</b>Matérias-primas, armazém, planeamento, produção, comercial.</li>
+      <li><b>Marcas de moda</b>Nicau Couture, SAL Beach Couture, Traços d'Amor, ROMEO, entre outras.</li>
+      <li><b>2027</b>Planeamento e custo para confeções e marcas que já vendem.</li>
+    </ul>
+  </div>
+</div></section>
+
+<section class="alt"><div class="in">
+  <span class="eyebrow">Antes de marcares</span>
+  <h2 style="margin-top:14px">Para quem é, e para quem não é.</h2>
+  <div class="notfor">
+    <div><h3>É para ti se</h3><p>Já produzes ou já vendes. Tens encomendas, tens equipa ou subcontratados, e sentes que trabalhas muito para a margem que fica.</p></div>
+    <div><h3>Não é para ti se</h3><p>Procuras uma fórmula rápida ou ainda não lançaste. Nesse caso, a Lista de Fornecedores é o passo certo antes de falarmos.</p></div>
+  </div>
+</div></section>
+
+<section class="contact" id="contacto"><div class="in">
+  <span class="eyebrow">Contacto</span>
+  <h2>Bora fazer acontecer?</h2>
+  <p class="lead">O mais rápido é marcar o diagnóstico. Se preferires escrever, respondo em 2 dias úteis.</p>
+  <div class="row"><a class="btn solid" href="https://sessaodiagnostico.base44.app/" target="_blank" rel="noopener">Marcar diagnóstico de 30 min</a></div>
+  <div class="lines">
+    <div><small>Email</small><span id="mail">contacto@taniasilveira.pt</span><button class="copy" type="button" id="copymail">Copiar email</button></div>
+    <div><small>LinkedIn</small><a href="https://www.linkedin.com/in/t%C3%A2nia-silveira-229848295" target="_blank" rel="noopener">Tânia Silveira</a></div>
+    <div><small>Instagram</small><a href="https://www.instagram.com/taniasilveira.pt/" target="_blank" rel="noopener">@taniasilveira.pt</a></div>
+  </div>
+</div></section>
+
+</main>
+
+<footer class="end"><div class="in"><span>© 2027 Tânia Silveira · Planeamento e produção têxtil 🧵</span><span>Guimarães, Portugal</span></div></footer>
+
+<script>
+document.getElementById('copymail').addEventListener('click',async e=>{
+  const b=e.currentTarget,t=document.getElementById('mail').textContent;
+  try{await navigator.clipboard.writeText(t);b.textContent='Copiado'}
+  catch(err){const r=document.createRange();r.selectNodeContents(document.getElementById('mail'));const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent='Seleciona e copia'}
+  setTimeout(()=>b.textContent='Copiar email',1800);
+});
+</script>
