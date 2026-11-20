@@ -22,5 +22,6 @@ Fonte: feedback da Sarah ao Reels de 23 de novembro de 2026 e o Reels de 25 rees
   9. Fecho com a tese numa frase. CTA, se houver, curto e no fim (ou só na legenda).
 - Tamanho: o Reels que ensina pode ir até 1:30 (cerca de 200 palavras). A regra dos 30 a 45 segundos fica só para Reels de opinião ou de bastidores sem parte prática.
 - Tom do Reels: como numa reunião com a cliente à frente. "Quando me sento com uma marca…", "Depois pergunto-te…", "E olha…", "Põe lá tudo". Fala dela para a cliente, com o que ela faz e pergunta, nunca como manual de instruções ("Abre as vendas…", "Começa por…").
+- Não repetir conteúdo (Tânia, 20 de novembro): antes de escrever, lê os copies dos outros dias da mesma semana e da semana anterior. Se um tema já lá está (ex.: prazos por escrito ao fornecedor, a lista de custos, "a peça muda antes de existir"), dá outro ângulo à etapa, mesmo que o briefing a repita.
 - Reels sem listas (regra da Tânia, manda sobre o modelo da Sarah): nada de 1, 2, 3 nem "primeiro, segundo". As decisões ligam-se umas às outras ("Começa por…", "Com isso à frente…", "Antes de…", "E…"). Listas numeradas só no carrossel.
 - A Sarah escreve em português do Brasil. Passa sempre para PT-PT (tu, "sem dares por isso", "apanha luz") sem mudar a estrutura nem o sentido.
