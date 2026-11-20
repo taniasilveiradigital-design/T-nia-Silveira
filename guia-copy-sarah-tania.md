@@ -23,6 +23,7 @@ Fonte: o Trello "Plano de Escalada" completo (abril a novembro 2026). São 307 c
   4. Curiosidade: deixa uma pergunta por responder ("Vou mostrar-te que decisão pode evitar isso").
 - Exemplos da Sarah: "Podes ter um produto excelente e ainda assim não conseguir despertar desejo de compra." · "Quanto mais bonito fica o teu conteúdo, menos o teu produto aparece." · "Vi um produto que teria comprado na hora. Mas uma coisa no conteúdo fez-me desistir." · "A tua marca pode estar a perder dinheiro antes mesmo de vender a primeira peça. Vou mostrar-te que decisão pode evitar isso."
 - O que NÃO é gancho: abrir com um número sozinho ("568 peças paradas"), com a história ("No outro dia vi uma marca…") ou com uma frase de fábrica entre aspas. Isso vem logo a seguir, não no primeiro segundo.
+- Ensinar a decidir, não listar erros (Sarah, 27 de novembro): cada ponto é uma decisão com a ação e o como fazer. As consequências e os erros servem só para a quebra, uma vez, nunca em todos os pontos.
 - Estrutura do Reels que ensina (modelo da Sarah, Reels de 25 de novembro):
   1. Gancho com os 4 pontos, falado para a dona da marca.
   2. História real em frases curtas, uma ideia por linha.
