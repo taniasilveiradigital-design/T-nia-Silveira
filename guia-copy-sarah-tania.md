@@ -35,6 +35,7 @@ Fonte: o Trello "Plano de Escalada" completo (abril a novembro 2026). São 307 c
   8. As decisões, cada uma com ação e explicação, ditas em conversa corrida (sem números).
   9. Fecho com a tese numa frase. CTA, se houver, curto e no fim (ou só na legenda).
 - Tamanho: o Reels que ensina pode ir até 1:30 (cerca de 200 palavras). A regra dos 30 a 45 segundos fica só para Reels de opinião ou de bastidores sem parte prática.
+- Tom do Reels: como numa reunião com a cliente à frente. "Quando me sento com uma marca…", "Depois pergunto-te…", "E olha…", "Põe lá tudo". Fala dela para a cliente, com o que ela faz e pergunta, nunca como manual de instruções ("Abre as vendas…", "Começa por…").
 - Reels sem listas (regra da Tânia, manda sobre o modelo da Sarah): nada de 1, 2, 3 nem "primeiro, segundo". As decisões ligam-se umas às outras ("Começa por…", "Com isso à frente…", "Antes de…", "E…"). Listas numeradas só no carrossel.
 - A Sarah escreve em português do Brasil. Passa sempre para PT-PT (tu, "sem dares por isso", "apanha luz") sem mudar a estrutura nem o sentido.
 
