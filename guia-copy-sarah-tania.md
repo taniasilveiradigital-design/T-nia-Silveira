@@ -12,7 +12,7 @@ Fonte: o Trello "Plano de Escalada" completo (abril a novembro 2026). São 307 c
 - Contra: coleção feita por gosto, desconto como estratégia, comunicação que tapa produto fraco.
 - Prova com casos reais: 568 peças paradas, 150 sweats perdidas, bordado não escalado (2 cm), 6.550 € em stock, produção avançada sem marca registada.
 - Palavra proibida: "estrutura". CTA variado (a Sarah não quer o mesmo em todos): DIAGNÓSTICO no máximo 1 a 2 vezes por semana, mensagem com a foto da peça, guardar e partilhar, pergunta.
-- Reels que ensinam: até 1:30, no modelo da Sarah (secção 0.1). Reels de opinião ou bastidores: 30 a 45 segundos. A história em conversa corrida; só as "três decisões" são numeradas.
+- Reels que ensinam: até 1:30, no modelo da Sarah (secção 0.1). Reels de opinião ou bastidores: 30 a 45 segundos. Sempre em conversa corrida, sem listas.
 
 ## 0.1 Ganchos e Reels que ensinam (regras da Sarah)
 
@@ -32,10 +32,10 @@ Fonte: o Trello "Plano de Escalada" completo (abril a novembro 2026). São 307 c
   5. O que faltou, em lista concreta (textura, caimento, acabamento…).
   6. O erro com nome: "E aqui está um erro que precisas de evitar: …"
   7. A ponte: "Queres [resultado] sem [perda]? Começa por três decisões:"
-  8. Três decisões numeradas, cada uma com ação e explicação na mesma frase.
+  8. As decisões, cada uma com ação e explicação, ditas em conversa corrida (sem números).
   9. Fecho com a tese numa frase. CTA, se houver, curto e no fim (ou só na legenda).
 - Tamanho: o Reels que ensina pode ir até 1:30 (cerca de 200 palavras). A regra dos 30 a 45 segundos fica só para Reels de opinião ou de bastidores sem parte prática.
-- A história conta-se em conversa corrida. As "três decisões" numeradas são a única lista permitida no Reels falado.
+- Reels sem listas (regra da Tânia, manda sobre o modelo da Sarah): nada de 1, 2, 3 nem "primeiro, segundo". As decisões ligam-se umas às outras ("Começa por…", "Com isso à frente…", "Antes de…", "E…"). Listas numeradas só no carrossel.
 - A Sarah escreve em português do Brasil. Passa sempre para PT-PT (tu, "sem dares por isso", "apanha luz") sem mudar a estrutura nem o sentido.
 
 

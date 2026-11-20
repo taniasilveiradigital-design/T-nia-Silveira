@@ -18,8 +18,8 @@ Fonte: feedback da Sarah ao Reels de 23 de novembro de 2026 e o Reels de 25 rees
   5. O que faltou, em lista concreta (textura, caimento, acabamento…).
   6. O erro com nome: "E aqui está um erro que precisas de evitar: …"
   7. A ponte: "Queres [resultado] sem [perda]? Começa por três decisões:"
-  8. Três decisões numeradas, cada uma com ação e explicação na mesma frase.
+  8. As decisões, cada uma com ação e explicação, ditas em conversa corrida (sem números).
   9. Fecho com a tese numa frase. CTA, se houver, curto e no fim (ou só na legenda).
 - Tamanho: o Reels que ensina pode ir até 1:30 (cerca de 200 palavras). A regra dos 30 a 45 segundos fica só para Reels de opinião ou de bastidores sem parte prática.
-- A história conta-se em conversa corrida. As "três decisões" numeradas são a única lista permitida no Reels falado.
+- Reels sem listas (regra da Tânia, manda sobre o modelo da Sarah): nada de 1, 2, 3 nem "primeiro, segundo". As decisões ligam-se umas às outras ("Começa por…", "Com isso à frente…", "Antes de…", "E…"). Listas numeradas só no carrossel.
 - A Sarah escreve em português do Brasil. Passa sempre para PT-PT (tu, "sem dares por isso", "apanha luz") sem mudar a estrutura nem o sentido.
