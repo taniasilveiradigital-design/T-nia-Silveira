@@ -7,7 +7,7 @@ SITE = "https://taniasilveira.pt"
 HOJE = "2026-11-20"
 
 # ---------- dados que a Tânia pode mudar num só sítio ----------
-ANOS = "7"  # anos de experiência no têxtil
+ANOS = "10"  # anos de experiência no têxtil
 LINKS = {
     "diagnostico": "https://sessaodiagnostico.base44.app/",
     "fibra": "https://metodofibra.base44.app/",
