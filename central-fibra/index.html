@@ -55,6 +55,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .grp-h[aria-expanded="true"] .seta{transform:rotate(90deg)}
 .grp-b{display:flex;flex-direction:column;padding-left:12px;border-left:1px solid var(--side-2);margin-left:14px}
 .nav .grp{display:flex;flex-direction:column}
+.nav > div:not(:first-child) > a{font-weight:600;opacity:1}
 [hidden]{display:none!important}
 .nav a .n{margin-left:auto;font-size:.72rem;opacity:.8;font-variant-numeric:tabular-nums}
 .sidefoot{padding:12px 14px calc(14px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--side-2);display:flex;flex-wrap:wrap;gap:6px}
@@ -192,11 +193,12 @@ form.add .wide{grid-column:1/-1}
 <script>
 /* ===== Dados de base (fotografia de 20/11/2026) ===== */
 const AREAS=[
- {g:"Painel",items:[["hoje","Hoje"]]},
- {g:"Radares",items:[["radar","Radar Têxtil"],["radaremail","Radar do email"]]},
- {g:"Negócio",items:[["dinheiro","Dinheiro"],["clientes","Clientes"],["servicos","Serviços e preços"]]},
- {g:"Conteúdo",items:[["copy","Copy"],["ideias","Ideias"]]},
+ {g:"Painel",plain:true,items:[["hoje","Hoje"]]},
  {g:"Tempo",items:[["agenda","Agenda"],["mail","Mail"]]},
+ {g:"Clientes",plain:true,items:[["clientes","Clientes"]]},
+ {g:"Negócio",items:[["dinheiro","Dinheiro"],["servicos","Serviços e preços"]]},
+ {g:"Radares",items:[["radar","Radar Têxtil"],["radaremail","Radar do email"]]},
+ {g:"Conteúdo",items:[["copy","Copy"],["ideias","Ideias"]]},
  {g:"Raiz",items:[["marca","Marca"],["historia","História"],["ferramentas","Ferramentas"]]},
  {g:"Equipa",items:[["responsaveis","Responsáveis"]]}
 ];
@@ -629,7 +631,7 @@ function nav(cur){
  const n={clientes:S.clientes.filter(c=>c.estado==="Ativa").length,mail:(MAIL?mailPend().length:S.mail.filter(m=>!m.feito).length),ideias:S.ideias.filter(i=>i.estado==="Viva").length};
  const link=([id,l])=>`<a href="#${id}"${id===cur?' aria-current="page"':""}>${l}${n[id]?`<span class="n">${n[id]}</span>`:""}</a>`;
  $("#nav").innerHTML=AREAS.map((a,i)=>{
-  if(i===0) return `<div><span class="lbl">${a.g}</span>${a.items.map(link).join("")}</div>`;
+  if(a.plain) return `<div>${i===0?`<span class="lbl">${a.g}</span>`:""}${a.items.map(link).join("")}</div>`;
   const temCur=a.items.some(([id])=>id===cur), aberto=temCur||NAVOPEN[a.g];
   const tot=a.items.reduce((s,[id])=>s+(n[id]||0),0);
   return `<div class="grp"><button type="button" class="grp-h" data-grp="${a.g}" aria-expanded="${aberto}">${a.g}${!aberto&&tot?`<span class="n">${tot}</span>`:""}<span class="seta" aria-hidden="true">›</span></button><div class="grp-b"${aberto?"":" hidden"}>${a.items.map(link).join("")}</div></div>`;
