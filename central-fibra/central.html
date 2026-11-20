@@ -125,8 +125,36 @@ form.add .wide{grid-column:1/-1}
 .check.done .t{text-decoration:line-through;color:var(--faint)}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--castanho);color:#fff;padding:9px 16px;border-radius:10px;font-size:.88rem;z-index:50}
 .navscrim{display:none}
+.ev-cliente{--ec:var(--ok)} .ev-trabalho{--ec:var(--acc)} .ev-saude{--ec:var(--bad)} .ev-pessoal{--ec:var(--castanho)} .ev-rotina{--ec:var(--faint)} .ev-feriado{--ec:var(--warn)}
+:root[data-theme="dark"] .ev-pessoal{--ec:var(--bege)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ev-pessoal{--ec:var(--bege)}}
+.aghead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px}
+.agleg{display:flex;flex-wrap:wrap;gap:14px;font-size:.78rem;color:var(--muted)}
+.agleg i{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--ec);margin-right:5px;vertical-align:-1px}
+.agwrap{overflow-x:auto}
+.aggrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;min-width:560px}
+.agw{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:2px 6px}
+.agc{all:unset;box-sizing:border-box;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:10px;min-height:108px;padding:6px;display:flex;flex-direction:column;gap:3px;min-width:0;overflow:hidden}
+.agc:hover{border-color:var(--acc)}
+.agc:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+.agc.out{background:transparent;border-style:dashed;opacity:.4;cursor:default}
+.agc.hoje .agn{background:var(--acc);color:var(--acc-fg);border-radius:99px;padding:0 7px}
+.agc.sel{border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc)}
+.agn{font-weight:700;font-size:.82rem;align-self:flex-start;display:flex;align-items:center;gap:4px;font-variant-numeric:tabular-nums}
+.agdot{width:8px;height:8px;border-radius:50%;background:var(--bad);display:inline-block}
+.agfer{font-size:.66rem;color:var(--warn);font-weight:600;line-height:1.2}
+.agch{font-size:.7rem;line-height:1.25;padding:2px 5px;border-radius:5px;background:color-mix(in srgb,var(--ec) 16%,var(--panel));border-left:3px solid var(--ec);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.agch b{font-weight:700;font-variant-numeric:tabular-nums}
+.agmais{font-size:.7rem;color:var(--muted);font-weight:600}
+.agrow{display:grid;grid-template-columns:96px minmax(0,1fr) auto;gap:10px;align-items:start;padding:9px 0 9px 10px;border-top:1px solid var(--line);border-left:3px solid var(--ec)}
+.agrow:first-child{border-top:0}
+.agrow.imp .t{font-weight:700}
+.agrow:not(.imp) .t{font-weight:500}
+.agalert{background:var(--bad-bg);color:var(--bad);border-radius:10px;padding:10px 12px;font-size:.86rem}
 
 @media (max-width:860px){
+  .agrow{grid-template-columns:70px minmax(0,1fr)}
+  .agrow .pill{display:none}
   #app{grid-template-columns:minmax(0,1fr)}
   .side{position:fixed;left:0;top:0;bottom:0;width:min(290px,86%);z-index:40;transform:translateX(-105%);transition:transform .2s;height:auto;padding-top:env(safe-area-inset-top,0px)}
   body.navopen .side{transform:none}
@@ -353,10 +381,13 @@ function totais(mes){let e=0,s=0;for(const m of S.movs){if(mes&&!m.data.startsWi
 const V={};
 V.hoje=()=>{
  const t=totais(mesAtual()); const ativos=S.clientes.filter(c=>c.estado==="Ativa").length;
- const prox=AGENDA.filter(a=>a[0]>=HOJE).slice(0,6);
- const pend=S.mail.filter(m=>!m.feito);
+ const prox=AG?Array.from({length:7},(_,i)=>addDias(HOJE,i)).flatMap(d=>evDia(d).filter(e=>e.imp&&e.c!=="rotina"&&e.c!=="feriado").map(e=>[d,e.s,e.t])).slice(0,7):AGENDA.filter(a=>a[0]>=HOJE).slice(0,6);
+ const pend=MAIL?mailPend():S.mail.filter(m=>!m.feito);
+ const alHoje=AG?alertasDe(HOJE):[];
  const pct=Math.min(100,Math.round(t.e/S.meta*100));
+ const urg=pend.filter(p=>p.p==="alta");
  return head("hoje","O negócio todo numa página. Primeiro o que está mal, depois o resto.")+`
+ ${alHoje.length||urg.length?`<div class="card alert"><div class="lbl">Alertas de hoje</div><div class="list">${alHoje.map(e=>`<div class="row"><span class="t">${e.s?e.s+" · ":""}${esc(e.t)}</span><span></span><span class="s">${esc(e.nota)}</span></div>`).join("")}${urg.map(p=>`<div class="row"><span class="t">Mail · ${esc(p.t)}</span><span class="pill bad">Urgente</span><span class="s">${esc(p.s)}</span></div>`).join("")}</div></div>`:""}
  <div class="card alert"><div class="lbl">O que está mal</div><ul class="clean">
   <li><b>Não sabes quanto faturas.</b> O último número registado é de março: 700€/mês. Sem isto não há meta que se meça. Começa a lançar em Dinheiro.</li>
   <li><b>Duas clientes ativas para uma meta de 3.000€.</b> Aos preços de hoje precisavas de 10 em simultâneo. Os preços têm de subir antes de janeiro.</li>
@@ -479,19 +510,67 @@ V.radar=()=>{
  <div class="list card">${[...S.radar].sort((a,b)=>b.data.localeCompare(a.data)).map(r=>`<div class="row"><span class="t">${esc(r.t)}</span><span><span class="pill acc">${esc(r.tipo)}</span> <button class="x" data-del-radar="${r.id}" aria-label="Apagar">×</button></span><span class="s">${fdata(r.data)} · ${esc(r.fonte)}${r.d?" — "+esc(r.d):""}</span></div>`).join("")}</div>
  <p class="small"><a href="https://claude.ai/artifact/FMcpzQckzBaMehdF8tea41" target="_blank" rel="noopener">Radar Têxtil (plano por dias e onde te destacas)</a> · <a href="https://claude.ai/artifact/VaC8NwGg6H9z35WgSqQtvW" target="_blank" rel="noopener">2027: o que vai ditar o mercado</a></p>`;};
 
+/* ===== Agenda (mês, como no Google) ===== */
+let AG=null, AGD={}, agMes=HOJE.slice(0,7), agDia=HOJE, agRot=true;
+try{agRot=localStorage.getItem("centralFibra.rotina")!=="0"}catch(e){}
+const MESES=["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+const DSEM=["domingo","segunda","terça","quarta","quinta","sexta","sábado"];
+const CATN={cliente:"Cliente",trabalho:"Trabalho",saude:"Saúde",pessoal:"Pessoal",rotina:"Rotina",feriado:"Feriado"};
+const addDias=(d,n)=>{const x=new Date(d+"T12:00");x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)};
+fetch("agenda.json").then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{AG=d;AGD={};for(const e of d.eventos||[])for(let i=0;i<(e.dias||1);i++){const k=addDias(e.d,i);(AGD[k]=AGD[k]||[]).push(e)}render()}).catch(()=>{AG={eventos:[]};render()});
+const evDia=d=>(AGD[d]||[]).slice().sort((a,b)=>(a.s||"00:00").localeCompare(b.s||"00:00"));
+const alertasDe=d=>evDia(d).filter(e=>e.nota&&e.c!=="rotina");
+function agDiaHTML(d){
+ const evs=evDia(d).filter(e=>agRot||e.c!=="rotina"), al=alertasDe(d);
+ const dt=new Date(d+"T12:00");
+ return `<div class="card agday"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline"><h3>${DSEM[dt.getDay()]}, ${dt.getDate()} de ${MESES[dt.getMonth()]}</h3><span class="small muted">${evs.length} ${evs.length===1?"evento":"eventos"}</span></div>
+ ${al.map(e=>`<div class="agalert"><b>Atenção · ${esc(e.t)}</b><br>${esc(e.nota)}</div>`).join("")}
+ <div class="list">${evs.map(e=>`<div class="agrow ev-${e.c}${e.imp?" imp":""}"><span class="when">${e.s?e.s+(e.e?"–"+e.e:""):"Dia todo"}</span><span><span class="t">${esc(e.t)}</span>${e.nota&&!al.includes(e)?`<br><span class="small muted">${esc(e.nota)}</span>`:""}</span><span class="pill">${CATN[e.c]||e.c}</span></div>`).join("")||'<div class="empty">Dia livre.</div>'}</div></div>`;
+}
 V.agenda=()=>{
- const fut=AGENDA.filter(a=>a[0]>=HOJE);
- const pc={trabalho:"acc",cliente:"ok",pessoal:""};
- return head("agenda","Do Google Calendar, de 20 de novembro a 17 de dezembro.")+`
- <div class="card"><div class="list">${fut.map(a=>`<div class="row"><span class="t">${esc(a[2])}</span><span><span class="when">${dsem(a[0])} ${fdata(a[0])}${a[1]?" · "+a[1]:""}</span> <span class="pill ${pc[a[3]]}">${a[3]}</span></span></div>`).join("")||'<div class="empty">Sem eventos nesta fotografia.</div>'}</div></div>
- <div class="card alert"><div class="lbl">Atenção</div><ul class="clean"><li>Black Friday (27/11) calha no GBR Peniche. Deixa a copy de sexta agendada na véspera.</li><li>A sessão da Susana é a única de cliente até ao Natal.</li></ul></div>
- <p class="small muted">A agenda é uma fotografia de 20/11. Pede-me para a atualizar.</p>`;
+ if(AG===null) return head("agenda","A carregar a agenda…")+`<div class="empty">A carregar…</div>`;
+ const [y,m]=agMes.split("-").map(Number), first=new Date(y,m-1,1), off=(first.getDay()+6)%7, dim=new Date(y,m,0).getDate();
+ const cells=Math.ceil((off+dim)/7)*7; let g="";
+ for(let i=0;i<cells;i++){
+  const dn=i-off+1; if(dn<1||dn>dim){g+=`<div class="agc out"></div>`;continue}
+  const d=`${agMes}-${String(dn).padStart(2,"0")}`, all=evDia(d), fer=all.find(e=>e.c==="feriado");
+  const vis=all.filter(e=>e.c!=="feriado"&&(agRot||e.c!=="rotina"));
+  const top=vis.filter(e=>e.imp||e.c!=="rotina").slice(0,3), resto=vis.length-top.length, al=alertasDe(d).length;
+  g+=`<button type="button" class="agc${d===HOJE?" hoje":""}${d===agDia?" sel":""}" data-agd="${d}" aria-label="${dn} de ${MESES[m-1]}, ${vis.length} eventos"><span class="agn">${dn}${al?'<i class="agdot" title="Alerta"></i>':""}</span>${fer?`<span class="agfer">${esc(fer.t)}</span>`:""}${top.map(e=>`<span class="agch ev-${e.c}">${e.s?`<b>${e.s}</b> `:""}${esc(e.t)}</span>`).join("")}${resto>0?`<span class="agmais">+${resto}</span>`:""}</button>`;
+ }
+ const prox=[];for(let i=0;i<8;i++){const d=addDias(HOJE,i);for(const e of alertasDe(d))prox.push([d,e])}
+ return head("agenda","Todos os teus calendários num só: a tua agenda, A Minha Agenda, o taniasilveira.digital e os feriados.")+`
+ ${prox.length?`<div class="card alert"><div class="lbl">Alertas dos próximos 8 dias</div><div class="list">${prox.map(([d,e])=>`<div class="row"><span class="t">${esc(e.t)}</span><span class="when">${dsem(d)} ${fdata(d)}${e.s?" · "+e.s:""}</span><span class="s">${esc(e.nota)}</span></div>`).join("")}</div></div>`:""}
+ <div class="aghead"><div style="display:flex;gap:6px;align-items:center"><button type="button" class="btn ghost sm" data-agm="-1" aria-label="Mês anterior">‹</button><h3 style="min-width:9.5em;text-align:center;text-transform:capitalize">${MESES[m-1]} ${y}</h3><button type="button" class="btn ghost sm" data-agm="1" aria-label="Mês seguinte">›</button><button type="button" class="btn sm" data-agm="0">Hoje</button></div>
+ <label class="small" style="display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="agRot"${agRot?" checked":""} style="accent-color:var(--acc)"> Mostrar a rotina (A Minha Agenda)</label></div>
+ <div class="agleg">${["cliente","trabalho","saude","pessoal","rotina"].map(c=>`<span class="ev-${c}"><i></i>${CATN[c]}</span>`).join("")}</div>
+ <div class="agwrap"><div class="aggrid">${["seg","ter","qua","qui","sex","sáb","dom"].map(w=>`<div class="agw">${w}</div>`).join("")}${g}</div></div>
+ ${agDiaHTML(agDia)}
+ <p class="small muted">Atualizado a ${esc((AG.atualizado||"").replace("T"," às "))}. Fonte: ${esc(AG.fonte||"")}. Atualiza todos os dias de manhã.</p>`;
 };
 
-V.mail=()=>head("mail","Triagem da caixa de entrada: o que pede resposta e o que é para cortar.")+`
- <div class="card">${S.mail.map(m=>`<label class="check${m.feito?" done":""}"><input type="checkbox" data-mail="${m.id}"${m.feito?" checked":""}><span><span class="t">${esc(m.t)}</span><br><span class="small muted">${esc(m.s)}</span></span></label>`).join("")}</div>
- <form class="add" id="mailForm"><label class="wide">Tarefa de email<input name="t" required></label><button class="btn" type="submit">Adicionar</button></form>
- <p class="small muted">Lido a 20/11 em taniasilveira.digital. Nenhum email de cliente a pedir resposta.</p>`;
+/* ===== Mail ===== */
+let MAIL=null, mailF="Tudo";
+fetch("mail.json").then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{MAIL=d;render()}).catch(()=>{MAIL={pendentes:[],radar:[]};render()});
+if(!S.mailFeito)S.mailFeito={};
+const mailPend=()=>(MAIL?.pendentes||[]).filter(p=>!S.mailFeito[p.t]);
+V.mail=()=>{
+ if(MAIL===null) return head("mail","A carregar o mail…")+`<div class="empty">A carregar…</div>`;
+ const pc={alta:"bad",media:"warn",baixa:""}, pn={alta:"Urgente",media:"Esta semana",baixa:"Quando der"};
+ const F=["Tudo","Têxtil","Moda","Negócios","IA"], rs=(MAIL.radar||[]).filter(r=>mailF==="Tudo"||r.a===mailF);
+ const P=MAIL.pinterest||{};
+ return head("mail","O que está pendente na caixa taniasilveira.digital e o radar das newsletters do setor. Atualiza todos os dias de manhã.")+`
+ ${MAIL.resumo?`<div class="card dark"><div class="lbl">Hoje no mail</div><p style="font-family:var(--display);font-size:1.4rem;line-height:1.25">${esc(MAIL.resumo)}</p></div>`:""}
+ <div class="card"><div class="lbl">Pendentes · ${mailPend().length} por tratar</div>${(MAIL.pendentes||[]).map(p=>{const f=!!S.mailFeito[p.t];return `<label class="check${f?" done":""}"><input type="checkbox" data-mp="${esc(p.t)}"${f?" checked":""}><span style="flex:1"><span class="t">${esc(p.t)}</span> <span class="pill ${pc[p.p]}">${pn[p.p]}</span>${p.q&&p.q!=="—"?` <span class="when">${esc(p.q)}</span>`:""}<br><span class="small muted">${esc(p.s)}</span></span></label>`}).join("")||'<div class="empty">Nada pendente.</div>'}</div>
+ <h3 style="margin-top:6px">Radar do email</h3><p class="small muted" style="margin-top:-12px">Portugal Têxtil, T Jornal/ATP, FashionNetwork, WGSN e MODAPORTUGAL, lidos por ti. Só o que interessa.</p>
+ <div class="filters" role="group" aria-label="Filtrar">${F.map(f=>`<button type="button" data-mf="${f}" aria-pressed="${f===mailF}">${f} <span class="muted">${f==="Tudo"?(MAIL.radar||[]).length:(MAIL.radar||[]).filter(r=>r.a===f).length}</span></button>`).join("")}</div>
+ <div class="grid">${rs.map(r=>`<div class="card"><div style="display:flex;gap:6px;flex-wrap:wrap"><span class="pill acc">${esc(r.a)}</span><span class="pill">${fdata(r.d)}</span></div><h3>${esc(r.t)}</h3><p class="small">${esc(r.x)}</p><p class="small" style="color:var(--acc);font-weight:600">Para ti: ${esc(r.w)}</p><p class="small muted">${esc(r.f)}</p></div>`).join("")||'<div class="empty">Sem notícias nesta área.</div>'}</div>
+ ${(MAIL.eventos||[]).length?`<div class="card"><div class="lbl">Eventos do setor</div><div class="list">${MAIL.eventos.map(e=>`<div class="row"><span class="t">${esc(e.t)}</span><span class="when">${fdata(e.d)} ${e.d.slice(0,4)}</span><span class="s">${esc(e.l)}</span></div>`).join("")}</div></div>`:""}
+ ${P.leitura?`<div class="card"><div class="lbl">Pinterest · o que serve à tua marca</div><p class="small">${esc(P.leitura)}</p><div class="list">${(P.ideias||[]).map(i=>`<div class="row"><span class="t">${esc(i.t)}</span><span></span><span class="s">${esc(i.d)}</span></div>`).join("")}</div></div>`:""}
+ <div class="card"><div class="lbl">As tuas tarefas de email</div>${S.mail.map(m=>`<label class="check${m.feito?" done":""}"><input type="checkbox" data-mail="${m.id}"${m.feito?" checked":""}><span><span class="t">${esc(m.t)}</span>${m.s?`<br><span class="small muted">${esc(m.s)}</span>`:""}</span></label>`).join("")}
+ <form class="add" id="mailForm" style="margin-top:8px"><label class="wide">Nova tarefa<input name="t" required></label><button class="btn" type="submit">Adicionar</button></form></div>
+ <p class="small muted">${esc(MAIL.arrumado||"")} Atualizado a ${esc((MAIL.atualizado||"").replace("T"," às "))}.</p>`;
+};
 
 V.marca=()=>head("marca","A identidade em que tudo assenta. Esta página usa-a.")+`
  <div class="card dark"><div class="lbl">Posicionamento</div><p style="font-family:var(--display);font-size:1.7rem;line-height:1.2">Uma marca de moda que sabe onde ganha dinheiro.</p><p class="muted">Estrategista de produto para marcas de moda e negócios têxteis. Nascida no chão.</p></div>
@@ -526,7 +605,7 @@ let NAVOPEN={};try{NAVOPEN=JSON.parse(localStorage.getItem("centralFibra.nav"))|
 let NAVCUR="hoje";
 function nav(cur){
  NAVCUR=cur;
- const n={clientes:S.clientes.filter(c=>c.estado==="Ativa").length,mail:S.mail.filter(m=>!m.feito).length,ideias:S.ideias.filter(i=>i.estado==="Viva").length};
+ const n={clientes:S.clientes.filter(c=>c.estado==="Ativa").length,mail:(MAIL?mailPend().length:S.mail.filter(m=>!m.feito).length),ideias:S.ideias.filter(i=>i.estado==="Viva").length};
  const link=([id,l])=>`<a href="#${id}"${id===cur?' aria-current="page"':""}>${l}${n[id]?`<span class="n">${n[id]}</span>`:""}</a>`;
  $("#nav").innerHTML=AREAS.map((a,i)=>{
   if(i===0) return `<div><span class="lbl">${a.g}</span>${a.items.map(link).join("")}</div>`;
@@ -565,6 +644,9 @@ document.addEventListener("click",e=>{
  else if(ds.if){ideiaF=ds.if;render();return}
  else if(ds.rw){radarW=+ds.rw;radarF="Tudo";render();return}
  else if(ds.rf){radarF=ds.rf;render();return}
+ else if(ds.agd){agDia=ds.agd;render();const el=document.querySelector(".agday");if(el)el.scrollIntoView({behavior:"smooth",block:"nearest"});return}
+ else if(ds.agm!==undefined){const k=+ds.agm;if(k===0){agMes=HOJE.slice(0,7);agDia=HOJE}else{const [y,m]=agMes.split("-").map(Number);const d=new Date(y,m-1+k,1);agMes=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");agDia=agMes+"-01"}render();return}
+ else if(ds.mf){mailF=ds.mf;render();return}
  else if(ds.grp){const aberto=b.getAttribute("aria-expanded")==="true";NAVOPEN[ds.grp]=!aberto;try{localStorage.setItem("centralFibra.nav",JSON.stringify(NAVOPEN))}catch(e){}if(aberto&&AREAS.find(a=>a.g===ds.grp).items.some(([id])=>id===NAVCUR)){b.nextElementSibling.hidden=true;b.setAttribute("aria-expanded","false")}else nav(NAVCUR);return}
  else return;
  save(); render();
@@ -574,6 +656,8 @@ document.addEventListener("change",e=>{
  if(ds.cliEstado){S.clientes.find(x=>x.id===ds.cliEstado).estado=t.value}
  else if(ds.ideiaEstado){S.ideias.find(x=>x.id===ds.ideiaEstado).estado=t.value}
  else if(ds.mail){S.mail.find(x=>x.id===ds.mail).feito=t.checked}
+ else if(ds.mp!==undefined){if(t.checked)S.mailFeito[ds.mp]=true;else delete S.mailFeito[ds.mp]}
+ else if(t.id==="agRot"){agRot=t.checked;try{localStorage.setItem("centralFibra.rotina",agRot?"1":"0")}catch(e){}render();return}
  else if(ds.resp!==undefined){S.resp[ds.resp]=t.value.trim();save();toast("Responsável guardado.");return}
  else if(t.id==="meta"){S.meta=+t.value||0}
  else return;

@@ -1,0 +1,49 @@
+{
+"atualizado":"2026-11-20T12:15",
+"conta":"taniasilveira.digital@gmail.com",
+"resumo":"Dois assuntos urgentes: o pagamento dos anúncios do Facebook foi recusado e as fotos de branding estão prontas para descarregar. No setor, a semana é de eventos à porta: Fórum da ATP a 24/11 e MODAPORTUGAL a 25/11.",
+"pendentes":[
+ {"p":"alta","t":"Pagamento dos anúncios do Facebook recusado","s":"Meta, 19/11. Os anúncios param até pagares. Sem isto não há anúncios na Black Week da lista. Atualiza o cartão no Gestor de Anúncios.","q":"Hoje"},
+ {"p":"alta","t":"Fotos de branding prontas para descarregar","s":"Joana Mota Fotografia, 18/11. Descarrega já: o link do Pixieset expira e são as fotos novas que faltam ao teu feed.","q":"Hoje"},
+ {"p":"alta","t":"Inscrever no 28.º Fórum da Indústria Têxtil (ATP)","s":"24/11, 14h, Fábrica de Santo Thyrso. Tema: Made in Portugal, captar valor na próxima década. É o teu público de 2027. Choca com as unhas às 14h.","q":"Até 23/11"},
+ {"p":"alta","t":"Decidir e inscrever no «O Futuro da Indústria da Moda»","s":"MODAPORTUGAL / CENIT, 25/11, 10h, Guimarães. Está na agenda como por confirmar.","q":"Até 24/11"},
+ {"p":"media","t":"Responder ao convite da Hélia Carvalho","s":"Mentoria HELIUM a 30/11, 10h30. Ainda está por aceitar.","q":"Esta semana"},
+ {"p":"media","t":"Ver as menções da Sarah no Trello","s":"20/11: cartão «Quarta: análise de uma IA usada de forma errada na marca». 19/11: «Segunda: perguntas de quem está a começar». 17/11: «Terça: o fornecedor que todos indicam».","q":"Hoje"},
+ {"p":"media","t":"Webinar Textile Futures 2040 choca com a Aula Impulsia","s":"25/11 às 15h. Estás inscrita. Pede a gravação ao Forum for the Future.","q":"Até 25/11"},
+ {"p":"baixa","t":"Confirmar a autorização no Supabase","s":"18/11: foi autorizada uma aplicação nova na tua organização. Se não foste tu, revoga.","q":"Esta semana"},
+ {"p":"baixa","t":"Teste do Supermetrics a acabar","s":"Se não usas, deixa acabar. Não pagues.","q":"—"}
+],
+"radar":[
+ {"a":"Têxtil","f":"T Jornal (ATP)","d":"2026-11-18","t":"28.º Fórum da Indústria Têxtil a 24/11","x":"30 anos do Fórum. Painéis com Pascal Morand (FHCM), Mário Jorge Machado (EURATEX) e EURATEX/Comissão Europeia. Keynote de João Filipe Torneiro sobre criar e captar valor.","w":"É exatamente a tua conversa de 2027: a fábrica que quer marca própria e margem. Ir, ouvir, fazer contactos."},
+ {"a":"IA","f":"Portugal Têxtil · T Jornal","d":"2026-11-19","t":"Smartex.ai lança plataforma de IA com apoio da H&M","x":"Tony Fadell (iPod, iPhone, Nest) é o novo presidente da tecnológica portuguesa. A empresa apresenta em Hong Kong uma solução para produtores e marcas e o equipamento Inspect.","w":"IA no chão de fábrica, feita em Portugal. Prova para o teu discurso de IA aplicada à produção."},
+ {"a":"Têxtil","f":"Portugal Têxtil","d":"2026-11-18","t":"80% dos consumidores não conhecem o Passaporte Digital de Produto","x":"Estudo da Universidade do Minho e do CITEVE, publicado na Sustainability.","w":"As marcas vão ter de explicar o produto antes de o cliente perguntar. Tema forte para conteúdo."},
+ {"a":"Negócios","f":"Portugal Têxtil · ModaPortugal","d":"2026-11-19","t":"Vestuário profissional pede para ser valorizado","x":"Axfilia, Jobs Uniforms, Trot, Profartic/Naivest e HR Proteção defendem durabilidade, especialização técnica e serviço contra a concorrência só pelo preço.","w":"Nicho com margem e procura. Fábricas deste segmento podem precisar de ti para comunicar valor."},
+ {"a":"Moda","f":"T Jornal (ATP)","d":"2026-11-19","t":"Marcas portuguesas em showcase em Seul","x":"Laranjinha, Wolf & Rita, Susana Bettencourt, Play Up e outras no Made in Portugal Naturally, da AICEP.","w":"Muitas são de moda infantil: referência útil para a Traços D'Amor."},
+ {"a":"Negócios","f":"FashionNetwork","d":"2026-11-17","t":"Pure Cotton (Barcelos) com dívida de 11,5 milhões","x":"Despede 31 pessoas e pede perdão de 70% aos credores.","w":"Caso real de fábrica a cair. Mostra o risco de depender de poucos clientes e de preço."},
+ {"a":"Negócios","f":"FashionNetwork","d":"2026-11-19","t":"Fábrica de calçado Asial, em Vizela, fecha","x":"130 trabalhadores sem emprego, seis anos depois da abertura.","w":"Mesmo padrão: a indústria do Vale do Ave sob pressão. Contexto para o Fórum de dia 24."},
+ {"a":"Moda","f":"FashionNetwork","d":"2026-11-19","t":"Josefinas promove Daniela Brito a CEO","x":"Mariano Shoes lança linha masculina com Paulo Battista.","w":"Marcas portuguesas a profissionalizar a gestão: o perfil de cliente que já vende."},
+ {"a":"Negócios","f":"FashionNetwork","d":"2026-11-20","t":"Sonae com lucros de 245 milhões até setembro (+23%)","x":"Chiado é a zona comercial mais cara do país. A newsletter fala também do Passaporte Digital de Produto.","w":"Contexto de retalho. Pouco impacto direto em ti."},
+ {"a":"Têxtil","f":"Portugal Têxtil","d":"2026-11-17","t":"Bangladesh: protestos e cerca de 500 fábricas fechadas","x":"O salário mínimo de 90 euros está no centro dos confrontos.","w":"Prazos de produção na Ásia em risco. Argumento para a produção de proximidade."},
+ {"a":"Têxtil","f":"Portugal Têxtil","d":"2026-11-16","t":"Portugal produz menos resíduos têxteis, mas recicla abaixo da média","x":"70.858 toneladas em 2024, menos 12,4% do que em 2022. Na UE subiu 9,7%.","w":"Bom número para posts sobre stock parado e produção a mais."},
+ {"a":"Têxtil","f":"Portugal Têxtil","d":"2026-11-16","t":"ZDHC alarga a lista de químicos restritos","x":"16 compostos novos e regras mais exigentes para os PFAS.","w":"Fichas técnicas e acabamentos: quem não prova, perde clientes de exportação."},
+ {"a":"Têxtil","f":"Portugal Têxtil","d":"2026-11-19","t":"Produção mundial de algodão revista em baixa","x":"117,48 milhões de fardos em 2026/27. A China vendeu 1,9 milhões das reservas.","w":"Pode pressionar o preço do algodão nas próximas coleções."},
+ {"a":"Têxtil","f":"T Jornal (ATP)","d":"2026-11-19","t":"Recover e SUPIMA criam algodão reciclado premium","x":"Os resíduos de produção do algodão SUPIMA passam a fibra e fio reciclado.","w":"Reciclado a entrar no segmento premium."}
+],
+"eventos":[
+ {"d":"2026-11-24","t":"28.º Fórum da Indústria Têxtil · ATP","l":"Santo Tirso, 14h"},
+ {"d":"2026-11-25","t":"O Futuro da Indústria da Moda · MODAPORTUGAL","l":"Guimarães, 10h"},
+ {"d":"2026-11-25","t":"Webinar Textile Futures 2040","l":"Online, 15h"},
+ {"d":"2026-12-09","t":"Blossom Première Vision","l":"Paris, 9 e 10/12"},
+ {"d":"2027-01-12","t":"London Textile Fair · Heimtextil · Pitti Uomo","l":"12 a 15/01"}
+],
+"pinterest":{
+ "leitura":"O Pinterest está a mostrar-te sobretudo templates de Canva para psicólogas, nutricionistas e moda infantil. Isto vem do trabalho para a Traços D'Amor e dos packs de Canva, não da tua marca. Para a taniasilveira.pt quase nada serve.",
+ "ideias":[
+  {"t":"Moodboard de coleção","d":"Um pin «moodboard» apareceu a 17/11. Formato bom para um carrossel teu: o moodboard de uma coleção e as decisões de produto que saem dele."},
+  {"t":"Story «desentulhar o closet»","d":"Inspiração de stories (13/11). Adapta para «desentulhar o stock»: o que cortar da coleção antes de produzir."},
+  {"t":"Black Friday Kids","d":"Tema recomendado a 12/11. Serve à Traços D'Amor, não a ti."},
+  {"t":"Treinar o Pinterest","d":"Para ele te mostrar coisas úteis, cria uma pasta com pins de fichas técnicas, chão de fábrica e tecidos, e guarda 10 a 15 pins. As recomendações mudam em poucos dias."}
+ ]
+},
+"arrumado":"Hoje: 15 emails do Pinterest lidos e movidos para a pasta PINTEREST. As newsletters do setor (Portugal Têxtil, T Jornal/ATP, FashionNetwork, WGSN) já estavam arrumadas nas pastas pelo radar diário. O convite da MODAPORTUGAL ficou na caixa de entrada porque pede decisão."
+}
