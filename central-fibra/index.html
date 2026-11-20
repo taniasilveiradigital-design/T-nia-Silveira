@@ -102,6 +102,7 @@ form.add .wide{grid-column:1/-1}
 .filters{display:flex;flex-wrap:wrap;gap:6px}
 .filters button{border:1px solid var(--line);background:var(--panel);border-radius:99px;padding:5px 13px;font-size:.82rem;cursor:pointer;color:var(--fg)}
 .filters button[aria-pressed="true"]{background:var(--castanho);border-color:var(--castanho);color:#fff}
+.filters button[aria-pressed="true"] .muted{color:var(--bege)}
 .tl{border-left:2px dashed var(--acc);margin-left:8px;padding-left:24px;display:flex;flex-direction:column;gap:18px}
 .tl div{position:relative}
 .tl div::before{content:"";position:absolute;left:-32px;top:5px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:3px solid var(--acc)}
@@ -365,6 +366,7 @@ V.hoje=()=>{
   <div class="card"><div class="lbl">Por tratar</div><div class="list">${pend.slice(0,4).map(m=>`<div class="row"><span class="t">${esc(m.t)}</span></div>`).join("")||'<div class="empty">Caixa limpa.</div>'}</div><a href="#mail" class="small">Ver tudo</a></div>
   <div class="card dark"><div class="lbl">Linha de 2027</div><p style="font-family:var(--display);font-size:1.45rem;line-height:1.25">IA e planeamento para marcas que já vendem e fábricas com marca própria.</p><p class="muted small">Lês a peça e a ficha como alguém da fábrica. Não falar para quem ainda não começou.</p></div>
  </div>
+ ${RADAR&&RADAR.length?`<div class="card"><div class="lbl">Radar · ${esc(RADAR[0].label)}</div><h3>${esc(RADAR[0].reading?.title)}</h3><p class="small muted">Prioridade: ${esc(RADAR[0].priority?.title)}</p><a href="#radar" class="small">Ver as ${RADAR[0].news.length} notícias</a></div>`:""}
  <div class="card"><div class="lbl">Esta semana no Instagram</div><div class="list">${COPY.map(c=>`<div class="row"><span class="t">${c[1]} · ${esc(c[3])}</span><span class="pill">${esc(c[2])}</span></div>`).join("")}</div><a href="#copy" class="small">Copy da semana</a></div>`;
 };
 
@@ -439,10 +441,35 @@ V.ideias=()=>{
  <div class="grid">${l.map(i=>`<div class="card"><div style="display:flex;justify-content:space-between;gap:8px"><span class="pill ${pc[i.estado]}">${i.estado}</span><button class="x" data-del-ideia="${i.id}" aria-label="Apagar">×</button></div><h3>${esc(i.t)}</h3>${i.d?`<p class="small muted">${esc(i.d)}</p>`:""}<select class="inp" data-ideia-estado="${i.id}" aria-label="Estado" style="width:auto;margin-top:auto">${["Viva","Parada","Descartada"].map(o=>`<option${o===i.estado?" selected":""}>${o}</option>`).join("")}</select></div>`).join("")||'<div class="empty">Nada aqui.</div>'}</div>`;
 };
 
-V.radar=()=>head("radar","O que o setor está a dizer e serve para conteúdo, contactos ou decisões.")+`
+let RADAR=null, radarW=0, radarF="Tudo";
+fetch("radar.json").then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{RADAR=Array.isArray(d)?d:[];if(location.hash==="#radar"||location.hash==="#hoje"||!location.hash)render()}).catch(()=>{RADAR=[];if(location.hash==="#radar")render()});
+const rArea=n=>n.a||(n.r==="IA"?"IA":"");
+V.radar=()=>{
+ let semana;
+ if(RADAR===null) semana=`<div class="empty">A carregar o radar…</div>`;
+ else if(!RADAR.length) semana=`<div class="empty">O radar das semanas não carregou. Abre o <a href="https://claude.ai/artifact/FMcpzQckzBaMehdF8tea41" target="_blank" rel="noopener">Radar Têxtil</a>.</div>`;
+ else{
+  const w=RADAR[Math.min(radarW,RADAR.length-1)], F=["Tudo","Têxtil","Moda","Negócios","IA","Portugal","Mundo"];
+  const cnt=f=>f==="Tudo"?w.news.length:w.news.filter(n=>rArea(n)===f||n.r===f).length;
+  const ns=w.news.filter(n=>radarF==="Tudo"||rArea(n)===radarF||n.r===radarF);
+  semana=`
+  <div class="filters" role="group" aria-label="Semana">${RADAR.map((x,i)=>`<button type="button" data-rw="${i}" aria-pressed="${i===radarW}">${esc(x.short)}${i===0?" · atual":""}</button>`).join("")}</div>
+  <div class="card dark"><div class="lbl">A leitura da semana · ${esc(w.label)}</div><p style="font-family:var(--display);font-size:1.6rem;line-height:1.2">${esc(w.reading?.title)}</p><p class="muted">${esc(w.reading?.text)}</p></div>
+  <div class="grid">
+   <div class="card"><div class="lbl">Prioridade n.º 1</div><h3>${esc(w.priority?.title)}</h3><p class="small">${esc(w.priority?.text)}</p></div>
+   <div class="card"><div class="lbl">Movimento da semana</div><h3>${esc(w.move?.title)}</h3><p class="small">${esc(w.move?.text)}</p></div>
+  </div>
+  ${w.aiNote?`<div class="card alert"><p class="small">${esc(w.aiNote)}</p></div>`:""}
+  <div class="filters" role="group" aria-label="Filtrar notícias">${F.map(f=>`<button type="button" data-rf="${f}" aria-pressed="${f===radarF}">${f} <span class="muted">${cnt(f)}</span></button>`).join("")}</div>
+  <div class="grid">${ns.map(n=>`<div class="card"><div style="display:flex;gap:6px;flex-wrap:wrap"><span class="pill acc">${esc(rArea(n)||n.r)}</span>${n.r!=="IA"?`<span class="pill">${esc(n.r)}</span>`:""}</div><h3>${esc(n.t)}</h3><p class="small">${esc(n.d)}</p><p class="small" style="color:var(--acc);font-weight:600">Porque importa: ${esc(n.w)}</p><p class="small muted">${n.u?`<a href="${esc(n.u)}" target="_blank" rel="noopener">${esc(n.s)}</a>`:esc(n.s)}</p></div>`).join("")||'<div class="empty">Sem notícias nesta área esta semana.</div>'}</div>
+  <div class="card"><div class="lbl">Ideias de posts</div><div class="list">${(w.posts||[]).map(p=>`<div class="row"><span class="t">«${esc(p.hook)}»</span><span class="pill">${esc(p.format)}</span><span class="s">${esc(p.angle)}</span></div>`).join("")}</div></div>
+  <div class="card"><div class="lbl">Ideias a implementar</div><div class="list">${(w.ideas||[]).map(i=>`<div class="row"><span class="t">${esc(i.h)}</span>${i.n1?'<span class="pill ok">Prioridade</span>':"<span></span>"}<span class="s">${esc(i.what)} <b>Começa por:</b> ${esc(i.first)}</span></div>`).join("")}</div></div>`;
+ }
+ return head("radar","Têxtil, moda, negócios e IA, esmiuçados todas as semanas. Entra uma semana nova à segunda de manhã.")+semana+`
+ <h3 style="margin-top:8px">As tuas notas do radar</h3>
  <form class="add" id="radarForm"><label>Data<input type="date" name="data" value="${HOJE}"></label><label>Fonte<input name="fonte" required></label><label>Tipo<select name="tipo"><option>Setor</option><option>IA</option><option>Evento</option><option>Concorrência</option></select></label><label class="wide">Título<input name="t" required></label><label class="wide">Porque importa<input name="d"></label><button class="btn" type="submit">Guardar</button></form>
  <div class="list card">${[...S.radar].sort((a,b)=>b.data.localeCompare(a.data)).map(r=>`<div class="row"><span class="t">${esc(r.t)}</span><span><span class="pill acc">${esc(r.tipo)}</span> <button class="x" data-del-radar="${r.id}" aria-label="Apagar">×</button></span><span class="s">${fdata(r.data)} · ${esc(r.fonte)}${r.d?" — "+esc(r.d):""}</span></div>`).join("")}</div>
- <p class="small"><a href="https://claude.ai/artifact/FMcpzQckzBaMehdF8tea41" target="_blank" rel="noopener">Radar Têxtil completo</a> · <a href="https://claude.ai/artifact/VaC8NwGg6H9z35WgSqQtvW" target="_blank" rel="noopener">2027: o que vai ditar o mercado</a></p>`;
+ <p class="small"><a href="https://claude.ai/artifact/FMcpzQckzBaMehdF8tea41" target="_blank" rel="noopener">Radar Têxtil (plano por dias e onde te destacas)</a> · <a href="https://claude.ai/artifact/VaC8NwGg6H9z35WgSqQtvW" target="_blank" rel="noopener">2027: o que vai ditar o mercado</a></p>`;};
 
 V.agenda=()=>{
  const fut=AGENDA.filter(a=>a[0]>=HOJE);
@@ -519,6 +546,8 @@ document.addEventListener("click",e=>{
  else if(ds.delIdeia){S.ideias=S.ideias.filter(x=>x.id!==ds.delIdeia)}
  else if(ds.delRadar){S.radar=S.radar.filter(x=>x.id!==ds.delRadar)}
  else if(ds.if){ideiaF=ds.if;render();return}
+ else if(ds.rw){radarW=+ds.rw;radarF="Tudo";render();return}
+ else if(ds.rf){radarF=ds.rf;render();return}
  else return;
  save(); render();
 });
