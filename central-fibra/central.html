@@ -375,7 +375,11 @@ function toast(t){const e=document.createElement("div");e.className="toast";e.te
 function respChip(area){const r=S.resp[area];return `<a class="resp${r?" set":""}" href="#responsaveis">Responsável: <b>${r?esc(r):"a definir"}</b></a>`}
 function head(area,txt){return `<div class="head"><div><div class="lbl">Central FIBRA</div><h2>${LABEL[area]}</h2><p>${txt}</p></div>${area==="responsaveis"?"":respChip(area)}</div>`}
 const mesAtual=()=>HOJE.slice(0,7);
-function totais(mes){let e=0,s=0;for(const m of S.movs){if(mes&&!m.data.startsWith(mes))continue;const v=+m.valor||0;if(m.tipo==="Entrada")e+=v;else s+=v}return{e,s,l:e-s}}
+let DIN=null;
+fetch("dinheiro.json").then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{DIN=d;render()}).catch(()=>{DIN={movimentos:[]}});
+const eur2=n=>new Intl.NumberFormat("pt-PT",{style:"currency",currency:"EUR",minimumFractionDigits:2}).format(n||0);
+const todosMovs=()=>[...S.movs,...((DIN&&DIN.movimentos)||[]).map(m=>({...m,auto:true}))];
+function totais(mes){let e=0,s=0;for(const m of todosMovs()){if(mes&&!m.data.startsWith(mes))continue;const v=+m.valor||0;if(m.tipo==="Entrada")e+=v;else s+=v}return{e,s,l:e-s}}
 
 /* ===== Vistas ===== */
 const V={};
@@ -412,8 +416,11 @@ V.hoje=()=>{
 V.dinheiro=()=>{
  const t=totais(mesAtual()), all=totais(null);
  const pct=Math.min(100,Math.round(t.e/S.meta*100));
- const rows=[...S.movs].sort((a,b)=>b.data.localeCompare(a.data));
+ const rows=todosMovs().sort((a,b)=>b.data.localeCompare(a.data));
+ const al=(DIN&&DIN.alertas)||[];
  return head("dinheiro","Entradas e saídas, mês a mês. O que não está aqui não existe.")+`
+ ${al.length?`<div class="card alert"><div class="lbl">Alertas de dinheiro</div><div class="list">${al.map(a=>`<div class="row"><span class="t">${esc(a.t)}</span><span class="pill ${a.p==="alta"?"bad":"warn"}">${a.p==="alta"?"Urgente":"A ver"}</span><span class="s">${esc(a.s)}</span></div>`).join("")}</div></div>`:""}
+ ${DIN&&DIN.nota?`<div class="card"><div class="lbl">O que encontrei no email</div><p class="small">${esc(DIN.nota)}</p><p class="small muted">Atualizado a ${esc((DIN.atualizado||"").replace("T"," às "))}. Os movimentos marcados «email» vêm dos recibos e faturas da caixa taniasilveira.digital.</p></div>`:""}
  <div class="kpis">
   <div class="kpi"><b>${eur(t.e)}</b><span>entradas este mês</span></div>
   <div class="kpi"><b>${eur(t.s)}</b><span>saídas este mês</span></div>
@@ -428,7 +435,7 @@ V.dinheiro=()=>{
   <label>Valor (€)<input type="number" name="valor" min="0" step="0.01" required></label>
   <button class="btn" type="submit">Lançar</button>
  </form>
- ${rows.length?`<div class="tablewrap"><table><thead><tr><th>Data</th><th>Descrição</th><th>Área</th><th>Tipo</th><th style="text-align:right">Valor</th><th></th></tr></thead><tbody>${rows.map(m=>`<tr><td>${fdata(m.data)} ${m.data.slice(0,4)}</td><td>${esc(m.desc)}</td><td>${esc(m.cat)}</td><td><span class="pill ${m.tipo==="Entrada"?"ok":"bad"}">${m.tipo}</span></td><td class="num">${eur(m.valor)}</td><td><button class="x" data-del-mov="${m.id}" aria-label="Apagar">×</button></td></tr>`).join("")}</tbody></table></div><p class="small muted">Desde o início: ${eur(all.e)} de entradas, ${eur(all.s)} de saídas.</p>`:`<div class="empty">Ainda não há movimentos. Lança o primeiro pagamento que recebeste em novembro.</div>`}
+ ${rows.length?`<div class="tablewrap"><table><thead><tr><th>Data</th><th>Descrição</th><th>Área</th><th>Tipo</th><th style="text-align:right">Valor</th><th></th></tr></thead><tbody>${rows.map(m=>`<tr><td>${fdata(m.data)} ${m.data.slice(0,4)}</td><td>${esc(m.desc)}</td><td>${esc(m.cat)}</td><td><span class="pill ${m.tipo==="Entrada"?"ok":"bad"}">${m.tipo}</span></td><td class="num">${eur2(m.valor)}</td><td>${m.auto?'<span class="pill" title="Vem do email">email</span>':`<button class="x" data-del-mov="${m.id}" aria-label="Apagar">×</button>`}</td></tr>`).join("")}</tbody></table></div><p class="small muted">Desde o início: ${eur(all.e)} de entradas, ${eur(all.s)} de saídas.</p>`:`<div class="empty">Ainda não há movimentos. Lança o primeiro pagamento que recebeste em novembro.</div>`}
  <div class="grid">
   <div class="card"><div class="lbl">Mapa para os 3.000€</div><p>5 FIBRA a 400€ (2.000€) + 2 Tafetá a 350€ (700€) + 4 listas duplas (268€) ≈ <b>2.968€/mês</b>.</p><p class="muted small">Com os preços atuais, só com FIBRA, precisavas de 10 clientes ao mesmo tempo.</p></div>
   <div class="card"><div class="lbl">Anúncios da Black Week</div><p>7€/dia durante 10 dias, cerca de 70€. Corta ao 3.º dia se houver menos de 20 cliques ou 40€ gastos sem venda.</p></div>
