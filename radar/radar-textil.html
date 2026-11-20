@@ -1,0 +1,472 @@
+
+<title>Radar Têxtil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Raleway:wght@400;500;600;700&display=swap">
+<style id="app-style">
+/* Layout: painel de trabalho com cabeçalho-resumo e quatro separadores (Semana, Plano, Ideias, Destaque) */
+:root{
+  --bg:#F6EFE4; --surface:#FBF7F0; --surface2:#EADBC8; --ink:#2B1D16; --muted:#6A5446;
+  --accent:#A84B2A; --accent-fill:#B5562F; --on-accent:#FBF7F0; --line:#DCCBB4; --ok:#3F6B45; --ok-bg:#DDE8D6;
+  --warn:#8A5A12; --warn-bg:#F1E0BF;
+  --display:'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --body:'Raleway', 'Segoe UI', Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1E1511; --surface:#2A1E18; --surface2:#3A2920; --ink:#F3E9DC; --muted:#C9B5A2;
+  --accent:#E59370; --accent-fill:#C9673E; --on-accent:#1E1511; --line:#4A362B; --ok:#A9CFA0; --ok-bg:#283A28;
+  --warn:#E9C47F; --warn-bg:#3D2F17; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#1E1511; --surface:#2A1E18; --surface2:#3A2920; --ink:#F3E9DC; --muted:#C9B5A2;
+  --accent:#E59370; --accent-fill:#C9673E; --on-accent:#1E1511; --line:#4A362B; --ok:#A9CFA0; --ok-bg:#283A28;
+  --warn:#E9C47F; --warn-bg:#3D2F17; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;padding-inline:16px;padding-block:24px 64px}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.08;text-wrap:balance;margin:0}
+p{margin:0}
+a{color:var(--accent)}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--accent)}
+header.top{display:grid;grid-template-columns:1.4fr 1fr;gap:24px;align-items:end}
+header.top h1{font-size:clamp(40px,7vw,72px)}
+header.top .sub{color:var(--muted);margin-top:6px}
+.save{font-size:13px;color:var(--muted);text-align:right}
+.summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.tile.dark{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tile.dark .eyebrow{color:var(--surface2)}
+.tile .big{font-family:var(--display);font-size:34px;font-weight:700;line-height:1.05}
+.bar{height:8px;background:var(--surface2);border-radius:8px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--accent-fill);width:0;transition:width .3s}
+nav.tabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--line);position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5;padding-top:8px}
+nav.tabs button{font:600 15px var(--body);color:var(--muted);background:none;border:0;border-bottom:3px solid transparent;padding:10px 14px;cursor:pointer}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent-fill)}
+nav.tabs button:focus-visible,button:focus-visible,select:focus-visible,summary:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.panel{display:flex;flex-direction:column;gap:24px}
+.lead{max-width:68ch;color:var(--muted)}
+.sec-title{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap}
+.sec-title h2{font-size:clamp(30px,4.4vw,44px)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font:600 13px var(--body);padding:7px 14px;border-radius:30px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.news{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.card h3{font-size:24px}
+.tag{align-self:flex-start;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;padding:4px 10px;border-radius:20px;background:var(--surface2);color:var(--ink)}
+.why{border-top:1px solid var(--line);padding-top:10px;color:var(--accent);font-weight:600}
+.src{font-size:13px;color:var(--muted)}
+.note{background:var(--warn-bg);color:var(--warn);padding:10px 14px;border-radius:8px;font-size:14px;font-weight:600}
+.read{background:var(--accent-fill);color:var(--on-accent);border-radius:12px;padding:28px}
+.read h3{font-size:clamp(26px,3.6vw,38px);color:var(--on-accent)}
+.read p{margin-top:12px;max-width:70ch}
+.days{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.day{font:600 14px var(--body);text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:12px;cursor:pointer;display:flex;flex-direction:column;gap:4px}
+.day small{font-weight:500;color:var(--muted);font-size:13px}
+.day .mini{font-size:12px;color:var(--muted);font-weight:600}
+.day[aria-pressed="true"]{border-color:var(--accent-fill);box-shadow:inset 0 0 0 1px var(--accent-fill);background:var(--surface2)}
+.dayhead{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:end}
+.dayhead h3{font-size:34px}
+.tasks{display:flex;flex-direction:column;gap:10px}
+.task{background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.task.done{opacity:.72}
+.task-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:start;padding:16px 18px}
+.check{width:26px;height:26px;border-radius:7px;border:2px solid var(--accent-fill);background:transparent;cursor:pointer;display:grid;place-items:center;color:var(--on-accent);flex:none;margin-top:2px}
+.check[aria-checked="true"]{background:var(--accent-fill)}
+.task-title{font-weight:700;font-size:17px}
+.task.done .task-title{text-decoration:line-through}
+.task-what{color:var(--muted);margin-top:2px}
+.time{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap;background:var(--surface2);padding:4px 10px;border-radius:20px}
+details.how{border-top:1px dashed var(--line);padding:0 18px}
+details.how summary{cursor:pointer;font-weight:600;color:var(--accent);padding:10px 0;font-size:14px}
+details.how ol{margin:0 0 14px;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.ideas{display:flex;flex-direction:column;gap:14px}
+.idea{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:22px}
+.idea.top{border-color:var(--accent-fill);box-shadow:inset 4px 0 0 var(--accent-fill)}
+.idea h3{font-size:30px}
+.meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pill{font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;background:var(--surface2)}
+.pill.n1{background:var(--accent-fill);color:var(--on-accent)}
+.col{display:flex;flex-direction:column;gap:12px;min-width:0}
+.lbl{font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+.steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:5px}
+.pc{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pc div{border-radius:8px;padding:12px;font-size:14px}
+.pro{background:var(--ok-bg);color:var(--ok)}
+.con{background:var(--warn-bg);color:var(--warn)}
+.pc b{display:block;margin-bottom:4px;font-size:12px;letter-spacing:.1em;text-transform:uppercase}
+select{font:600 14px var(--body);padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.status-feito{color:var(--ok)}
+.hero-q{background:var(--ink);color:var(--bg);border-radius:12px;padding:32px}
+.hero-q .eyebrow{color:var(--surface2)}
+.hero-q h2{font-size:clamp(30px,4.6vw,50px);font-style:italic;margin-top:10px;color:var(--bg)}
+.hero-q p{margin-top:14px;color:var(--surface2);max-width:66ch}
+.why3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.road{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.phase{padding:20px;background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column;gap:10px;min-width:0}
+.phase:last-child{border-right:0;background:var(--surface2)}
+.phase .when{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.phase h3{font-size:26px}
+.ms{display:flex;gap:10px;align-items:flex-start;font-size:14px}
+.ms .check{width:20px;height:20px;border-radius:5px;margin-top:1px}
+.ms.done span{text-decoration:line-through;color:var(--muted)}
+.risks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.risk{border-left:4px solid var(--warn);background:var(--surface);padding:16px 18px;border-radius:0 10px 10px 0;display:flex;flex-direction:column;gap:6px}
+.risk b{font-size:16px}
+.signals{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.signal{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.counter{display:flex;align-items:center;gap:10px}
+.counter button{width:32px;height:32px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:18px;cursor:pointer}
+.counter output{font-family:var(--display);font-size:32px;font-weight:700;min-width:2ch;font-variant-numeric:tabular-nums}
+details.fold{border-top:1px solid var(--line);padding-top:14px}
+details.fold>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:12px}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary::before{content:"";width:10px;height:10px;border-right:2px solid var(--accent);border-bottom:2px solid var(--accent);transform:rotate(-45deg);transition:transform .2s;flex:none;margin-left:2px}
+details.fold[open]>summary::before{transform:rotate(45deg)}
+details.fold>summary h2{font-size:clamp(28px,4vw,40px)}
+details.fold[open]>summary{margin-bottom:16px}
+details.fold[open]>*+*:not(summary){margin-top:14px}
+.foot{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+.weekbar{display:flex;flex-direction:column;gap:10px}
+.weeks{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.wk{flex:none;font:600 14px var(--body);text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:10px 14px;cursor:pointer;display:flex;flex-direction:column;gap:2px;min-width:132px}
+.wk small{font-weight:600;font-size:12px;color:var(--muted)}
+.wk[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.wk[aria-pressed="true"] small{color:var(--surface2)}
+.wk .now{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.wk[aria-pressed="true"] .now{color:var(--surface2)}
+.posts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.post .hook{font-family:var(--display);font-style:italic;font-size:24px;font-weight:600;line-height:1.2}
+.total{font-size:13px;color:var(--muted)}
+@media (max-width:900px){.posts{grid-template-columns:1fr}}
+@media (max-width:900px){
+  header.top,.summary,.why3,.risks{grid-template-columns:1fr}
+  .save{text-align:left}
+  .news{grid-template-columns:1fr}
+  .days{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .idea{grid-template-columns:1fr}
+  .road{grid-template-columns:1fr 1fr}
+  .phase:nth-child(2){border-right:0}
+  .phase{border-bottom:1px solid var(--line)}
+  .signals{grid-template-columns:1fr 1fr}
+}
+@media (max-width:520px){
+  .days{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .road{grid-template-columns:1fr}
+  .phase{border-right:0}
+  .pc{grid-template-columns:1fr}
+  .task-row{grid-template-columns:auto minmax(0,1fr)}
+  .task-row .time{grid-column:2;justify-self:start}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap" id="app">
+  <header class="top">
+    <div>
+      <p class="eyebrow" id="weekEyebrow">Radar semanal</p>
+      <h1>Radar Têxtil</h1>
+      <p class="sub">Têxtil, moda, negócios e IA, esmiuçados todas as semanas. Informação da semana, plano por dias, ideias a implementar e onde te vais destacar.</p>
+    </div>
+    <p class="save" id="saveState">A carregar as semanas…</p>
+  </header>
+
+  <section class="weekbar" aria-label="Registo de semanas">
+    <p class="lbl" id="weekCount">Registo de semanas</p>
+    <div class="weeks" id="weeks" role="group" aria-label="Escolher a semana"></div>
+  </section>
+
+  <p class="note" id="emptyNote" hidden></p>
+
+  <details class="fold" data-fold="resumo">
+  <summary><h2>Resumo da semana</h2></summary>
+  <section class="summary" aria-label="Resumo">
+    <div class="tile">
+      <p class="eyebrow">Progresso da semana</p>
+      <p class="big" id="progNum">—</p>
+      <div class="bar" role="progressbar" aria-label="Tarefas feitas" aria-valuemin="0" aria-valuemax="100" id="progBar"><i></i></div>
+    </div>
+    <div class="tile dark">
+      <p class="eyebrow">Prioridade n.º 1</p>
+      <p class="big" id="prioTitle">—</p>
+      <p id="prioText"></p>
+    </div>
+    <div class="tile">
+      <p class="eyebrow">Movimento da semana</p>
+      <p class="big" id="moveTitle">—</p>
+      <p class="src" id="moveText"></p>
+    </div>
+  </section>
+  </details>
+
+  <nav class="tabs" role="tablist" aria-label="Secções">
+    <button role="tab" id="tab-semana" aria-controls="p-semana" aria-selected="true">Semana de informação</button>
+    <button role="tab" id="tab-plano" aria-controls="p-plano" aria-selected="false">Plano por dias</button>
+    <button role="tab" id="tab-ideias" aria-controls="p-ideias" aria-selected="false">Ideias a implementar</button>
+    <button role="tab" id="tab-destaque" aria-controls="p-destaque" aria-selected="false">Onde me destaco</button>
+  </nav>
+
+  <section class="panel" id="p-semana" role="tabpanel" aria-labelledby="tab-semana">
+    <div class="read">
+      <p class="eyebrow" style="color:var(--on-accent)">A leitura da semana</p>
+      <h3 id="readTitle">—</h3>
+      <p id="readText"></p>
+    </div>
+    <details class="fold" data-fold="noticias">
+      <summary><h2>O que aconteceu</h2></summary>
+      <div class="chips" id="newsFilter" role="group" aria-label="Filtrar notícias"></div>
+      <div class="news" id="newsList"></div>
+    </details>
+    <details class="fold" data-fold="posts">
+      <summary><h2>Três ideias de posts</h2></summary>
+      <p class="lead">O gancho já vem escrito. Falta a tua voz.</p>
+      <div class="posts" id="posts"></div>
+    </details>
+  </section>
+
+  <section class="panel" id="p-plano" role="tabpanel" aria-labelledby="tab-plano" hidden>
+    <div class="sec-title">
+      <div>
+        <p class="eyebrow">Um tema por dia</p>
+        <h2>O plano da semana</h2>
+      </div>
+      <p class="lead">Cada dia tem um tema e três tarefas. Abre "Como fazer" para ver os passos. Marca o que fizeste: fica guardado.</p>
+    </div>
+    <div class="days" id="days" role="group" aria-label="Escolher o dia"></div>
+    <div id="dayView" class="panel"></div>
+  </section>
+
+  <section class="panel" id="p-ideias" role="tabpanel" aria-labelledby="tab-ideias" hidden>
+    <div class="sec-title">
+      <div>
+        <p class="eyebrow">Para aplicar no setor</p>
+        <h2>Ideias a implementar</h2>
+      </div>
+      <p class="lead">Cinco jogadas com o que fazer, como fazer, prós e contras. Muda o estado à medida que avanças.</p>
+    </div>
+    <div class="ideas" id="ideas"></div>
+  </section>
+
+  <section class="panel" id="p-destaque" role="tabpanel" aria-labelledby="tab-destaque" hidden>
+    <div class="hero-q">
+      <p class="eyebrow">A pergunta que tens de dominar</p>
+      <h2>"Quem sabe pôr o produto têxtil a vender — para pessoas, para a regulação e para a IA?"</h2>
+      <p>O nome é falado quando não estás presente porque és a resposta óbvia a uma pergunta específica. Referência mundial começa por ser a resposta óbvia em Portugal.</p>
+    </div>
+    <div>
+      <p class="eyebrow" style="margin-bottom:12px">Porque é que este lugar é teu</p>
+      <div class="why3" id="why3"></div>
+    </div>
+    <div>
+      <div class="sec-title" style="margin-bottom:12px"><h2>O caminho</h2><p class="lead">Marca cada marco quando o cumprires.</p></div>
+      <div class="road" id="road"></div>
+    </div>
+    <div>
+      <div class="sec-title" style="margin-bottom:12px"><h2>Sinais de que o nome é falado</h2><p class="lead">Conta à sexta, nesta semana. Em baixo vês o total de todas as semanas.</p></div>
+      <div class="signals" id="signals"></div>
+    </div>
+    <div>
+      <h2 style="font-size:clamp(28px,4vw,40px);margin-bottom:12px">Riscos reais</h2>
+      <div class="risks" id="risks"></div>
+    </div>
+  </section>
+
+  <p class="foot">Cada segunda às 6h53 entra uma semana nova no registo. As semanas anteriores ficam guardadas com o teu progresso.</p>
+</div>
+
+<script id="app-script">
+(function(){
+var WHY=[
+ {h:"O setor pediu",p:"Na ModaPortugal disseram em palco que o problema é comunicação, não produção."},
+ {h:"A lei vai obrigar",p:"EPR, greenwashing e passaporte digital: todas as marcas vão ter de explicar o produto."},
+ {h:"Tens as duas línguas",p:"O marketing não sabe o que é uma gramagem. A fábrica não sabe comunicar. Tu sabes as duas."}
+];
+var ROAD=[
+ {w:"0–3 meses",h:"Dona do tema em PT",m:[{id:"m1",t:"Publicar a leitura semanal 12 semanas seguidas"},{id:"m2",t:"Nome fixo para a rubrica semanal"},{id:"m3",t:"Primeira Ficha 360 publicada com cliente"}]},
+ {w:"3–6 meses",h:"Método com nome",m:[{id:"m4",t:"Ficha 360 dentro do FIBRA e do Tafetá 360"},{id:"m5",t:"3 casos antes e depois"},{id:"m6",t:"Checklist EPR distribuída"}]},
+ {w:"6–12 meses",h:"Palco",m:[{id:"m7",t:"Oradora na ModaPortugal ou evento do setor"},{id:"m8",t:"Convite para um podcast do setor"},{id:"m9",t:"Caso escrito com uma fábrica"}]},
+ {w:"Depois",h:"Lá fora",m:[{id:"m10",t:"Conteúdo para o Brasil em português"},{id:"m11",t:"Conteúdo em inglês: Made in Portugal explicado"},{id:"m12",t:"Primeira cliente internacional"}]}
+];
+var SIGNALS=[{id:"s1",h:"Citações e marcações"},{id:"s2",h:"Convites (palco, podcast, imprensa)"},{id:"s3",h:"Pedidos de contacto"},{id:"s4",h:"Comentários de peso no setor"}];
+var RISKS=[
+ {h:"Cobrir tudo sem fio condutor",p:"O fio é sempre o mesmo: o produto e a forma de o comunicar."},
+ {h:"Notícia sem opinião",p:"Resumos há muitos. O que te torna citável é a posição."},
+ {h:"Falta de ritmo",p:"A autoridade faz-se com regularidade. O radar dá a matéria; falta a tua voz."}
+];
+var STATUS=[["por","Por começar"],["curso","Em curso"],["feito","Feito"]];
+
+var WEEKS=[];           /* newest first */
+var PROG={};            /* weekId -> {done,status,signals} */
+var GLOBAL={ms:{}};
+var cur=null;           /* selected week id */
+var pinned=false;       /* true once the viewer picks a week */
+var db=null;
+var filter="Tudo";
+var curDay=(function(){var d=new Date().getDay();return {1:"seg",2:"ter",3:"qua",4:"qui",5:"sex"}[d]||"seg";})();
+
+var $=function(id){return document.getElementById(id);};
+function setSave(t){$("saveState").textContent=t;}
+function el(tag,attrs,kids){var n=document.createElement(tag);if(attrs)for(var k in attrs){if(k==="text")n.textContent=attrs[k];else if(k==="html")n.innerHTML=attrs[k];else n.setAttribute(k,attrs[k]);}(kids||[]).forEach(function(c){if(c)n.appendChild(c);});return n;}
+function checkSvg(){return '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';}
+function week(){for(var i=0;i<WEEKS.length;i++)if(WEEKS[i].id===cur)return WEEKS[i];return null;}
+function prog(id){var p=PROG[id||cur];if(!p){p={done:{},status:{},signals:{}};PROG[id||cur]=p;}p.done=p.done||{};p.status=p.status||{};p.signals=p.signals||{};return p;}
+function clone(o){return JSON.parse(JSON.stringify(o||{}));}
+
+/* Tabs */
+var tabs=["semana","plano","ideias","destaque"];
+function showTab(id){tabs.forEach(function(t){var on=t===id;$("tab-"+t).setAttribute("aria-selected",on?"true":"false");$("p-"+t).hidden=!on;});try{localStorage.setItem("radar-tab",id);}catch(e){}}
+tabs.forEach(function(t){$("tab-"+t).addEventListener("click",function(){showTab(t);});});
+var startTab=(location.hash||"").replace("#","");
+if(tabs.indexOf(startTab)<0){try{startTab=localStorage.getItem("radar-tab")||"semana";}catch(e){startTab="semana";}}
+showTab(tabs.indexOf(startTab)<0?"semana":startTab);
+
+/* Saving */
+var timers={};
+function saveWeek(id){
+ if(!db){setSave("Sem ligação: as alterações não ficam guardadas");return;}
+ setSave("A guardar…");
+ clearTimeout(timers[id]);
+ timers[id]=setTimeout(function(){
+  db.doc("progress/"+id).set(clone(PROG[id])).then(function(){setSave("Guardado");}).catch(function(){setSave("Não foi possível guardar. Tenta outra vez.");});
+ },600);
+}
+function saveGlobal(){
+ if(!db)return;setSave("A guardar…");
+ clearTimeout(timers.g);
+ timers.g=setTimeout(function(){db.doc("progress/global").set(clone(GLOBAL)).then(function(){setSave("Guardado");}).catch(function(){setSave("Não foi possível guardar. Tenta outra vez.");});},600);
+}
+
+/* Week bar */
+function renderWeeks(){
+ var W=$("weeks");W.innerHTML="";
+ $("weekCount").textContent="Registo · "+WEEKS.length+(WEEKS.length===1?" semana":" semanas");
+ WEEKS.forEach(function(w,i){
+  var p=prog(w.id),total=0,done=0;(w.days||[]).forEach(function(d){(d.t||[]).forEach(function(t){total++;if(p.done[t.id])done++;});});
+  var b=el("button",{class:"wk","aria-pressed":w.id===cur?"true":"false"},[i===0?el("span",{class:"now",text:"Semana atual"}):null,el("span",{text:w.short||w.label}),el("small",{text:done+" de "+total+" feitas"})]);
+  b.addEventListener("click",function(){cur=w.id;pinned=true;renderAll();});
+  W.appendChild(b);
+ });
+}
+
+/* Summary */
+function renderSummary(){
+ var w=week();if(!w)return;
+ $("weekEyebrow").textContent="Radar semanal · Semana de "+w.label;
+ $("prioTitle").textContent=(w.priority&&w.priority.title)||"—";
+ $("prioText").textContent=(w.priority&&w.priority.text)||"";
+ $("moveTitle").textContent=(w.move&&w.move.title)||"—";
+ $("moveText").textContent=(w.move&&w.move.text)||"";
+ var p=prog(),total=0,done=0;(w.days||[]).forEach(function(d){(d.t||[]).forEach(function(t){total++;if(p.done[t.id])done++;});});
+ $("progNum").textContent=done+" de "+total+" tarefas";
+ var pct=total?Math.round(done/total*100):0;$("progBar").setAttribute("aria-valuenow",String(pct));$("progBar").firstElementChild.style.width=pct+"%";
+}
+
+/* News + posts */
+function area(n){return n.a||(n.r==="IA"?"IA":"");}
+function renderNews(){
+ var w=week();if(!w)return;
+ $("readTitle").textContent=(w.reading&&w.reading.title)||"";
+ $("readText").textContent=(w.reading&&w.reading.text)||"";
+ var f=$("newsFilter");f.innerHTML="";
+ ["Tudo","Têxtil","Moda","Negócios","IA","Portugal","Mundo"].forEach(function(x){var b=el("button",{class:"chip","aria-pressed":x===filter?"true":"false",text:x});b.addEventListener("click",function(){filter=x;renderNews();});f.appendChild(b);});
+ var L=$("newsList");L.innerHTML="";
+ if(filter==="IA"&&w.aiNote)L.appendChild(el("p",{class:"note",style:"grid-column:1/-1",text:w.aiNote}));
+ (w.news||[]).filter(function(n){return filter==="Tudo"||n.r===filter||area(n)===filter;}).forEach(function(n){
+  var src=n.u?el("a",{href:n.u,target:"_blank",rel:"noopener",text:n.s}):document.createTextNode(n.s||"");
+  L.appendChild(el("article",{class:"card"},[el("span",{class:"tag",text:area(n)&&area(n)!==n.r?area(n)+" · "+n.r:n.r}),el("h3",{text:n.t}),el("p",{text:n.d}),el("p",{class:"why",text:"Porque importa: "+n.w}),el("p",{class:"src"},[src])]));
+ });
+ var P=$("posts");P.innerHTML="";
+ (w.posts||[]).forEach(function(p){P.appendChild(el("article",{class:"card post"},[el("span",{class:"tag",text:p.format}),el("p",{class:"hook",text:"“"+p.hook+"”"}),el("p",null,[el("b",{text:"Ângulo: "}),document.createTextNode(p.angle)]),el("p",{class:"src",text:"Base: "+p.base+" · "+p.why})]));});
+}
+
+/* Plan */
+function dayDone(d){var p=prog();return (d.t||[]).filter(function(t){return p.done[t.id];}).length;}
+function renderDays(){
+ var w=week();if(!w)return;var D=$("days");D.innerHTML="";
+ (w.days||[]).forEach(function(d){var b=el("button",{class:"day","aria-pressed":d.id===curDay?"true":"false"},[el("span",{text:d.n}),el("small",{text:d.th}),el("span",{class:"mini",text:dayDone(d)+" de "+(d.t||[]).length+" feitas"})]);b.addEventListener("click",function(){curDay=d.id;renderDays();renderDay();});D.appendChild(b);});
+}
+function renderDay(){
+ var w=week();if(!w)return;var days=w.days||[];
+ var d=days.filter(function(x){return x.id===curDay;})[0]||days[0];var V=$("dayView");V.innerHTML="";if(!d)return;
+ V.appendChild(el("div",{class:"dayhead"},[el("div",null,[el("p",{class:"eyebrow",text:d.n+" · "+d.th}),el("h3",{text:d.g})]),el("span",{class:"pill",text:dayDone(d)+" de "+(d.t||[]).length+" feitas"})]));
+ var T=el("div",{class:"tasks"}),p=prog(),wid=cur;
+ (d.t||[]).forEach(function(t){
+  var on=!!p.done[t.id];
+  var c=el("button",{class:"check",role:"checkbox","aria-checked":on?"true":"false","aria-label":"Marcar: "+t.h,html:on?checkSvg():""});
+  c.addEventListener("click",function(){var pp=prog(wid);if(pp.done[t.id])delete pp.done[t.id];else pp.done[t.id]=true;saveWeek(wid);renderWeeks();renderSummary();renderDays();renderDay();});
+  var ol=el("ol");(t.s||[]).forEach(function(s){ol.appendChild(el("li",{text:s}));});
+  T.appendChild(el("div",{class:"task"+(on?" done":"")},[
+   el("div",{class:"task-row"},[c,el("div",null,[el("p",{class:"task-title",text:t.h}),el("p",{class:"task-what",text:"O que fazer: "+t.w})]),el("span",{class:"time",text:t.m||""})]),
+   el("details",{class:"how"},[el("summary",{text:"Como fazer"}),ol])
+  ]));
+ });
+ V.appendChild(T);
+}
+
+/* Ideas */
+function renderIdeas(){
+ var w=week();if(!w)return;var I=$("ideas");I.innerHTML="";var p=prog(),wid=cur;
+ (w.ideas||[]).forEach(function(i){
+  var sel=el("select",{id:"st-"+wid+"-"+i.id,"aria-label":"Estado de "+i.h});
+  STATUS.forEach(function(s){var o=el("option",{value:s[0],text:s[1]});if((p.status[i.id]||"por")===s[0])o.selected=true;sel.appendChild(o);});
+  sel.addEventListener("change",function(){prog(wid).status[i.id]=sel.value;saveWeek(wid);});
+  var steps=el("ol",{class:"steps"});(i.how||[]).forEach(function(s){steps.appendChild(el("li",{text:s}));});
+  var meta=el("div",{class:"meta"},[i.n1?el("span",{class:"pill n1",text:"Prioridade n.º 1"}):null,el("span",{class:"pill",text:"Para: "+i.who}),sel]);
+  I.appendChild(el("article",{class:"idea"+(i.n1?" top":"")},[
+   el("div",{class:"col"},[meta,el("h3",{text:i.h}),el("div",null,[el("p",{class:"lbl",text:"O que fazer"}),el("p",{text:i.what})]),el("div",null,[el("p",{class:"lbl",text:"Como fazer"}),steps])]),
+   el("div",{class:"col"},[el("div",null,[el("p",{class:"lbl",text:"Por onde começar"}),el("p",{style:"font-weight:700",text:i.first})]),el("div",{class:"pc"},[el("div",{class:"pro",html:"<b>Prós</b>"},[document.createTextNode(i.pro)]),el("div",{class:"con",html:"<b>Contras</b>"},[document.createTextNode(i.con)])])])
+  ]));
+ });
+}
+
+/* Destaque */
+function renderDestaque(){
+ var Wy=$("why3");Wy.innerHTML="";WHY.forEach(function(w){Wy.appendChild(el("div",{class:"card"},[el("h3",{text:w.h}),el("p",{text:w.p})]));});
+ var R=$("road");R.innerHTML="";GLOBAL.ms=GLOBAL.ms||{};
+ ROAD.forEach(function(ph){var box=el("div",{class:"phase"},[el("p",{class:"when",text:ph.w}),el("h3",{text:ph.h})]);
+  ph.m.forEach(function(m){var on=!!GLOBAL.ms[m.id];var c=el("button",{class:"check",role:"checkbox","aria-checked":on?"true":"false","aria-label":"Marco: "+m.t,html:on?checkSvg():""});c.addEventListener("click",function(){if(GLOBAL.ms[m.id])delete GLOBAL.ms[m.id];else GLOBAL.ms[m.id]=true;saveGlobal();renderDestaque();});box.appendChild(el("div",{class:"ms"+(on?" done":"")},[c,el("span",{text:m.t})]));});
+  R.appendChild(box);});
+ var G=$("signals");G.innerHTML="";var wid=cur;
+ SIGNALS.forEach(function(s){
+  var v=cur?(prog().signals[s.id]||0):0,tot=0;WEEKS.forEach(function(w){var pp=PROG[w.id];if(pp&&pp.signals)tot+=pp.signals[s.id]||0;});
+  var out=el("output",{text:String(v),"aria-live":"polite"});var minus=el("button",{"aria-label":"Menos "+s.h,text:"−"});var plus=el("button",{"aria-label":"Mais "+s.h,text:"+"});
+  minus.addEventListener("click",function(){if(!wid)return;var pp=prog(wid);pp.signals[s.id]=Math.max(0,(pp.signals[s.id]||0)-1);saveWeek(wid);renderDestaque();});
+  plus.addEventListener("click",function(){if(!wid)return;var pp=prog(wid);pp.signals[s.id]=(pp.signals[s.id]||0)+1;saveWeek(wid);renderDestaque();});
+  G.appendChild(el("div",{class:"signal"},[el("p",{class:"lbl",text:s.h}),el("div",{class:"counter"},[minus,out,plus]),el("p",{class:"total",text:"Total no registo: "+tot})]));});
+ var K=$("risks");K.innerHTML="";RISKS.forEach(function(r){K.appendChild(el("div",{class:"risk"},[el("b",{text:r.h}),el("p",{text:r.p})]));});
+}
+
+function renderAll(){
+ var has=!!week();
+ $("emptyNote").hidden=has;
+ renderWeeks();renderDestaque();
+ if(!has)return;
+ renderSummary();renderNews();renderDays();renderDay();renderIdeas();
+}
+
+document.querySelectorAll("details.fold").forEach(function(d){
+ var k="radar-fold-"+d.getAttribute("data-fold");
+ try{if(localStorage.getItem(k)==="1")d.open=true;}catch(e){}
+ d.addEventListener("toggle",function(){try{localStorage.setItem(k,d.open?"1":"0");}catch(e){}});
+});
+function showEmpty(msg){$("emptyNote").textContent=msg;$("emptyNote").hidden=false;}
+
+renderAll();
+showEmpty("A carregar o registo de semanas…");
+
+window.claude&&window.claude.use&&window.claude.use("db").then(function(d){
+ if(!d){showEmpty("Não foi possível ligar ao registo. Abre a app no claude.ai.");setSave("Sem ligação");return;}
+ db=d;
+ db.collection("weeks").orderBy("order","desc").onSnapshot(function(snap){
+  WEEKS=snap.docs.map(function(x){var o=clone(x.data());o.id=o.id||x.id;return o;});
+  if(!WEEKS.length){showEmpty("Ainda não há semanas no registo. A primeira entra na segunda às 6h53.");setSave("Pronto");renderAll();return;}
+  if(!pinned||!week())cur=WEEKS[0].id;
+  setSave("Registo atualizado");renderAll();
+ },function(){showEmpty("O registo deixou de responder. Recarrega a página.");});
+ db.collection("progress").onSnapshot(function(snap){
+  snap.docs.forEach(function(x){var o=clone(x.data());if(x.id==="global")GLOBAL=o;else if(!timers[x.id]||!x.metadata.hasPendingWrites)PROG[x.id]=o;});
+  renderAll();
+ },function(){});
+}).catch(function(){showEmpty("Não foi possível ligar ao registo. Abre a app no claude.ai.");});
+if(!window.claude||!window.claude.use){showEmpty("Abre a app no claude.ai para ver o registo de semanas.");}
+})();
+</script>
+
