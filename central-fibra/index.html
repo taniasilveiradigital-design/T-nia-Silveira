@@ -193,8 +193,9 @@ form.add .wide{grid-column:1/-1}
 /* ===== Dados de base (fotografia de 20/11/2026) ===== */
 const AREAS=[
  {g:"Painel",items:[["hoje","Hoje"]]},
+ {g:"Radares",items:[["radar","Radar Têxtil"],["radaremail","Radar do email"]]},
  {g:"Negócio",items:[["dinheiro","Dinheiro"],["clientes","Clientes"],["servicos","Serviços e preços"]]},
- {g:"Conteúdo",items:[["copy","Copy"],["ideias","Ideias"],["radar","Radar"]]},
+ {g:"Conteúdo",items:[["copy","Copy"],["ideias","Ideias"]]},
  {g:"Tempo",items:[["agenda","Agenda"],["mail","Mail"]]},
  {g:"Raiz",items:[["marca","Marca"],["historia","História"],["ferramentas","Ferramentas"]]},
  {g:"Equipa",items:[["responsaveis","Responsáveis"]]}
@@ -207,7 +208,8 @@ const FUNCAO={
  servicos:"Guarda a esteira de ofertas e os preços em vigor.",
  copy:"Escreve e revê o conteúdo da semana na voz da Tânia.",
  ideias:"Recebe as ideias soltas e decide o que avança.",
- radar:"Lê o setor têxtil e da moda e traz o que interessa.",
+ radar:"Pesquisa a web toda as semanas: têxtil, moda, negócios e IA.",
+ radaremail:"Lê as newsletters do setor e o Pinterest e diz o que interessa.",
  agenda:"Organiza sessões, eventos e prazos.",
  mail:"Faz a triagem do email: o que responder, o que cortar.",
  marca:"Guarda a identidade: cores, letra, voz e regras.",
@@ -571,18 +573,23 @@ const mailPend=()=>(MAIL?.pendentes||[]).filter(p=>!S.mailFeito[p.t]);
 V.mail=()=>{
  if(MAIL===null) return head("mail","A carregar o mail…")+`<div class="empty">A carregar…</div>`;
  const pc={alta:"bad",media:"warn",baixa:""}, pn={alta:"Urgente",media:"Esta semana",baixa:"Quando der"};
- const F=["Tudo","Têxtil","Moda","Negócios","IA"], rs=(MAIL.radar||[]).filter(r=>mailF==="Tudo"||r.a===mailF);
- const P=MAIL.pinterest||{};
- return head("mail","O que está pendente na caixa taniasilveira.digital e o radar das newsletters do setor. Atualiza todos os dias de manhã.")+`
+ return head("mail","O que está pendente na caixa taniasilveira.digital. Atualiza todos os dias de manhã. As newsletters estão no Radar do email.")+`
  ${MAIL.resumo?`<div class="card dark"><div class="lbl">Hoje no mail</div><p style="font-family:var(--display);font-size:1.4rem;line-height:1.25">${esc(MAIL.resumo)}</p></div>`:""}
  <div class="card"><div class="lbl">Pendentes · ${mailPend().length} por tratar</div>${(MAIL.pendentes||[]).map(p=>{const f=!!S.mailFeito[p.t];return `<label class="check${f?" done":""}"><input type="checkbox" data-mp="${esc(p.t)}"${f?" checked":""}><span style="flex:1"><span class="t">${esc(p.t)}</span> <span class="pill ${pc[p.p]}">${pn[p.p]}</span>${p.q&&p.q!=="—"?` <span class="when">${esc(p.q)}</span>`:""}<br><span class="small muted">${esc(p.s)}</span></span></label>`}).join("")||'<div class="empty">Nada pendente.</div>'}</div>
- <h3 style="margin-top:6px">Radar do email</h3><p class="small muted" style="margin-top:-12px">Portugal Têxtil, T Jornal/ATP, FashionNetwork, WGSN e MODAPORTUGAL, lidos por ti. Só o que interessa.</p>
+ <div class="card"><div class="lbl">As tuas tarefas de email</div>${S.mail.map(m=>`<label class="check${m.feito?" done":""}"><input type="checkbox" data-mail="${m.id}"${m.feito?" checked":""}><span><span class="t">${esc(m.t)}</span>${m.s?`<br><span class="small muted">${esc(m.s)}</span>`:""}</span></label>`).join("")}
+ <form class="add" id="mailForm" style="margin-top:8px"><label class="wide">Nova tarefa<input name="t" required></label><button class="btn" type="submit">Adicionar</button></form></div>
+ <p class="small muted">${esc(MAIL.arrumado||"")} Atualizado a ${esc((MAIL.atualizado||"").replace("T"," às "))}.</p>`;
+};
+
+V.radaremail=()=>{
+ if(MAIL===null) return head("radaremail","A carregar…")+`<div class="empty">A carregar…</div>`;
+ const F=["Tudo","Têxtil","Moda","Negócios","IA"], rs=(MAIL.radar||[]).filter(r=>mailF==="Tudo"||r.a===mailF);
+ const P=MAIL.pinterest||{};
+ return head("radaremail","As newsletters que chegam ao teu email (Portugal Têxtil, T Jornal/ATP, FashionNetwork, WGSN, MODAPORTUGAL) e o Pinterest, lidos por ti. Só o que interessa. Atualiza todos os dias de manhã.")+`
  <div class="filters" role="group" aria-label="Filtrar">${F.map(f=>`<button type="button" data-mf="${f}" aria-pressed="${f===mailF}">${f} <span class="muted">${f==="Tudo"?(MAIL.radar||[]).length:(MAIL.radar||[]).filter(r=>r.a===f).length}</span></button>`).join("")}</div>
  <div class="grid">${rs.map(r=>`<div class="card"><div style="display:flex;gap:6px;flex-wrap:wrap"><span class="pill acc">${esc(r.a)}</span><span class="pill">${fdata(r.d)}</span></div><h3>${esc(r.t)}</h3><p class="small">${esc(r.x)}</p><p class="small" style="color:var(--acc);font-weight:600">Para ti: ${esc(r.w)}</p><p class="small muted">${esc(r.f)}</p></div>`).join("")||'<div class="empty">Sem notícias nesta área.</div>'}</div>
  ${(MAIL.eventos||[]).length?`<div class="card"><div class="lbl">Eventos do setor</div><div class="list">${MAIL.eventos.map(e=>`<div class="row"><span class="t">${esc(e.t)}</span><span class="when">${fdata(e.d)} ${e.d.slice(0,4)}</span><span class="s">${esc(e.l)}</span></div>`).join("")}</div></div>`:""}
  ${P.leitura?`<div class="card"><div class="lbl">Pinterest · o que serve à tua marca</div><p class="small">${esc(P.leitura)}</p><div class="list">${(P.ideias||[]).map(i=>`<div class="row"><span class="t">${esc(i.t)}</span><span></span><span class="s">${esc(i.d)}</span></div>`).join("")}</div></div>`:""}
- <div class="card"><div class="lbl">As tuas tarefas de email</div>${S.mail.map(m=>`<label class="check${m.feito?" done":""}"><input type="checkbox" data-mail="${m.id}"${m.feito?" checked":""}><span><span class="t">${esc(m.t)}</span>${m.s?`<br><span class="small muted">${esc(m.s)}</span>`:""}</span></label>`).join("")}
- <form class="add" id="mailForm" style="margin-top:8px"><label class="wide">Nova tarefa<input name="t" required></label><button class="btn" type="submit">Adicionar</button></form></div>
  <p class="small muted">${esc(MAIL.arrumado||"")} Atualizado a ${esc((MAIL.atualizado||"").replace("T"," às "))}.</p>`;
 };
 
