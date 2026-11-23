@@ -41,6 +41,16 @@ Fonte: o Trello "Plano de Escalada" completo (abril a novembro 2026). São 307 c
 - A Sarah escreve em português do Brasil. Passa sempre para PT-PT (tu, "sem dares por isso", "apanha luz") sem mudar a estrutura nem o sentido.
 
 
+
+## 0.2 Legendas (estilo da Sarah)
+
+- A legenda não repete o post. O post já ensina; a legenda é uma frase.
+- Modelo curto (o normal): uma linha, quase sempre uma pergunta à dona da marca ou uma frase de estado, e um emoji no fim (o da Tânia é 🧵). Ex. da Sarah: "E você, o que te chama atenção em uma marca pessoal?", "Sua marca já exala sua essência em todos os detalhes?", "Aceita um chá?", "Como parar de complicar a vida do seu cliente na prática."
+- O CTA, quando há, vai numa segunda linha que começa com travessão: "— Quero saber o que você ama.", "— E, claro, se você quer aplicar essas estratégias à sua marca, candidate-se à Mountain pelo link da bio."
+- Modelo longo (só em posts pessoais ou de posicionamento): frases curtas, uma por parágrafo, na primeira pessoa, a contar o que ela faz e porquê. Fecha com um CTA suave ("Se chegou até o final do post, já sabe onde eu quero te encontrar.").
+- Sem hashtags.
+- Não copiar a voz da Sarah: nada de "você", nem o 🏔️ dela. PT-PT e palavras da Tânia.
+
 ---
 
 ## 1. Como a Sarah escreve os cartões (o que colas na app)

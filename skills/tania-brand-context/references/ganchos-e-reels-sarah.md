@@ -25,3 +25,12 @@ Fonte: feedback da Sarah ao Reels de 23 de novembro de 2026 e o Reels de 25 rees
 - Não repetir conteúdo (Tânia, 20 de novembro): antes de escrever, lê os copies dos outros dias da mesma semana e da semana anterior. Se um tema já lá está (ex.: prazos por escrito ao fornecedor, a lista de custos, "a peça muda antes de existir"), dá outro ângulo à etapa, mesmo que o briefing a repita.
 - Reels sem listas (regra da Tânia, manda sobre o modelo da Sarah): nada de 1, 2, 3 nem "primeiro, segundo". As decisões ligam-se umas às outras ("Começa por…", "Com isso à frente…", "Antes de…", "E…"). Listas numeradas só no carrossel.
 - A Sarah escreve em português do Brasil. Passa sempre para PT-PT (tu, "sem dares por isso", "apanha luz") sem mudar a estrutura nem o sentido.
+
+## Legendas
+
+- A legenda não repete o post. O post já ensina; a legenda é uma frase.
+- Modelo curto (o normal): uma linha, quase sempre uma pergunta à dona da marca ou uma frase de estado, e um emoji no fim (o da Tânia é 🧵). Ex. da Sarah: "E você, o que te chama atenção em uma marca pessoal?", "Sua marca já exala sua essência em todos os detalhes?", "Aceita um chá?", "Como parar de complicar a vida do seu cliente na prática."
+- O CTA, quando há, vai numa segunda linha que começa com travessão: "— Quero saber o que você ama.", "— E, claro, se você quer aplicar essas estratégias à sua marca, candidate-se à Mountain pelo link da bio."
+- Modelo longo (só em posts pessoais ou de posicionamento): frases curtas, uma por parágrafo, na primeira pessoa, a contar o que ela faz e porquê. Fecha com um CTA suave ("Se chegou até o final do post, já sabe onde eu quero te encontrar.").
+- Sem hashtags.
+- Não copiar a voz da Sarah: nada de "você", nem o 🏔️ dela. PT-PT e palavras da Tânia.
