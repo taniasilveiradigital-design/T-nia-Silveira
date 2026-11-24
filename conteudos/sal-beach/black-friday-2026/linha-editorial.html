@@ -1,0 +1,275 @@
+<title>SAL Black Friday 2026</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,400;1,500&family=Montserrat:wght@400;500;600&display=swap">
+<style>
+/* Layout: uma coluna de dias, cada dia um bloco com o post, os stories e o texto pronto a copiar. */
+:root{
+  --bg:#fbf3ee; --papel:#fffaf7; --fg:#3f4042; --suave:#6b6c6f; --linha:#ecd6cb;
+  --esmeralda:#1a8f8b; --esmeralda-forte:#1ea8a3; --rosado:#fde3d8; --chip:#f6e6dd;
+  --serif:"Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --sans:"Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1c1d1f; --papel:#252628; --fg:#efe6e1; --suave:#b5aaa4; --linha:#3a3b3e;
+  --esmeralda:#4cc4bf; --esmeralda-forte:#4cc4bf; --rosado:#3a2f2b; --chip:#2f3032; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1c1d1f; --papel:#252628; --fg:#efe6e1; --suave:#b5aaa4; --linha:#3a3b3e;
+  --esmeralda:#4cc4bf; --esmeralda-forte:#4cc4bf; --rosado:#3a2f2b; --chip:#2f3032; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:400 15px/1.6 var(--sans)}
+.wrap{max-width:900px;margin:0 auto;padding-block:40px 80px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.marca{font:500 12px var(--sans);letter-spacing:.45em;color:var(--esmeralda);text-transform:uppercase}
+h1{font:400 italic clamp(40px,7vw,68px)/1 var(--serif);margin:14px 0 18px;text-wrap:balance}
+h2{font:500 clamp(26px,4vw,34px)/1.1 var(--serif);margin:0;text-wrap:balance}
+h3{font:600 11px var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--suave);margin:0 0 6px}
+p{margin:0}
+.lead{font-size:16px;max-width:62ch;color:var(--fg)}
+.tese{margin:32px 0 8px;padding:24px 26px;background:var(--rosado);border-radius:4px;display:grid;gap:10px}
+.tese strong{font:500 italic 24px/1.25 var(--serif);display:block}
+.regras{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin:28px 0 8px}
+.regras div{border-top:1px solid var(--esmeralda);padding-top:10px;min-width:0}
+.regras b{display:block;font-weight:600;margin-bottom:4px}
+.pecas{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+.tabela{overflow-x:auto;margin-top:12px}
+.pecas th{text-align:left;font:600 11px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--suave);padding:8px 10px;border-bottom:1px solid var(--linha)}
+.pecas td{padding:10px;border-bottom:1px solid var(--linha);vertical-align:top}
+.pecas s{color:var(--suave)}
+.secao{margin-top:48px}
+.dia{display:grid;grid-template-columns:120px 1fr;gap:24px;padding:30px 0;border-top:1px solid var(--linha)}
+.data{min-width:0}
+.data .num{font:500 52px/1 var(--serif);color:var(--esmeralda)}
+.data .sem{font:600 11px var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--suave);margin-top:6px}
+.data .fase{display:inline-block;margin-top:10px;font:600 10px var(--sans);letter-spacing:.12em;text-transform:uppercase;padding:4px 8px;border-radius:2px;background:var(--chip);color:var(--fg)}
+.data .fase.bf{background:var(--esmeralda-forte);color:#fff}
+.corpo{display:grid;gap:18px;min-width:0}
+.meta{display:flex;flex-wrap:wrap;gap:8px}
+.meta span{font:500 12px var(--sans);padding:4px 10px;border:1px solid var(--linha);border-radius:99px;color:var(--suave)}
+.meta span.f{border-color:var(--esmeralda);color:var(--esmeralda)}
+.bloco{display:grid;gap:4px}
+.ecra{font:400 italic 22px/1.3 var(--serif)}
+.legenda{position:relative;background:var(--papel);border:1px solid var(--linha);border-radius:4px;padding:16px 18px 16px;white-space:pre-line;font-size:14px}
+.copiar{position:absolute;top:8px;right:8px;font:600 10px var(--sans);letter-spacing:.12em;text-transform:uppercase;background:transparent;color:var(--esmeralda);border:1px solid var(--esmeralda);border-radius:2px;padding:5px 8px;cursor:pointer}
+.copiar:focus-visible{outline:2px solid var(--esmeralda);outline-offset:2px}
+ol.stories{margin:0;padding-left:20px;display:grid;gap:4px}
+.nota{font-size:13px;color:var(--suave)}
+.nota b{color:var(--fg)}
+.pendente{margin-top:48px;padding:22px 24px;border:1px solid var(--esmeralda);border-radius:4px;display:grid;gap:10px}
+.pendente ul{margin:0;padding-left:20px;display:grid;gap:6px}
+@media (max-width:600px){.dia{grid-template-columns:1fr;gap:12px}.data{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}.data .num{font-size:40px}.data .fase{margin-top:0}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <div class="marca">SAL Beach Couture</div>
+  <h1>Black Friday SAL<br>24 a 30 de novembro</h1>
+  <p class="lead">Linha editorial do Instagram para a semana da Black Friday. Cada dia tem o post, os stories e a legenda pronta a copiar. As peças e os preços são os que estão no site.</p>
+
+  <div class="tese">
+    <h3>A ideia da semana</h3>
+    <strong>O verão volta. Esta edição, não.</strong>
+    <p>A Black Friday da SAL não grita desconto. Mostra a peça, a estampa e a origem, e deixa o preço em segundo plano. A lista privada entra um dia antes de toda a gente. É isto que separa uma marca de edição limitada de uma loja em saldos.</p>
+  </div>
+
+  <div class="regras">
+    <div><b>Sem percentagens em grande</b>O preço aparece junto à peça, com o antigo riscado. Nunca "-24%" na capa.</div>
+    <div><b>Uma letra, duas cores</b>Títulos em serifa itálica. Bege-rosado e verde-esmeralda. Nada de néon nem cartazes.</div>
+    <div><b>O nome é SAL</b>Sempre SAL, nunca S.A.L. Sempre "biquíni", nunca "bikini". Sem emojis nas legendas.</div>
+    <div><b>Um só pedido</b>Cada post pede uma coisa: entrar na lista ou ver a peça no site.</div>
+  </div>
+
+  <section class="secao">
+    <h2>As seis peças</h2>
+    <div class="tabela">
+      <table class="pecas">
+        <thead><tr><th>Peça</th><th>Ref.</th><th>Cores</th><th>Black Friday</th></tr></thead>
+        <tbody>
+          <tr><td>Biquíni Triângulo</td><td>15</td><td>Azul, Preto, Tribal, Animal print, Azulejo, Floral</td><td>57,90 € <s>75,90 €</s></td></tr>
+          <tr><td>Triquíni</td><td>11</td><td>Preto, Rosa, Coral</td><td>62,90 € <s>82,90 €</s></td></tr>
+          <tr><td>Fato de banho Preto e branco</td><td>7-PB</td><td>Preto e branco</td><td>58,90 € <s>77,90 €</s></td></tr>
+          <tr><td>Biquíni Cueca Lisboa</td><td>17</td><td>Rosa, Branco</td><td>39,90 € <s>51,90 €</s></td></tr>
+          <tr><td>Saia Comprida + Top</td><td>10</td><td>Azul, Coral, Preto</td><td>69,90 € <s>91,90 €</s></td></tr>
+          <tr><td>Pantalonas</td><td>18</td><td>Azulejo, Floral, Preto</td><td>81,90 € <s>107,90 €</s></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="nota" style="margin-top:10px">Tamanhos S, M e L em todas.</p>
+  </section>
+
+  <section class="secao">
+    <h2>Dia a dia</h2>
+
+    <article class="dia">
+      <div class="data"><div class="num">24</div><div class="sem">Terça</div><span class="fase">Antecipação</span></div>
+      <div class="corpo">
+        <div class="meta"><span class="f">Reel</span><span>Publicar às 20h30</span><span>Reel 1 entregue</span></div>
+        <div class="bloco"><h3>No ecrã</h3><p class="ecra">O verão volta. Esta edição, não.</p></div>
+        <div class="bloco"><h3>O que mostra</h3><p>As peças em sequência lenta, sem preço e sem a palavra desconto. Fecha com a data: sexta, 27.</p></div>
+        <div class="bloco"><h3>Legenda</h3><div class="legenda" id="l24"><button class="copiar" data-alvo="l24" type="button">Copiar</button>O verão volta.
+Esta edição, não.
+
+Seis peças, feitas em Portugal em pequenas quantidades. Quando acabam, não voltam.
+
+Sexta-feira, 27, abrimos a Black Friday SAL.
+Quem está na lista privada entra um dia antes.
+
+Link na bio.</div></div>
+        <div class="bloco"><h3>Stories</h3><ol class="stories">
+          <li>Partilhar o reel.</li>
+          <li>Fundo bege-rosado: "Lista privada. Acesso a 26 de novembro." Autocolante de link para o WhatsApp.</li>
+          <li>Caixa de perguntas: "Que peça queres ver primeiro?"</li>
+        </ol></div>
+        <p class="nota"><b>Hoje também:</b> mudar a bio, pôr o link do WhatsApp da lista privada e os destaques novos.</p>
+      </div>
+    </article>
+
+    <article class="dia">
+      <div class="data"><div class="num">25</div><div class="sem">Quarta</div><span class="fase">Antecipação</span></div>
+      <div class="corpo">
+        <div class="meta"><span class="f">Carrossel</span><span>Publicar às 13h00</span><span>5 slides</span></div>
+        <div class="bloco"><h3>No ecrã</h3><p class="ecra">Quatro estampas. Dois continentes.</p></div>
+        <div class="bloco"><h3>O que mostra</h3><p>O Biquíni Triângulo em cada estampa, um slide por estampa: Azulejo, Tribal, Floral, Animal print. Último slide: "Sexta, 27."</p></div>
+        <div class="bloco"><h3>Legenda</h3><div class="legenda" id="l25"><button class="copiar" data-alvo="l25" type="button">Copiar</button>Do azulejo português ao padrão tribal.
+
+Azulejo, a cerâmica de Portugal.
+Tribal, a herança de África.
+Floral, a natureza tropical.
+Animal print, o lado selvagem.
+
+A SAL nasceu entre dois continentes e cada estampa conta um bocado dessa história.
+
+Qual é a tua?</div></div>
+        <div class="bloco"><h3>Stories</h3><ol class="stories">
+          <li>Sondagem: "Azulejo ou Tribal?"</li>
+          <li>"Feito em Portugal. Licra sustentável vinda de Itália." Sobre um grande plano de tecido.</li>
+          <li>Lembrete da lista privada, com link.</li>
+        </ol></div>
+      </div>
+    </article>
+
+    <article class="dia">
+      <div class="data"><div class="num">26</div><div class="sem">Quinta</div><span class="fase">Lista privada</span></div>
+      <div class="corpo">
+        <div class="meta"><span class="f">Carrossel</span><span>Publicar às 19h00</span><span>7 slides</span><span>Site no ar</span></div>
+        <div class="bloco"><h3>No ecrã</h3><p class="ecra">A edição. Seis peças. Sem reposição.</p></div>
+        <div class="bloco"><h3>O que mostra</h3><p>Uma peça por slide, com nome e referência, sem preço. Último slide: "Amanhã, para todos."</p></div>
+        <div class="bloco"><h3>Legenda</h3><div class="legenda" id="l26"><button class="copiar" data-alvo="l26" type="button">Copiar</button>A edição está fechada.
+
+Biquíni Triângulo. Triquíni. Fato de banho Preto e branco. Biquíni Cueca Lisboa. Saia Comprida + Top. Pantalonas.
+
+Hoje, só quem está na lista privada tem acesso.
+Amanhã, abre para todos.</div></div>
+        <div class="bloco"><h3>Stories</h3><ol class="stories">
+          <li>"A lista privada já entrou." Sem link para o público.</li>
+          <li>Bastidores: uma peça dobrada, a etiqueta, a embalagem.</li>
+          <li>"Amanhã, às 9h00."</li>
+        </ol></div>
+        <p class="nota"><b>WhatsApp, 10h00:</b> mensagem para a lista de transmissão "Privé" com o link do site. Texto sugerido: "Bom dia. Como prometido, entras antes de toda a gente: a Black Friday SAL já está aberta para ti. A edição é pequena e não volta. salbeachcouture.shop"</p>
+      </div>
+    </article>
+
+    <article class="dia">
+      <div class="data"><div class="num">27</div><div class="sem">Sexta</div><span class="fase bf">Black Friday</span></div>
+      <div class="corpo">
+        <div class="meta"><span class="f">Reel</span><span>Publicar às 9h00</span><span>Reel 2 entregue</span></div>
+        <div class="bloco"><h3>No ecrã</h3><p class="ecra">Black Friday SAL. Até segunda.</p></div>
+        <div class="bloco"><h3>O que mostra</h3><p>Cada peça com o nome e o preço Black Friday, o antigo riscado em pequeno. Sem percentagens.</p></div>
+        <div class="bloco"><h3>Legenda</h3><div class="legenda" id="l27"><button class="copiar" data-alvo="l27" type="button">Copiar</button>Está aberta.
+
+A Black Friday SAL dura até segunda, 30, ou até acabarem os tamanhos.
+Seis peças, feitas em Portugal, sem reposição.
+
+O verão volta. Esta edição, não.
+
+salbeachcouture.shop, link na bio.</div></div>
+        <div class="bloco"><h3>Stories</h3><ol class="stories">
+          <li>Partilhar o reel.</li>
+          <li>Seis stories, uma peça em cada, com o preço e o autocolante de link para a página da peça.</li>
+          <li>Ao fim do dia: "Obrigada a quem já escolheu a sua."</li>
+        </ol></div>
+      </div>
+    </article>
+
+    <article class="dia">
+      <div class="data"><div class="num">28</div><div class="sem">Sábado</div><span class="fase bf">Black Friday</span></div>
+      <div class="corpo">
+        <div class="meta"><span class="f">Carrossel</span><span>Publicar às 11h00</span><span>4 slides</span></div>
+        <div class="bloco"><h3>No ecrã</h3><p class="ecra">Uma peça chama a outra.</p></div>
+        <div class="bloco"><h3>O que mostra</h3><p>Três looks completos: Biquíni Triângulo preto com Pantalonas Azulejo; Saia Comprida + Top coral; Fato de banho Preto e branco. Do mergulho ao jantar.</p></div>
+        <div class="bloco"><h3>Legenda</h3><div class="legenda" id="l28"><button class="copiar" data-alvo="l28" type="button">Copiar</button>Da água à esplanada, sem passar por casa.
+
+Biquíni Triângulo preto com Pantalonas Azulejo.
+Saia Comprida + Top coral.
+Fato de banho Preto e branco, sozinho.
+
+Escolhe o look. A Black Friday SAL fica até segunda.</div></div>
+        <div class="bloco"><h3>Stories</h3><ol class="stories">
+          <li>Guia de tamanhos S, M e L, num ecrã simples.</li>
+          <li>"Tens dúvidas no tamanho? Fala connosco." Link para o WhatsApp.</li>
+        </ol></div>
+      </div>
+    </article>
+
+    <article class="dia">
+      <div class="data"><div class="num">29</div><div class="sem">Domingo</div><span class="fase bf">Black Friday</span></div>
+      <div class="corpo">
+        <div class="meta"><span class="f">Carrossel</span><span>Publicar às 18h00</span><span>5 slides</span></div>
+        <div class="bloco"><h3>No ecrã</h3><p class="ecra">Faz a mala com intenção.</p></div>
+        <div class="bloco"><h3>O que mostra</h3><p>A mala de uma viagem de sol no inverno: uma peça para o mergulho, uma para o almoço, uma para o fim do dia. A SAL é para o ano inteiro, não só para agosto.</p></div>
+        <div class="bloco"><h3>Legenda</h3><div class="legenda" id="l29"><button class="copiar" data-alvo="l29" type="button">Copiar</button>Há quem guarde o biquíni em setembro.
+E há quem tenha sempre uma viagem marcada.
+
+A SAL é para quem vive o mar o ano inteiro.
+Três peças, uma mala, dias inteiros de sol.
+
+Último dia da Black Friday SAL: amanhã.</div></div>
+        <div class="bloco"><h3>Stories</h3><ol class="stories">
+          <li>Perguntas e respostas: envios, trocas, tamanhos. Respostas tiradas da página Perguntas do site.</li>
+          <li>"Amanhã é o último dia."</li>
+        </ol></div>
+      </div>
+    </article>
+
+    <article class="dia">
+      <div class="data"><div class="num">30</div><div class="sem">Segunda</div><span class="fase bf">Último dia</span></div>
+      <div class="corpo">
+        <div class="meta"><span class="f">Reel</span><span>Publicar às 12h30</span><span>Reel 3 entregue</span></div>
+        <div class="bloco"><h3>No ecrã</h3><p class="ecra">Quando acaba, acaba.</p></div>
+        <div class="bloco"><h3>O que mostra</h3><p>As peças a passar mais depressa, a fechar num ecrã bege: "Último dia. Até à meia-noite."</p></div>
+        <div class="bloco"><h3>Legenda</h3><div class="legenda" id="l30"><button class="copiar" data-alvo="l30" type="button">Copiar</button>Último dia.
+
+À meia-noite, a Black Friday SAL fecha.
+E esta edição não volta.
+
+salbeachcouture.shop, link na bio.</div></div>
+        <div class="bloco"><h3>Stories</h3><ol class="stories">
+          <li>Manhã: "Último dia."</li>
+          <li>Tarde: só se for verdade, as cores e tamanhos que já esgotaram.</li>
+          <li>Noite: "Últimas horas." Link para o site.</li>
+        </ol></div>
+      </div>
+    </article>
+  </section>
+
+  <div class="pendente">
+    <h3>A confirmar antes de publicar</h3>
+    <ul>
+      <li>A data de fim da campanha. Assumi segunda, 30, à meia-noite. Tem de bater com a página "Condições da campanha" do site.</li>
+      <li>O acesso da lista privada a 26 só funciona se o site estiver no ar nesse dia.</li>
+      <li>Nos stories de esgotados, mostrar só o que esgotou mesmo.</li>
+      <li>As fotos usadas são as do site.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+document.querySelectorAll('.copiar').forEach(function(b){
+  b.addEventListener('click',function(){
+    var el=document.getElementById(b.dataset.alvo);
+    var t=Array.prototype.filter.call(el.childNodes,function(n){return n!==b}).map(function(n){return n.textContent}).join('').trim();
+    var ok=function(){b.textContent='Copiado';setTimeout(function(){b.textContent='Copiar'},1600)};
+    try{navigator.clipboard.writeText(t).then(ok,function(){sel(el)})}catch(e){sel(el)}
+  });
+});
+function sel(el){var r=document.createRange();r.selectNodeContents(el);var s=getSelection();s.removeAllRanges();s.addRange(r)}
+</script>
