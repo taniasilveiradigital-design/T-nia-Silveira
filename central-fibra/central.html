@@ -125,6 +125,40 @@ form.add .wide{grid-column:1/-1}
 .check input{margin-top:5px;accent-color:var(--acc);width:16px;height:16px;flex:none}
 .check.done .t{text-decoration:line-through;color:var(--faint)}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--castanho);color:#fff;padding:9px 16px;border-radius:10px;font-size:.88rem;z-index:50}
+.tp-hero{position:relative;background:var(--castanho);color:#fff;border-radius:16px;padding:28px 28px 22px;display:grid;gap:8px}
+.tp-hero::after{content:"";position:absolute;inset:8px;border:1px dashed rgba(255,255,255,.28);border-radius:12px;pointer-events:none}
+.tp-data{font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--bege);margin:0}
+.tp-titulo{font-family:var(--display);font-weight:500;font-size:clamp(2rem,5vw,3rem);line-height:1.05;margin:0;color:#fff}
+.tp-titulo em{color:#f1dccd}
+.tp-lead{margin:0;max-width:62ch;color:#efe4dc}
+.tp-lead b{color:#fff;font-variant-numeric:tabular-nums}
+.tp-tiles{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr))}
+.tp-tile{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 18px;display:grid;gap:3px;align-content:start;min-width:0;text-decoration:none;color:var(--fg)}
+.tp-tile:hover{border-color:var(--acc)}
+.tp-tile.is-terra{background:var(--terracota);border-color:var(--terracota);color:#fff}
+.tp-tile.is-terra .lbl,.tp-tile.is-terra .tp-sub{color:#fbeee5}
+.tp-num{font-family:var(--display);font-size:2.2rem;line-height:1.1;font-variant-numeric:tabular-nums}
+.tp-prox{font-family:var(--display);font-size:1.3rem;line-height:1.2;overflow-wrap:anywhere}
+.tp-sub{font-size:.8rem;color:var(--muted)}
+.tp-grid{display:grid;gap:14px}
+@media (min-width:900px){.tp-grid{grid-template-columns:1.1fr 1fr;align-items:start}}
+.tp-col{display:grid;gap:14px;min-width:0}
+.tp-dia{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--acc);padding-top:10px;font-weight:700}
+.tp-ev{display:grid;grid-template-columns:48px 1fr;gap:8px;padding:6px 0 6px 10px;border-left:2px solid var(--ec,var(--bege));font-size:.92rem}
+.tp-ev time{font-variant-numeric:tabular-nums;color:var(--muted);font-size:.8rem;padding-top:2px}
+.tp-pilar{background:var(--bege);color:#3a251c;border-radius:14px;padding:18px 20px;display:grid;gap:6px}
+.tp-pilar .lbl{color:#5c3b2e}
+.tp-pilar p{font-family:var(--display);font-size:1.6rem;line-height:1.2;margin:0}
+.tp-pilar small{color:#5c3b2e}
+.tp-setores{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr))}
+.tp-setor{background:var(--panel);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.tp-setor:hover{border-color:var(--acc)}
+.tp-setor-main{display:grid;gap:4px;align-content:start;padding:14px 16px;text-decoration:none;color:var(--fg);flex:1}
+.tp-setor-main b{font-family:var(--display);font-size:1.35rem;font-weight:600}
+.tp-estado{font-size:.84rem;font-weight:600;color:var(--acc);margin-top:4px}
+.tp-ext{display:flex;flex-wrap:wrap;gap:6px;padding:10px 16px;border-top:1px solid var(--line);background:var(--sunk)}
+.tp-ext a{font-size:.78rem;text-decoration:none;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:99px;padding:2px 9px}
+.tp-ext a:hover{border-color:var(--acc)}
 .navscrim{display:none}
 .ev-cliente{--ec:var(--ok)} .ev-trabalho{--ec:var(--acc)} .ev-saude{--ec:var(--bad)} .ev-pessoal{--ec:var(--castanho)} .ev-rotina{--ec:var(--faint)} .ev-feriado{--ec:var(--warn)}
 :root[data-theme="dark"] .ev-pessoal{--ec:var(--bege)}
@@ -189,7 +223,7 @@ const AREAS=[
  {g:"Painel",plain:true,items:[["hoje","Hoje"]]},
  {g:"Tempo",items:[["agenda","Agenda"],["mail","Mail"]]},
  {g:"Clientes",plain:true,items:[["clientes","Clientes"]]},
- {g:"Negócio",items:[["dinheiro","Dinheiro"],["servicos","Serviços e preços"]]},
+ {g:"Negócio",items:[["dinheiro","Finanças"],["servicos","Serviços e preços"],["analise","Análise do negócio"],["site","Site"]]},
  {g:"Radares",items:[["radar","Radar Têxtil"],["radaremail","Radar do email"]]},
  {g:"Conteúdo",items:[["copy","Copy"],["ideias","Ideias"]]},
  {g:"Raiz",items:[["marca","Marca"],["historia","História"],["ferramentas","Ferramentas"]]},
@@ -210,7 +244,9 @@ const FUNCAO={
  marca:"Guarda a identidade: cores, letra, voz e regras.",
  historia:"Conta o percurso e as provas reais.",
  ferramentas:"Reúne os links de tudo o que já foi construído.",
- responsaveis:"Define quem trata de cada área."
+ responsaveis:"Define quem trata de cada área.",
+ analise:"Lê os números e diz onde o negócio está e para onde vai.",
+ site:"Mantém o site, o portal e as páginas de venda."
 };
 
 const DEF={
@@ -387,34 +423,77 @@ function totais(mes){let e=0,s=0;for(const m of todosMovs()){if(mes&&!m.data.sta
 
 /* ===== Vistas ===== */
 const V={};
+const PILARES=["Produto antes da comunicação.","Clareza antes da execução.","Decisão antes da ação.","Autoridade com verdade.","Margem antes do volume."];
+const SETORES=[
+ {id:"agenda",n:"Agenda",d:"Os teus calendários todos, por mês.",ext:[]},
+ {id:"mail",n:"Mail",d:"O que pede resposta na caixa de entrada.",ext:[]},
+ {id:"clientes",n:"Clientes",d:"Quem está, o próximo passo e as provas.",ext:[["Estúdio Susana Nicau","https://claude.ai/artifact/UnQ4SYLFjoTsYMMDqZ5mbk"],["SAL Black Friday","https://claude.ai/artifact/QMxsCmyZtRx8nAgFuXL4MF"],["Estúdio Traços D'Amor","https://claude.ai/artifact/D3MiggwcKrr8yggsoKk3vz"]]},
+ {id:"dinheiro",n:"Finanças",d:"Entradas, saídas, meta e alertas.",ext:[["Quanto sobra da tua peça","https://claude.ai/artifact/3m9FqXM9NigsuysBX97Ydy"]],falta:"A Central Financeira do teu computador ainda não está ligada."},
+ {id:"copy",n:"Copy",d:"A semana de conteúdo e as regras da voz.",ext:[["Copy FIBRA (app)","https://claude.ai/artifact/MdsQ4oaNDMD5kuwoVazL4w"],["Instagram que vende","https://claude.ai/artifact/MCskUgmTp6KZMiUAtCYzRJ"]]},
+ {id:"analise",n:"Análise do negócio",d:"Onde estás, o que está mal e para onde vais.",ext:[["Raio-X do negócio","https://claude.ai/artifact/WkkcEyShWZcH4qay1vCe3r"],["Tânia Silveira 2027","https://claude.ai/artifact/RyyFyBv8cyWcLB4zv9cHYQ"]]},
+ {id:"site",n:"Site",d:"taniasilveira.pt, portal e páginas de venda.",ext:[["taniasilveira.pt","https://taniasilveira.pt"],["Site novo (rascunho)","https://claude.ai/artifact/NnTRBNp7g2TzuTT3dWtHiq"]]},
+ {id:"radar",n:"Radares",d:"Radar Têxtil (web) e Radar do email.",ext:[]},
+ {id:"ideias",n:"Ideias",d:"O que te passa pela cabeça e o que avança.",ext:[]},
+ {id:"marca",n:"Marca",d:"Cores, letra, voz e o que é proibido.",ext:[]},
+ {id:"responsaveis",n:"Equipa",d:"Quem trata de cada setor.",ext:[]}
+];
+function estadoSetor(id){
+ const t=totais(mesAtual());
+ switch(id){
+  case"agenda":{if(!AG)return"";let n=0;for(let i=0;i<7;i++)n+=evDia(addDias(HOJE,i)).filter(e=>e.imp&&e.c!=="rotina"&&e.c!=="feriado").length;const a=Array.from({length:8},(_,i)=>alertasDe(addDias(HOJE,i)).length).reduce((x,y)=>x+y,0);return `${n} compromissos em 7 dias${a?` · ${a} alertas`:""}`}
+  case"mail":{if(!MAIL)return"";const p=mailPend();return `${p.length} pendentes · ${p.filter(x=>x.p==="alta").length} urgentes`}
+  case"clientes":return `${S.clientes.filter(c=>c.estado==="Ativa").length} ativas · ${S.clientes.filter(c=>c.estado==="A sair").length} a sair`;
+  case"dinheiro":{const al=(DIN&&DIN.alertas||[]).filter(a=>a.p==="alta").length;return `${eur(t.e)} entradas · ${eur(t.s)} saídas este mês${al?` · ${al} urgentes`:""}`}
+  case"copy":return `${COPY.length} dias planeados esta semana`;
+  case"radar":return RADAR&&RADAR.length?`Semana ${RADAR[0].short} · ${RADAR[0].news.length} notícias`+(MAIL?` · email ${(MAIL.radar||[]).length}`:""):"";
+  case"ideias":return `${S.ideias.filter(i=>i.estado==="Viva").length} vivas · ${S.ideias.filter(i=>i.estado==="Parada").length} paradas`;
+  case"responsaveis":{const n=Object.values(S.resp).filter(Boolean).length;return n?`${n} setores com responsável`:"Responsáveis por definir"}
+  case"analise":return "Meta 3.000 €/mês · último número: 700 € em março";
+  case"site":return "Rascunho novo de 20/11 por publicar";
+  default:return"";
+ }
+}
 V.hoje=()=>{
- const t=totais(mesAtual()); const ativos=S.clientes.filter(c=>c.estado==="Ativa").length;
- const prox=AG?Array.from({length:7},(_,i)=>addDias(HOJE,i)).flatMap(d=>evDia(d).filter(e=>e.imp&&e.c!=="rotina"&&e.c!=="feriado").map(e=>[d,e.s,e.t])).slice(0,7):AGENDA.filter(a=>a[0]>=HOJE).slice(0,6);
- const pend=MAIL?mailPend():S.mail.filter(m=>!m.feito);
+ if(!S.top3)S.top3=[];
+ const h=+new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Lisbon",hour:"2-digit",hourCycle:"h23"}).format(new Date());
+ const saud=h<6?"Boa noite":h<13?"Bom dia":h<20?"Boa tarde":"Boa noite";
+ const dt=new Date(HOJE+"T12:00");
+ const semana=AG?Array.from({length:7},(_,i)=>addDias(HOJE,i)).map(d=>[d,evDia(d).filter(e=>e.imp&&e.c!=="rotina")]):[];
+ const nAg=semana.reduce((s,[,es])=>s+es.filter(e=>e.c!=="feriado").length,0);
+ const pend=MAIL?mailPend():[]; const urg=pend.filter(p=>p.p==="alta");
+ const agora=new Date().toTimeString().slice(0,5);
+ let prox=null; for(const [d,es] of semana){for(const e of es){if(e.c==="feriado")continue;if(d>HOJE||!e.s||e.s>=agora){prox=[d,e];break}}if(prox)break}
  const alHoje=AG?alertasDe(HOJE):[];
- const pct=Math.min(100,Math.round(t.e/S.meta*100));
- const urg=pend.filter(p=>p.p==="alta");
- return head("hoje","O negócio todo numa página. Primeiro o que está mal, depois o resto.")+`
- ${alHoje.length||urg.length?`<div class="card alert"><div class="lbl">Alertas de hoje</div><div class="list">${alHoje.map(e=>`<div class="row"><span class="t">${e.s?e.s+" · ":""}${esc(e.t)}</span><span></span><span class="s">${esc(e.nota)}</span></div>`).join("")}${urg.map(p=>`<div class="row"><span class="t">Mail · ${esc(p.t)}</span><span class="pill bad">Urgente</span><span class="s">${esc(p.s)}</span></div>`).join("")}</div></div>`:""}
- <div class="card alert"><div class="lbl">O que está mal</div><ul class="clean">
-  <li><b>Não sabes quanto faturas.</b> O último número registado é de março: 700€/mês. Sem isto não há meta que se meça. Começa a lançar em Dinheiro.</li>
-  <li><b>Duas clientes ativas para uma meta de 3.000€.</b> Aos preços de hoje precisavas de 10 em simultâneo. Os preços têm de subir antes de janeiro.</li>
-  <li><b>12 frentes abertas num ano.</b> Em Ideias só ficam vivas cinco. Escolhe uma para os primeiros 90 dias de 2027.</li>
-  <li><b>Caixa de email afogada.</b> Mais de metade é newsletter de marketing que não usas.</li>
- </ul></div>
- <div class="kpis">
-  <div class="kpi"><b>${eur(t.e)}</b><span>entradas registadas em ${fdata(HOJE+"").split(" ")[1]}</span></div>
-  <div class="kpi"><b>${eur(S.meta)}</b><span>meta mensal · ${pct}%</span><div class="bar" style="margin-top:8px"><i style="width:${pct}%"></i></div></div>
-  <div class="kpi"><b>${ativos}</b><span>clientes ativas</span></div>
-  <div class="kpi"><b>${pend.length}</b><span>emails por tratar</span></div>
+ const dinAl=(DIN&&DIN.alertas||[]).filter(a=>a.p==="alta");
+ const t=totais(mesAtual());
+ const pilar=PILARES[Math.floor(Date.parse(HOJE+"T00:00:00Z")/864e5)%PILARES.length];
+ const t3=S.top3.slice(0,3);
+ return `<header class="tp-hero"><p class="tp-data">${DSEM[dt.getDay()]}, ${dt.getDate()} de ${MESES[dt.getMonth()]}</p>
+ <h1 class="tp-titulo">${saud}, <em>Tânia</em></h1>
+ <p class="tp-lead">Tens <b>${nAg}</b> compromissos nos próximos 7 dias, <b>${pend.length}</b> pendentes no mail e <b>${urg.length+dinAl.length}</b> urgências. Aqui estão as tuas três de hoje e o que vem aí.</p></header>
+ <section class="tp-tiles">
+  <a class="tp-tile is-terra" href="#agenda"><span class="lbl">Agenda · 7 dias</span><span class="tp-num">${nAg}</span><span class="tp-sub">compromissos importantes</span></a>
+  <a class="tp-tile" href="#mail"><span class="lbl">Mail · pendentes</span><span class="tp-num">${pend.length}</span><span class="tp-sub">${urg.length} urgentes</span></a>
+  <a class="tp-tile" href="#agenda"><span class="lbl">A seguir</span><span class="tp-prox">${prox?esc(prox[1].t):"Semana livre"}</span><span class="tp-sub">${prox?(prox[0]===HOJE?"Hoje":dsem(prox[0])+" "+fdata(prox[0]))+(prox[1].s?" · "+prox[1].s:" · dia inteiro"):"nada marcado"}</span></a>
+  <a class="tp-tile" href="#dinheiro"><span class="lbl">Finanças · ${MESES[dt.getMonth()]}</span><span class="tp-num">${eur(t.l)}</span><span class="tp-sub">${eur(t.e)} entradas · ${eur(t.s)} saídas</span></a>
+ </section>
+ ${alHoje.length||urg.length||dinAl.length?`<div class="card alert"><div class="lbl">Alertas de hoje</div><div class="list">${alHoje.map(e=>`<div class="row"><span class="t">${e.s?e.s+" · ":""}${esc(e.t)}</span><span class="pill warn">Agenda</span><span class="s">${esc(e.nota)}</span></div>`).join("")}${urg.map(p=>`<div class="row"><span class="t">${esc(p.t)}</span><span class="pill bad">Mail</span><span class="s">${esc(p.s)}</span></div>`).join("")}${dinAl.filter(a=>!urg.some(p=>p.t.slice(0,12)===a.t.slice(0,12))).map(a=>`<div class="row"><span class="t">${esc(a.t)}</span><span class="pill bad">Finanças</span><span class="s">${esc(a.s)}</span></div>`).join("")}</div></div>`:""}
+ <div class="tp-grid">
+  <div class="tp-col">
+   <section class="card"><h3 style="display:flex;justify-content:space-between;gap:8px;align-items:baseline">As tuas três de hoje <span class="pill acc">só tu vês</span></h3>
+    ${t3.length?`<div>${t3.map(x=>`<label class="check${x.feito?" done":""}"><input type="checkbox" data-t3="${x.id}"${x.feito?" checked":""}><span class="t" style="flex:1">${esc(x.t)}</span><button type="button" class="x" data-del-t3="${x.id}" aria-label="Apagar">×</button></label>`).join("")}</div>`:`<p class="small muted">Escreve as três coisas que, feitas hoje, mexem no negócio. O resto espera.</p>`}
+    ${t3.length<3?`<form class="add" id="t3Form"><label class="wide">Nova prioridade<input name="t" maxlength="140" required placeholder="Ex.: anular a fatura duplicada"></label><button class="btn" type="submit">Adicionar</button></form>`:""}
+   </section>
+   <section class="card"><h3 style="display:flex;justify-content:space-between;gap:8px;align-items:baseline">Mail por tratar <a class="pill" href="#mail">Mail</a></h3><div class="list">${pend.slice(0,6).map(p=>`<div class="row"><span class="t">${esc(p.t)}</span><span class="when">${esc(p.q||"")}</span></div>`).join("")||'<p class="small muted">Caixa limpa.</p>'}</div></section>
+  </div>
+  <div class="tp-col">
+   <section class="card"><h3 style="display:flex;justify-content:space-between;gap:8px;align-items:baseline">A tua semana <a class="pill" href="#agenda">Agenda</a></h3>
+    <div>${semana.filter(([,es])=>es.length).map(([d,es])=>`<div class="tp-dia">${d===HOJE?"Hoje":d===addDias(HOJE,1)?"Amanhã":dsem(d)+" "+fdata(d)}</div>${es.map(e=>`<div class="tp-ev ev-${e.c}"><time>${e.s||"dia"}</time><span>${esc(e.t)}${e.nota?`<br><span class="small muted">${esc(e.nota)}</span>`:""}</span></div>`).join("")}`).join("")||'<p class="small muted">Nada marcado nos próximos 7 dias.</p>'}</div></section>
+   <aside class="tp-pilar"><span class="lbl">Pilar do dia 🧵</span><p>${pilar}</p><small>Método FIBRA · Mentalidade, Produto, Digital</small></aside>
+  </div>
  </div>
- <div class="grid">
-  <div class="card"><div class="lbl">Próximos dias</div><div class="list">${prox.map(a=>`<div class="row"><span class="t">${esc(a[2])}</span><span class="when">${dsem(a[0])} ${fdata(a[0])}${a[1]?" · "+a[1]:""}</span></div>`).join("")||'<div class="empty">Sem nada marcado.</div>'}</div><a href="#agenda" class="small">Agenda completa</a></div>
-  <div class="card"><div class="lbl">Por tratar</div><div class="list">${pend.slice(0,4).map(m=>`<div class="row"><span class="t">${esc(m.t)}</span></div>`).join("")||'<div class="empty">Caixa limpa.</div>'}</div><a href="#mail" class="small">Ver tudo</a></div>
-  <div class="card dark"><div class="lbl">Linha de 2027</div><p style="font-family:var(--display);font-size:1.45rem;line-height:1.25">IA e planeamento para marcas que já vendem e fábricas com marca própria.</p><p class="muted small">Lês a peça e a ficha como alguém da fábrica. Não falar para quem ainda não começou.</p></div>
- </div>
- ${RADAR&&RADAR.length?`<div class="card"><div class="lbl">Radar · ${esc(RADAR[0].label)}</div><h3>${esc(RADAR[0].reading?.title)}</h3><p class="small muted">Prioridade: ${esc(RADAR[0].priority?.title)}</p><a href="#radar" class="small">Ver as ${RADAR[0].news.length} notícias</a></div>`:""}
- <div class="card"><div class="lbl">Esta semana no Instagram</div><div class="list">${COPY.map(c=>`<div class="row"><span class="t">${c[1]} · ${esc(c[3])}</span><span class="pill">${esc(c[2])}</span></div>`).join("")}</div><a href="#copy" class="small">Copy da semana</a></div>`;
+ <section><div class="lbl" style="margin-bottom:10px">Os teus setores</div><div class="tp-setores">${SETORES.map(s=>`<div class="tp-setor"><a class="tp-setor-main" href="#${s.id}"><b>${s.n}</b><span class="small muted">${s.d}</span><span class="tp-estado">${esc(estadoSetor(s.id))}</span>${s.falta?`<span class="small" style="color:var(--bad)">${esc(s.falta)}</span>`:""}</a>${s.ext.length?`<div class="tp-ext">${s.ext.map(([n,u])=>`<a href="${u}" target="_blank" rel="noopener">${esc(n)} ↗</a>`).join("")}</div>`:""}</div>`).join("")}</div></section>
+ ${RADAR&&RADAR.length?`<div class="card"><div class="lbl">Radar Têxtil · ${esc(RADAR[0].label)}</div><h3>${esc(RADAR[0].reading?.title)}</h3><p class="small muted">Prioridade: ${esc(RADAR[0].priority?.title)}</p><a href="#radar" class="small">Ver as ${RADAR[0].news.length} notícias</a></div>`:""}`;
 };
 
 V.dinheiro=()=>{
@@ -588,6 +667,60 @@ V.radaremail=()=>{
  <p class="small muted">${esc(MAIL.arrumado||"")} Atualizado a ${esc((MAIL.atualizado||"").replace("T"," às "))}.</p>`;
 };
 
+const lk=(n,u,d)=>`<div class="row"><a class="t" href="${u}" target="_blank" rel="noopener">${esc(n)} ↗</a><span></span>${d?`<span class="s">${esc(d)}</span>`:""}</div>`;
+V.analise=()=>head("analise","Onde o negócio está, o que está mal e para onde vai. As análises completas estão nas páginas ligadas em baixo.")+`
+ <div class="card alert"><div class="lbl">O que está mal</div><ul class="clean">
+  <li><b>Faturação sem registo desde março</b> (700 €/mês). Sem números atuais, nenhuma análise fecha. Liga a Central Financeira.</li>
+  <li><b>De 5 para 2 clientes FIBRA</b> entre setembro e novembro. As que saíram tinham pouca operação e pouco dinheiro.</li>
+  <li><b>Preços baixos para a meta.</b> Com FIBRA a 265 €/mês precisavas de 10 clientes em simultâneo para os 3.000 €.</li>
+  <li><b>Dispersão.</b> 12 frentes abertas num ano, nenhuma com tempo para provar se funciona.</li>
+ </ul></div>
+ <div class="kpis">
+  <div class="kpi"><b>2</b><span>clientes FIBRA ativas</span></div>
+  <div class="kpi"><b>700 €</b><span>último mês registado (março)</span></div>
+  <div class="kpi"><b>3.000 €</b><span>meta mensal</span></div>
+  <div class="kpi"><b>38 mil</b><span>visualizações no Instagram em março, com menos de 2 mil seguidores</span></div>
+ </div>
+ <div class="card dark"><div class="lbl">A leitura</div><p style="font-family:var(--display);font-size:1.4rem;line-height:1.25">O problema não é o têxtil. É o cliente que escolheste servir.</p><p class="muted small">Em janeiro, quando a gestão de redes sair, testa 90 dias de IA e planeamento para marcas que já vendem e fábricas com marca própria. Se não pagar, decides com dados, não com cansaço.</p></div>
+ <div class="grid">
+  <div class="card"><div class="lbl">Análises completas</div><div class="list">
+   ${lk("Raio-X do negócio","https://claude.ai/artifact/WkkcEyShWZcH4qay1vCe3r","18/11")}
+   ${lk("Compilação do negócio","https://claude.ai/artifact/UtMrxL9VL1RNgeC3CZDHnn","Março a novembro, com a leitura sem algodão")}
+   ${lk("Resumo do negócio (jun–nov)","https://claude.ai/artifact/BcFxnMF27AmjYgo2zN8BS3","")}
+   ${lk("Dossiê taniasilveira.pt","https://claude.ai/artifact/RAUQYebeFoMpbF1pzUNtLC","")}
+   ${lk("Viragem do Negócio","https://claude.ai/artifact/8GPEAA5rkKNUze4j3C9ctH","")}
+  </div></div>
+  <div class="card"><div class="lbl">Para onde vais</div><div class="list">
+   ${lk("Tânia Silveira 2027","https://claude.ai/artifact/RyyFyBv8cyWcLB4zv9cHYQ","A linha de 2027")}
+   ${lk("2027: o que vai ditar o mercado","https://claude.ai/artifact/VaC8NwGg6H9z35WgSqQtvW","")}
+   ${lk("Diagnóstico de Produção","https://claude.ai/artifact/LtaH6aAzagoNq3hYHqsEb3","")}
+   ${lk("Raio-X Fibra · modelo","https://claude.ai/artifact/SLgUjGWsEdeuo4NrQUCoRU","")}
+  </div></div>
+ </div>`;
+V.site=()=>head("site","O teu site, o portal das alunas e as páginas de venda, num sítio.")+`
+ <div class="card alert"><div class="lbl">O que está mal</div><ul class="clean">
+  <li><b>O rascunho novo do site (20/11) ainda não está publicado.</b> O taniasilveira.pt continua com a versão antiga.</li>
+  <li><b>Site em dois níveis por montar:</b> «aprendo sozinha» (lista de fornecedores) e «faço contigo» (Tafetá 360 e FIBRA).</li>
+  <li><b>Palavra proibida:</b> a frase de posicionamento antiga usa «estrutura». Confirma que não ficou no site.</li>
+ </ul></div>
+ <div class="grid">
+  <div class="card"><div class="lbl">Site</div><div class="list">
+   ${lk("taniasilveira.pt","https://taniasilveira.pt","No ar")}
+   ${lk("Site novo (rascunho)","https://claude.ai/artifact/NnTRBNp7g2TzuTT3dWtHiq","Estratégia para marcas de moda e negócios têxteis · 20/11")}
+   ${lk("4 conceitos de site","https://claude.ai/artifact/ToPMK6jgh97epZcU2uehPh","")}
+  </div></div>
+  <div class="card"><div class="lbl">Portal e apps</div><div class="list">
+   ${lk("Portal FIBRA (área de alunas)","https://imersao-fibra.netlify.app/","Netlify · login das alunas")}
+   ${lk("App Método FIBRA","https://metodofibra.base44.app","")}
+  </div></div>
+  <div class="card"><div class="lbl">Páginas de venda</div><div class="list">
+   ${lk("Lista de Fornecedores · Black Week","https://claude.ai/artifact/914C4UTNyrXc8Fc8fgsZxu","37 € com BLACK26")}
+   ${lk("IA com Fibra · Landing Page","https://claude.ai/artifact/Qez3BsowieiNwiZZZvPnyG","")}
+   ${lk("Imersão Fibra IA · Black Friday","https://claude.ai/artifact/TzeWSAaFovCsGBXZhct1Ys","")}
+  </div></div>
+ </div>
+ <div class="card"><div class="lbl">Central FIBRA no cPanel</div><p class="small">Para pôr esta Central no teu alojamento: sobe a pasta <code>central-fibra</code> (index.html e os ficheiros .json) para o cPanel, numa pasta protegida por palavra-passe (Privacidade de diretório). Os .json têm de ser atualizados a cada dia para a agenda e o mail estarem frescos.</p></div>`;
+
 V.marca=()=>head("marca","A identidade em que tudo assenta. Esta página usa-a.")+`
  <div class="card dark"><div class="lbl">Posicionamento</div><p style="font-family:var(--display);font-size:1.7rem;line-height:1.2">Uma marca de moda que sabe onde ganha dinheiro.</p><p class="muted">Estrategista de produto para marcas de moda e negócios têxteis. Nascida no chão.</p></div>
  <div class="sw">${[["#5C3B2E","Castanho escuro","Peso e contraste"],["#B26D47","Terracota","Cor central"],["#BA8166","Terracota claro","Camada leve"],["#BFA795","Bege","Suporte"],["#FFFFFF","Branco","Respiro"]].map(c=>`<div><i style="background:${c[0]}"></i><span><b>${c[1]}</b><br>${c[0]} · ${c[2]}</span></div>`).join("")}</div>
@@ -646,6 +779,7 @@ document.addEventListener("submit",e=>{
  else if(f.id==="cliForm"){S.clientes.unshift({id:uid(),estado:"Ativa",valor:"",nota:"",...d});toast("Cliente adicionada.")}
  else if(f.id==="ideiaForm"){S.ideias.unshift({id:uid(),estado:"Viva",...d});toast("Ideia guardada.")}
  else if(f.id==="radarForm"){S.radar.unshift({id:uid(),...d});toast("Guardado no radar.")}
+ else if(f.id==="t3Form"){S.top3=(S.top3||[]).concat({id:uid(),t:d.t,feito:false}).slice(0,3);toast("Guardado.")}
  else if(f.id==="mailForm"){S.mail.unshift({id:uid(),feito:false,s:"",...d});toast("Adicionado.")}
  else return;
  save(); render();
@@ -656,6 +790,7 @@ document.addEventListener("click",e=>{
  if(ds.delMov){S.movs=S.movs.filter(x=>x.id!==ds.delMov)}
  else if(ds.delCli){S.clientes=S.clientes.filter(x=>x.id!==ds.delCli)}
  else if(ds.delIdeia){S.ideias=S.ideias.filter(x=>x.id!==ds.delIdeia)}
+ else if(ds.delT3){S.top3=(S.top3||[]).filter(x=>x.id!==ds.delT3)}
  else if(ds.delRadar){S.radar=S.radar.filter(x=>x.id!==ds.delRadar)}
  else if(ds.if){ideiaF=ds.if;render();return}
  else if(ds.rw){radarW=+ds.rw;radarF="Tudo";render();return}
@@ -672,6 +807,7 @@ document.addEventListener("change",e=>{
  if(ds.cliEstado){S.clientes.find(x=>x.id===ds.cliEstado).estado=t.value}
  else if(ds.ideiaEstado){S.ideias.find(x=>x.id===ds.ideiaEstado).estado=t.value}
  else if(ds.mail){S.mail.find(x=>x.id===ds.mail).feito=t.checked}
+ else if(ds.t3){const x=(S.top3||[]).find(y=>y.id===ds.t3);if(x)x.feito=t.checked}
  else if(ds.mp!==undefined){if(t.checked)S.mailFeito[ds.mp]=true;else delete S.mailFeito[ds.mp]}
  else if(t.id==="agRot"){agRot=t.checked;try{localStorage.setItem("centralFibra.rotina",agRot?"1":"0")}catch(e){}render();return}
  else if(ds.resp!==undefined){S.resp[ds.resp]=t.value.trim();save();toast("Responsável guardado.");return}
