@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Central Financeira</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Raleway:wght@400;500;600;700&family=Dr+Sugiyama&display=swap">
+<style>
+:root{
+  --castanho:#5C3B2E; --terracota:#B26D47; --bege:#BFA795;
+  --bg:#F6F1ED; --panel:#FFFFFF; --sunk:#EFE6DF; --line:#E2D5CB; --fg:#3A2419; --muted:#7A5F51; --faint:#A48D7F;
+  --acc:#B26D47; --acc-fg:#FFFFFF; --side:#5C3B2E; --side-fg:#FFFFFF; --side-muted:#D9C6B8;
+  --ok:#4F6B45; --ok-bg:#E5ECDF; --warn:#9A5B12; --warn-bg:#F7E8D2; --bad:#9C2F1E; --bad-bg:#F5DDD7;
+  --bar-in:#4F6B45; --bar-out:#B26D47;
+  --display:"Cormorant Garamond",Georgia,serif; --body:Raleway,"Segoe UI",Arial,sans-serif; --script:"Dr Sugiyama","Brush Script MT",cursive;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#211612; --panel:#2D1F19; --sunk:#382720; --line:#4A362C; --fg:#F4ECE6; --muted:#C9B3A5; --faint:#9C8678;
+  --acc:#D08A62; --acc-fg:#211612; --side:#170F0C; --side-fg:#F4ECE6; --side-muted:#B39B8C;
+  --ok:#A9C79C; --ok-bg:#25301F; --warn:#E9B46A; --warn-bg:#3A2A14; --bad:#EE8F7D; --bad-bg:#3D1F19;
+  --bar-in:#A9C79C; --bar-out:#D08A62; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#211612; --panel:#2D1F19; --sunk:#382720; --line:#4A362C; --fg:#F4ECE6; --muted:#C9B3A5; --faint:#9C8678;
+  --acc:#D08A62; --acc-fg:#211612; --side:#170F0C; --side-fg:#F4ECE6; --side-muted:#B39B8C;
+  --ok:#A9C79C; --ok-bg:#25301F; --warn:#E9B46A; --warn-bg:#3A2A14; --bad:#EE8F7D; --bad-bg:#3D1F19;
+  --bar-in:#A9C79C; --bar-out:#D08A62; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.6 var(--body)}
+h1,h2,h3{font-family:var(--display);font-weight:600;margin:0;line-height:1.1;text-wrap:balance}
+p{margin:0}
+a{color:var(--acc)}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.lbl{font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)} .small{font-size:.85rem}
+
+header.top{background:var(--side);color:var(--side-fg);padding:calc(env(safe-area-inset-top,0px) + 22px) 16px 0}
+.top-in{max-width:1100px;margin:0 auto}
+.top-row{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.top .lbl{color:var(--side-muted)}
+.top h1{font-size:clamp(2rem,5vw,2.8rem);color:var(--side-fg)}
+.top .sig{font-family:var(--script);font-size:1.6rem;line-height:1;color:var(--side-muted)}
+.back{color:var(--side-muted);font-size:.8rem;font-weight:600;text-decoration:none;letter-spacing:.06em}
+.mes{display:flex;align-items:center;gap:6px}
+.mes button{background:transparent;border:1px solid var(--side-muted);color:var(--side-fg);border-radius:99px;width:34px;height:34px;cursor:pointer}
+.mes b{min-width:140px;text-align:center;font-weight:600}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;margin-top:18px;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs button{background:transparent;border:0;color:var(--side-muted);padding:10px 14px;border-radius:10px 10px 0 0;font-weight:600;white-space:nowrap;cursor:pointer}
+nav.tabs button[aria-selected="true"]{background:var(--bg);color:var(--fg)}
+
+main{max-width:1100px;margin:0 auto;padding:24px 16px 80px;display:flex;flex-direction:column;gap:18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.card h2{font-size:1.6rem}
+.card.alert{border-color:var(--bad);background:var(--bad-bg)}
+.card.dark{background:var(--side);color:var(--side-fg);border-color:var(--side)}
+.card.dark .lbl,.card.dark .muted{color:var(--side-muted)}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr))}
+.kpis{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(150px,calc(50% - 6px)),1fr))}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:2px}
+.kpi b{font-family:var(--display);font-size:2rem;font-weight:600;line-height:1.1;font-variant-numeric:lining-nums tabular-nums}
+.card h2{font-variant-numeric:lining-nums}
+.kpi span{font-size:.8rem;color:var(--muted)}
+.kpi.ok b{color:var(--ok)} .kpi.bad b{color:var(--bad)}
+.bar{height:8px;background:var(--sunk);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--acc);border-radius:99px}
+.pill{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:99px;background:var(--sunk);color:var(--muted);white-space:nowrap}
+.pill.ok{background:var(--ok-bg);color:var(--ok)} .pill.bad{background:var(--bad-bg);color:var(--bad)} .pill.warn{background:var(--warn-bg);color:var(--warn)}
+.list{display:flex;flex-direction:column}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:10px 0;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.row .t{font-weight:600}
+.row .s{grid-column:1/-1;font-size:.85rem;color:var(--muted)}
+.alert .row{border-color:color-mix(in srgb,var(--bad) 25%,transparent)}
+
+form.add{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+form.add label{display:flex;flex-direction:column;gap:4px;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);flex:1 1 130px;min-width:0}
+form.add label.wide{flex:3 1 220px}
+input,select{background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-size:.95rem;font-weight:500;text-transform:none;letter-spacing:0;width:100%;min-width:0}
+.btn{background:var(--acc);color:var(--acc-fg);border:0;border-radius:99px;padding:9px 18px;font-weight:700;cursor:pointer;white-space:nowrap}
+.btn.ghost{background:transparent;color:var(--acc);border:1px solid var(--acc)}
+.btn.sm{padding:5px 12px;font-size:.8rem}
+.x{background:transparent;border:0;color:var(--faint);font-size:1.2rem;cursor:pointer;padding:0 6px}
+.x:hover{color:var(--bad)}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.filters button{background:var(--panel);border:1px solid var(--line);border-radius:99px;padding:5px 13px;font-size:.85rem;font-weight:600;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:var(--acc-fg)}
+.tablewrap{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:14px}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th{text-align:left;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:10px 12px;border-top:1px solid var(--line);vertical-align:middle}
+tr:first-child td{border-top:0}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.empty{background:var(--panel);border:1px dashed var(--line);border-radius:14px;padding:22px;text-align:center;color:var(--muted)}
+.chart svg{width:100%;height:auto;display:block}
+.chart text{fill:var(--muted);font:600 11px var(--body)}
+.legend{display:flex;gap:16px;font-size:.8rem;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.cat-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:8px 0}
+.cat-row .bar{grid-column:1/-1;height:6px}
+.mapa td input{width:80px;padding:5px 8px}
+.foot{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 18px;border-radius:99px;font-weight:600;z-index:50}
+@media (max-width:600px){
+  .mes b{min-width:110px}
+  .kpi b{font-size:1.6rem}
+  td,th{padding:8px 9px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <a class="back" href="index.html#dinheiro">← Central FIBRA</a>
+    <div class="top-row">
+      <div><div class="lbl">Universo FIBRA</div><h1>Central Financeira</h1><div class="sig">Tânia Silveira</div></div>
+      <div class="mes" aria-label="Mês"><button type="button" id="mPrev" aria-label="Mês anterior">‹</button><b id="mNome"></b><button type="button" id="mNext" aria-label="Mês seguinte">›</button></div>
+    </div>
+    <nav class="tabs" role="tablist" id="tabs"></nav>
+  </div>
+</header>
+<main id="view"></main>
+
+<script>
+/* Dados do email (cópia de dinheiro.json de 20/11, usada se o ficheiro não carregar) */
+const DIN_BASE={"atualizado":"2026-11-20T12:40","nota":"Na caixa taniasilveira.digital só há recibos de despesas de novembro. Não há nenhum email de venda (SalesPark, Hotmart, transferências) nem faturas tuas emitidas. As entradas tens de as lançar tu, ou dizer-me onde estão (banco, programa de faturação, a contabilidade que mencionaste).","alertas":[{"p":"alta","t":"Fatura duplicada nas Finanças, por anular","s":"A contabilista da Sílvia (Inês Martins) confirmou a 12/11 que a tua fatura não está anulada nem creditada. As Finanças contactaram-te a 13/11. Respondeste à Sílvia a pedir urgência e não há resposta. Fala com o teu contabilista e emite a nota de crédito."},{"p":"alta","t":"Pagamento dos anúncios recusado","s":"A 19/11 o Meta só conseguiu cobrar em partes e depois recusou. Os anúncios param até atualizares o cartão."},{"p":"media","t":"Anúncios já gastaram 28,11 € esta semana","s":"17 a 19/11, sem nenhuma venda registada no email. Antes da Black Week, decide o teto."}],"movimentos":[{"id":"e1","data":"2026-11-11","tipo":"Saída","desc":"Laboratório da IA (Progivers) · fatura-recibo D-11760","cat":"Ferramentas","valor":7.00,"fonte":"Moloni"},{"id":"e2","data":"2026-11-17","tipo":"Saída","desc":"Anúncios Meta","cat":"Anúncios","valor":10.26,"fonte":"Meta"},{"id":"e3","data":"2026-11-18","tipo":"Saída","desc":"Anúncios Meta","cat":"Anúncios","valor":10.00,"fonte":"Meta"},{"id":"e4","data":"2026-11-19","tipo":"Saída","desc":"Anúncios Meta (3 cobranças parciais)","cat":"Anúncios","valor":7.85,"fonte":"Meta"}]};
+
+const CAT_IN=["Método FIBRA","Tafetá 360","Diagnóstico","Lista de Fornecedores","Imersão","Gestão de redes","Mentoria","Outro"];
+const CAT_OUT=["Anúncios","Ferramentas","Formação","Contabilidade","Impostos e Segurança Social","Deslocações","Equipa","Outro"];
+
+/* ===== Estado: partilhado com a Central FIBRA (mesma chave) + o que é só das finanças ===== */
+const KC="centralFibra.v1", KF="centralFibra.fin";
+const rd=k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}};
+const wr=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+let C=rd(KC)||{}; if(!Array.isArray(C.movs))C.movs=[]; if(!C.meta)C.meta=3000;
+const FDEF={
+ reserva:25,
+ receber:[],
+ fixos:[
+  {id:"f1",n:"Laboratório da IA",v:7,cat:"Ferramentas"}
+ ],
+ mapa:[
+  {n:"Método FIBRA",p:265,q:2},
+  {n:"Tafetá 360",p:250,q:0},
+  {n:"Lista de Fornecedores",p:49,q:0},
+  {n:"Imersão",p:37,q:0}
+ ]
+};
+let F=rd(KF)||JSON.parse(JSON.stringify(FDEF));
+for(const k in FDEF)if(F[k]===undefined)F[k]=JSON.parse(JSON.stringify(FDEF[k]));
+const save=()=>{const fresh=rd(KC)||{};fresh.movs=C.movs;fresh.meta=C.meta;wr(KC,fresh);wr(KF,F)};
+
+let DIN=DIN_BASE;
+fetch("dinheiro.json").then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{DIN=d;render()}).catch(()=>{});
+
+/* ===== Utilitários ===== */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const eur=n=>new Intl.NumberFormat("pt-PT",{style:"currency",currency:"EUR",maximumFractionDigits:0}).format(n||0);
+const eur2=n=>new Intl.NumberFormat("pt-PT",{style:"currency",currency:"EUR",minimumFractionDigits:2}).format(n||0);
+const uid=()=>Math.random().toString(36).slice(2,9);
+const hoje=()=>{const d=new Date();return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
+const MESES=["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+const MC=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
+const fdata=s=>{const[y,m,d]=s.split("-");return `${+d} ${MC[m-1]}`};
+const mesShift=(ym,n)=>{let[y,m]=ym.split("-").map(Number);m+=n;while(m<1){m+=12;y--}while(m>12){m-=12;y++}return `${y}-${String(m).padStart(2,"0")}`};
+const nomeMes=ym=>{const[y,m]=ym.split("-");return `${MESES[m-1]} ${y}`};
+function toast(t){const e=document.createElement("div");e.className="toast";e.setAttribute("role","status");e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),2200)}
+
+const movs=()=>[...C.movs,...((DIN&&DIN.movimentos)||[]).map(m=>({...m,auto:true}))];
+function tot(ym){let e=0,s=0;for(const m of movs()){if(ym&&!m.data.startsWith(ym))continue;const v=+m.valor||0;if(m.tipo==="Entrada")e+=v;else s+=v}return{e,s,l:e-s}}
+const fixosMes=()=>F.fixos.reduce((a,f)=>a+(+f.v||0),0);
+const porReceber=()=>F.receber.filter(r=>!r.pago);
+
+/* ===== Navegação ===== */
+const TABS=[["resumo","Resumo"],["movimentos","Movimentos"],["receber","A receber"],["fixos","Despesas fixas"],["meta","Meta"],["impostos","Impostos"]];
+let tab=(location.hash||"").slice(1); if(!TABS.some(t=>t[0]===tab))tab="resumo";
+let MES=hoje().slice(0,7), filtro="Tudo", busca="";
+
+/* ===== Vistas ===== */
+const V={};
+
+function grafico(){
+ const ms=Array.from({length:6},(_,i)=>mesShift(MES,i-5)), d=ms.map(m=>tot(m));
+ const max=Math.max(100,...d.flatMap(x=>[x.e,x.s]));
+ const W=600,H=200,pad=26,gw=(W-pad)/6,bw=Math.min(28,gw/3);
+ const y=v=>H-pad-(v/max)*(H-pad-14);
+ let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Entradas e saídas dos últimos 6 meses">`;
+ s+=`<line x1="${pad}" x2="${W}" y1="${H-pad}" y2="${H-pad}" stroke="var(--line)"/>`;
+ d.forEach((x,i)=>{const cx=pad+gw*i+gw/2;
+  s+=`<rect x="${cx-bw-2}" y="${y(x.e)}" width="${bw}" height="${H-pad-y(x.e)}" rx="3" fill="var(--bar-in)"><title>${nomeMes(ms[i])}: ${eur2(x.e)} de entradas</title></rect>`;
+  s+=`<rect x="${cx+2}" y="${y(x.s)}" width="${bw}" height="${H-pad-y(x.s)}" rx="3" fill="var(--bar-out)"><title>${nomeMes(ms[i])}: ${eur2(x.s)} de saídas</title></rect>`;
+  s+=`<text x="${cx}" y="${H-8}" text-anchor="middle">${MC[+ms[i].slice(5)-1]}</text>`;
+ });
+ return s+`</svg>`;
+}
+function porCategoria(tipo){
+ const m={};for(const x of movs())if(x.data.startsWith(MES)&&x.tipo===tipo)m[x.cat||"Outro"]=(m[x.cat||"Outro"]||0)+(+x.valor||0);
+ const arr=Object.entries(m).sort((a,b)=>b[1]-a[1]),tt=arr.reduce((a,b)=>a+b[1],0);
+ if(!arr.length)return `<p class="small muted">Nada em ${MESES[+MES.slice(5)-1]}.</p>`;
+ return arr.map(([c,v])=>`<div class="cat-row"><span>${esc(c)}</span><b class="num">${eur2(v)}</b><div class="bar"><i style="width:${Math.round(v/tt*100)}%;background:${tipo==="Entrada"?"var(--bar-in)":"var(--bar-out)"}"></i></div></div>`).join("");
+}
+
+V.resumo=()=>{
+ const t=tot(MES), pct=Math.min(100,Math.round(t.e/C.meta*100)), fx=fixosMes();
+ const res=t.e*F.reserva/100, livre=t.l-res, pr=porReceber(), prT=pr.reduce((a,r)=>a+(+r.v||0),0);
+ const atras=pr.filter(r=>r.d&&r.d<hoje());
+ const al=(DIN&&DIN.alertas)||[];
+ const leitura = t.e===0
+  ? `Ainda não há nenhuma entrada lançada em ${MESES[+MES.slice(5)-1]}. Sem entradas registadas, a sobra é sempre negativa e nenhuma decisão fecha. Lança o que recebeste.`
+  : livre<0 ? `Este mês gastaste mais do que fica depois de guardar para impostos. Faltam ${eur(-livre)} para empatar.`
+  : `Depois de guardar ${eur(res)} para impostos, ficam-te ${eur(livre)} livres. Estás a ${pct}% da meta.`;
+ return `
+ ${al.length?`<div class="card alert"><div class="lbl">Alertas de dinheiro</div><div class="list">${al.map(a=>`<div class="row"><span class="t">${esc(a.t)}</span><span class="pill ${a.p==="alta"?"bad":"warn"}">${a.p==="alta"?"Urgente":"A ver"}</span><span class="s">${esc(a.s)}</span></div>`).join("")}</div></div>`:""}
+ <div class="kpis">
+  <div class="kpi ok"><b>${eur(t.e)}</b><span>entradas</span></div>
+  <div class="kpi"><b>${eur(t.s)}</b><span>saídas</span></div>
+  <div class="kpi ${t.l<0?"bad":""}"><b>${eur(t.l)}</b><span>sobra antes de impostos</span></div>
+  <div class="kpi ${livre<0?"bad":""}"><b>${eur(livre)}</b><span>livre depois de guardar ${F.reserva}%</span></div>
+ </div>
+ <div class="card dark"><div class="lbl">A leitura de ${MESES[+MES.slice(5)-1]}</div><p style="font-family:var(--display);font-size:1.4rem;line-height:1.25">${esc(leitura)}</p></div>
+ <div class="grid">
+  <div class="card"><div class="lbl">Meta mensal</div><h2>${pct}% de ${eur(C.meta)}</h2><div class="bar"><i style="width:${pct}%"></i></div><p class="small muted">Faltam ${eur(Math.max(0,C.meta-t.e))} em entradas este mês.</p></div>
+  <div class="card"><div class="lbl">A receber</div><h2>${eur(prT)}</h2><p class="small muted">${pr.length} por receber${atras.length?` · <b style="color:var(--bad)">${atras.length} em atraso</b>`:""}.</p><a href="#receber" data-go="receber" class="small">Ver o que falta receber</a></div>
+  <div class="card"><div class="lbl">Custos fixos</div><h2>${eur(fx)}/mês</h2><p class="small muted">É o mínimo que tens de faturar para não perder dinheiro, antes de impostos.</p></div>
+ </div>
+ <div class="card chart"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><div class="lbl">Últimos 6 meses</div><div class="legend"><span><i style="background:var(--bar-in)"></i>Entradas</span><span><i style="background:var(--bar-out)"></i>Saídas</span></div></div>${grafico()}</div>
+ <div class="grid">
+  <div class="card"><div class="lbl">De onde veio o dinheiro</div>${porCategoria("Entrada")}</div>
+  <div class="card"><div class="lbl">Para onde foi</div>${porCategoria("Saída")}</div>
+ </div>
+ ${DIN&&DIN.nota?`<div class="card"><div class="lbl">O que encontrei no email</div><p class="small">${esc(DIN.nota)}</p><p class="small muted">Atualizado a ${esc((DIN.atualizado||"").replace("T"," às "))}.</p></div>`:""}`;
+};
+
+V.movimentos=()=>{
+ const FL=["Tudo","Entrada","Saída"];
+ const rows=movs().filter(m=>m.data.startsWith(MES)&&(filtro==="Tudo"||m.tipo===filtro)&&(!busca||(m.desc+" "+m.cat).toLowerCase().includes(busca.toLowerCase()))).sort((a,b)=>b.data.localeCompare(a.data));
+ const t=tot(MES);
+ return `
+ <form class="add" id="movForm">
+  <label>Data<input type="date" name="data" required value="${MES===hoje().slice(0,7)?hoje():MES+"-01"}"></label>
+  <label>Tipo<select name="tipo" id="movTipo"><option>Entrada</option><option>Saída</option></select></label>
+  <label class="wide">Descrição<input name="desc" required placeholder="Ex: FIBRA Susana · dezembro"></label>
+  <label>Área<select name="cat" id="movCat">${CAT_IN.map(c=>`<option>${c}</option>`).join("")}</select></label>
+  <label>Valor (€)<input type="number" name="valor" min="0" step="0.01" required inputmode="decimal"></label>
+  <button class="btn" type="submit">Lançar</button>
+ </form>
+ <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between">
+  <div class="filters" role="group" aria-label="Filtrar">${FL.map(f=>`<button type="button" data-f="${f}" aria-pressed="${f===filtro}">${f==="Tudo"?"Tudo":f==="Entrada"?"Entradas":"Saídas"}</button>`).join("")}</div>
+  <input type="search" id="busca" placeholder="Procurar" value="${esc(busca)}" style="max-width:240px">
+ </div>
+ ${rows.length?`<div class="tablewrap"><table><thead><tr><th>Data</th><th>Descrição</th><th>Área</th><th>Tipo</th><th class="num">Valor</th><th></th></tr></thead><tbody>${rows.map(m=>`<tr><td>${fdata(m.data)}</td><td>${esc(m.desc)}</td><td>${esc(m.cat)}</td><td><span class="pill ${m.tipo==="Entrada"?"ok":"bad"}">${m.tipo}</span></td><td class="num">${eur2(m.valor)}</td><td>${m.auto?`<span class="pill" title="Vem do email">email</span>`:`<button class="x" data-del="${m.id}" aria-label="Apagar">×</button>`}</td></tr>`).join("")}</tbody></table></div>`
+ :`<div class="empty">Nada lançado em ${nomeMes(MES)}${filtro!=="Tudo"||busca?" com este filtro":""}.</div>`}
+ <p class="small muted">${nomeMes(MES)}: ${eur2(t.e)} de entradas, ${eur2(t.s)} de saídas. Os movimentos são os mesmos da Central FIBRA.</p>`;
+};
+
+V.receber=()=>{
+ const ord=[...F.receber].sort((a,b)=>(a.pago-b.pago)||(a.d||"").localeCompare(b.d||""));
+ return `
+ <div class="card"><div class="lbl">Como funciona</div><p class="small">Mensalidades FIBRA, faturas emitidas, sessões por pagar. Quando o dinheiro cair, carregas em <b>Recebido</b> e entra sozinho nos movimentos.</p></div>
+ <form class="add" id="recForm">
+  <label class="wide">Quem e o quê<input name="n" required placeholder="Ex: Susana · FIBRA dezembro"></label>
+  <label>Área<select name="cat">${CAT_IN.map(c=>`<option>${c}</option>`).join("")}</select></label>
+  <label>Vence a<input type="date" name="d" value="${hoje()}"></label>
+  <label>Valor (€)<input type="number" name="v" min="0" step="0.01" required inputmode="decimal"></label>
+  <button class="btn" type="submit">Adicionar</button>
+ </form>
+ ${ord.length?`<div class="tablewrap"><table><thead><tr><th>Vence</th><th>Quem e o quê</th><th>Estado</th><th class="num">Valor</th><th></th></tr></thead><tbody>${ord.map(r=>{
+   const at=!r.pago&&r.d&&r.d<hoje();
+   return `<tr><td>${r.d?fdata(r.d)+" "+r.d.slice(0,4):"—"}</td><td>${esc(r.n)}<br><span class="small muted">${esc(r.cat)}</span></td><td>${r.pago?`<span class="pill ok">Recebido</span>`:at?`<span class="pill bad">Em atraso</span>`:`<span class="pill warn">Por receber</span>`}</td><td class="num">${eur2(r.v)}</td><td style="white-space:nowrap">${r.pago?"":`<button class="btn sm" data-pago="${r.id}">Recebido</button>`} <button class="x" data-delrec="${r.id}" aria-label="Apagar">×</button></td></tr>`}).join("")}</tbody></table></div>`
+ :`<div class="empty">Nada por receber. Mete aqui as mensalidades das clientes ativas para saberes o que entra no mês seguinte.</div>`}`;
+};
+
+V.fixos=()=>{
+ const fx=fixosMes();
+ return `
+ <div class="kpis">
+  <div class="kpi"><b>${eur2(fx)}</b><span>por mês</span></div>
+  <div class="kpi"><b>${eur(fx*12)}</b><span>por ano</span></div>
+  <div class="kpi"><b>${eur(fx/(1-F.reserva/100))}</b><span>a faturar para cobrir os fixos e os ${F.reserva}% de impostos</span></div>
+ </div>
+ <form class="add" id="fixForm">
+  <label class="wide">Despesa<input name="n" required placeholder="Ex: Claude, Canva, SalesPark, contabilista"></label>
+  <label>Área<select name="cat">${CAT_OUT.map(c=>`<option>${c}</option>`).join("")}</select></label>
+  <label>Valor por mês (€)<input type="number" name="v" min="0" step="0.01" required inputmode="decimal"></label>
+  <button class="btn" type="submit">Adicionar</button>
+ </form>
+ ${F.fixos.length?`<div class="tablewrap"><table><thead><tr><th>Despesa</th><th>Área</th><th class="num">Por mês</th><th></th></tr></thead><tbody>${F.fixos.map(f=>`<tr><td>${esc(f.n)}</td><td>${esc(f.cat)}</td><td class="num">${eur2(f.v)}</td><td style="white-space:nowrap"><button class="btn ghost sm" data-lancar="${f.id}">Lançar em ${MC[+MES.slice(5)-1]}</button> <button class="x" data-delfix="${f.id}" aria-label="Apagar">×</button></td></tr>`).join("")}</tbody></table></div>`:`<div class="empty">Sem despesas fixas.</div>`}
+ <p class="small muted">Só tenho a certeza do Laboratório da IA (vem do email). Junta as subscrições que pagas todos os meses: são elas que comem a margem sem dares conta.</p>`;
+};
+
+V.meta=()=>{
+ const tt=F.mapa.reduce((a,x)=>a+(+x.p||0)*(+x.q||0),0), pct=Math.min(100,Math.round(tt/C.meta*100));
+ return `
+ <div class="kpis">
+  <div class="kpi"><b>${eur(C.meta)}</b><span>meta mensal · <label>mudar <input id="metaIn" type="number" min="0" step="50" value="${C.meta}" style="width:90px;display:inline-block;padding:2px 6px"></label></span></div>
+  <div class="kpi ${tt>=C.meta?"ok":"bad"}"><b>${eur(tt)}</b><span>o que este plano dá por mês</span></div>
+  <div class="kpi"><b>${eur(Math.max(0,C.meta-tt))}</b><span>falta</span></div>
+ </div>
+ <div class="card"><div class="lbl">O teu plano para a meta</div><p class="small muted">Mexe nos preços e nas quantidades por mês. É aqui que vês se a meta é possível com os preços que tens.</p>
+  <div class="tablewrap mapa" style="border:0"><table><thead><tr><th>Oferta</th><th class="num">Preço</th><th class="num">Por mês</th><th class="num">Total</th><th></th></tr></thead><tbody>${F.mapa.map((x,i)=>`<tr><td>${esc(x.n)}</td><td class="num"><input type="number" min="0" step="1" data-mp="${i}" value="${x.p}"> €</td><td class="num"><input type="number" min="0" step="1" data-mq="${i}" value="${x.q}"></td><td class="num"><b>${eur((+x.p||0)*(+x.q||0))}</b></td><td><button class="x" data-delmapa="${i}" aria-label="Apagar">×</button></td></tr>`).join("")}</tbody></table></div>
+  <div class="bar"><i style="width:${pct}%"></i></div>
+  <form class="add" id="mapaForm" style="border:0;padding:0"><label class="wide">Nova oferta<input name="n" required></label><label>Preço (€)<input type="number" name="p" min="0" required></label><button class="btn ghost" type="submit">Juntar</button></form>
+ </div>
+ <div class="grid">
+  <div class="card"><div class="lbl">A minha posição</div><p>Com o FIBRA a 265 €/mês precisavas de 12 clientes ao mesmo tempo para chegar aos 3.000 €, e isso não cabe na tua semana. A 400 € chegam 5 FIBRA mais 2 Tafetá a 350 € e umas quantas listas. O problema da meta é o preço, não o número de clientes.</p></div>
+  <div class="card"><div class="lbl">Com os preços que tens hoje</div><p>Para chegares a ${eur(C.meta)} só com FIBRA a 265 € precisavas de <b>${Math.ceil(C.meta/265)}</b> clientes em simultâneo. A 400 €, de <b>${Math.ceil(C.meta/400)}</b>. A 450 €, de <b>${Math.ceil(C.meta/450)}</b>.</p></div>
+ </div>`;
+};
+
+V.impostos=()=>{
+ const ano=MES.slice(0,4); let eA=0; for(const m of movs())if(m.tipo==="Entrada"&&m.data.startsWith(ano))eA+=+m.valor||0;
+ const t=tot(MES);
+ return `
+ <div class="kpis">
+  <div class="kpi"><b>${eur(t.e*F.reserva/100)}</b><span>a pôr de lado em ${MESES[+MES.slice(5)-1]}</span></div>
+  <div class="kpi"><b>${eur(eA*F.reserva/100)}</b><span>a pôr de lado em ${ano}</span></div>
+  <div class="kpi"><b>${eur(eA)}</b><span>entradas lançadas em ${ano}</span></div>
+ </div>
+ <div class="card"><div class="lbl">Percentagem a guardar</div>
+  <p class="small">Cada euro que entra, guarda esta percentagem numa conta à parte para IRS e Segurança Social. <b>${F.reserva}% é uma estimativa prudente, não é a tua taxa real.</b> A taxa certa depende do teu regime, das despesas e do ano: confirma o número com o contabilista e muda aqui.</p>
+  <label style="max-width:200px" class="small">Guardar (%)<input type="number" id="resIn" min="0" max="60" step="1" value="${F.reserva}"></label>
+ </div>
+ <div class="card alert"><div class="lbl">Por resolver</div><p class="small"><b>Fatura duplicada nas Finanças.</b> Continua por anular e as Finanças já te contactaram. É a primeira coisa a fechar com o contabilista, antes de qualquer outra conta.</p></div>
+ <div class="card"><div class="lbl">Para o contabilista</div><p class="small">Exporta os movimentos do ano em CSV (abre no Excel) e manda junto com as faturas.</p><div class="foot"><button class="btn" type="button" id="csvBtn">Exportar ${ano} em CSV</button></div></div>`;
+};
+
+/* ===== Render ===== */
+function render(){
+ $("#mNome").textContent=nomeMes(MES);
+ $("#tabs").innerHTML=TABS.map(([id,n])=>`<button role="tab" type="button" data-tab="${id}" aria-selected="${id===tab}">${n}</button>`).join("");
+ $("#view").innerHTML=V[tab]()+`<div class="foot" style="margin-top:10px"><button class="btn ghost sm" type="button" id="bkBtn">Guardar cópia</button><button class="btn ghost sm" type="button" id="rsBtn">Repor cópia</button><span class="small muted">Os dados ficam guardados neste browser. Faz uma cópia de vez em quando.</span></div>`;
+ const tp=$("#movTipo");if(tp)tp.onchange=()=>{$("#movCat").innerHTML=(tp.value==="Entrada"?CAT_IN:CAT_OUT).map(c=>`<option>${c}</option>`).join("")};
+ const b=$("#busca");if(b)b.oninput=e=>{busca=e.target.value;const p=e.target.selectionStart;render();const nb=$("#busca");nb.focus();nb.setSelectionRange(p,p)};
+}
+function go(t){tab=t;history.replaceState(null,"","#"+t);render();window.scrollTo(0,0)}
+
+document.addEventListener("click",e=>{
+ const el=e.target.closest("button,a");if(!el)return;const d=el.dataset;
+ if(d.tab){go(d.tab);return}
+ if(d.go){e.preventDefault();go(d.go);return}
+ if(el.id==="mPrev"){MES=mesShift(MES,-1);render();return}
+ if(el.id==="mNext"){MES=mesShift(MES,1);render();return}
+ if(d.f){filtro=d.f;render();return}
+ if(d.del){if(!confirm("Apagar este movimento?"))return;C.movs=C.movs.filter(m=>m.id!==d.del);save();render();return}
+ if(d.pago){const r=F.receber.find(x=>x.id===d.pago);if(!r)return;r.pago=true;C.movs.push({id:uid(),data:hoje(),tipo:"Entrada",desc:r.n,cat:r.cat,valor:+r.v});save();toast("Recebido e lançado nas entradas");render();return}
+ if(d.delrec){F.receber=F.receber.filter(x=>x.id!==d.delrec);save();render();return}
+ if(d.delfix){F.fixos=F.fixos.filter(x=>x.id!==d.delfix);save();render();return}
+ if(d.lancar){const f=F.fixos.find(x=>x.id===d.lancar);if(!f)return;const dt=MES===hoje().slice(0,7)?hoje():MES+"-01";C.movs.push({id:uid(),data:dt,tipo:"Saída",desc:f.n,cat:f.cat,valor:+f.v});save();toast(`${f.n} lançado em ${MESES[+MES.slice(5)-1]}`);return}
+ if(d.delmapa!==undefined){F.mapa.splice(+d.delmapa,1);save();render();return}
+ if(el.id==="csvBtn"){
+  const ano=MES.slice(0,4), rows=movs().filter(m=>m.data.startsWith(ano)).sort((a,b)=>a.data.localeCompare(b.data));
+  const q=v=>`"${String(v??"").replace(/"/g,'""')}"`;
+  const csv="﻿Data;Tipo;Descrição;Área;Valor\n"+rows.map(m=>[m.data,m.tipo,q(m.desc),q(m.cat),String((+m.valor).toFixed(2)).replace(".",",")].join(";")).join("\n");
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));a.download=`movimentos-${ano}.csv`;a.click();return}
+ if(el.id==="bkBtn"){const txt=JSON.stringify({movs:C.movs,meta:C.meta,fin:F});
+  (navigator.clipboard?navigator.clipboard.writeText(txt).then(()=>toast("Cópia guardada na área de transferência")):Promise.reject()).catch(()=>prompt("Copia e guarda este texto:",txt));return}
+ if(el.id==="rsBtn"){const txt=prompt("Cola aqui a cópia que guardaste:");if(!txt)return;
+  try{const o=JSON.parse(txt);if(Array.isArray(o.movs))C.movs=o.movs;if(o.meta)C.meta=o.meta;if(o.fin)F=Object.assign(JSON.parse(JSON.stringify(FDEF)),o.fin);save();toast("Cópia reposta");render()}catch(_){alert("Esse texto não é uma cópia válida.")}return}
+});
+
+document.addEventListener("submit",e=>{
+ e.preventDefault();const f=e.target,v=Object.fromEntries(new FormData(f));
+ if(f.id==="movForm"){C.movs.push({id:uid(),data:v.data,tipo:v.tipo,desc:v.desc.trim(),cat:v.cat,valor:+v.valor});save();toast("Lançado");MES=v.data.slice(0,7);render();return}
+ if(f.id==="recForm"){F.receber.push({id:uid(),n:v.n.trim(),cat:v.cat,d:v.d,v:+v.v,pago:false});save();render();return}
+ if(f.id==="fixForm"){F.fixos.push({id:uid(),n:v.n.trim(),cat:v.cat,v:+v.v});save();render();return}
+ if(f.id==="mapaForm"){F.mapa.push({n:v.n.trim(),p:+v.p,q:0});save();render();return}
+});
+
+document.addEventListener("change",e=>{
+ const t=e.target,d=t.dataset;
+ if(t.id==="metaIn"){C.meta=Math.max(0,+t.value||0);save();render();return}
+ if(t.id==="resIn"){F.reserva=Math.min(60,Math.max(0,+t.value||0));save();render();return}
+ if(d.mp!==undefined){F.mapa[+d.mp].p=+t.value||0;save();render();return}
+ if(d.mq!==undefined){F.mapa[+d.mq].q=+t.value||0;save();render();return}
+});
+window.addEventListener("storage",ev=>{if(ev.key===KC||ev.key===KF){C=rd(KC)||C;if(!Array.isArray(C.movs))C.movs=[];F=rd(KF)||F;render()}});
+
+render();
+</script>
+</body>
+</html>

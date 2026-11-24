@@ -1,0 +1,829 @@
+<title>Central FIBRA</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Raleway:wght@400;500;600;700&family=Dr+Sugiyama&display=swap">
+<style>
+/* Layout: barra lateral castanha (as áreas do negócio) + mesa de trabalho clara; cada área é uma etiqueta cosida com o seu responsável */
+:root{
+  --castanho:#5C3B2E; --terracota:#B26D47; --terracota-cl:#BA8166; --bege:#BFA795; --branco:#FFFFFF;
+  --bg:#F6F1ED; --panel:#FFFFFF; --sunk:#EFE6DF; --line:#E2D5CB; --fg:#3A2419; --muted:#7A5F51; --faint:#A48D7F;
+  --acc:#B26D47; --acc-fg:#FFFFFF; --side:#5C3B2E; --side-2:#6E4A3B; --side-fg:#FFFFFF; --side-muted:#D9C6B8;
+  --ok:#4F6B45; --ok-bg:#E5ECDF; --warn:#9A5B12; --warn-bg:#F7E8D2; --bad:#9C2F1E; --bad-bg:#F5DDD7;
+  --display:"Cormorant Garamond",Georgia,serif; --body:Raleway,"Segoe UI",Arial,sans-serif; --script:"Dr Sugiyama","Brush Script MT",cursive;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#211612; --panel:#2D1F19; --sunk:#382720; --line:#4A362C; --fg:#F4ECE6; --muted:#C9B3A5; --faint:#9C8678;
+  --acc:#D08A62; --acc-fg:#211612; --side:#170F0C; --side-2:#2D1F19; --side-fg:#F4ECE6; --side-muted:#B39B8C;
+  --ok:#A9C79C; --ok-bg:#25301F; --warn:#E9B46A; --warn-bg:#3A2A14; --bad:#EE8F7D; --bad-bg:#3D1F19; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#211612; --panel:#2D1F19; --sunk:#382720; --line:#4A362C; --fg:#F4ECE6; --muted:#C9B3A5; --faint:#9C8678;
+  --acc:#D08A62; --acc-fg:#211612; --side:#170F0C; --side-2:#2D1F19; --side-fg:#F4ECE6; --side-muted:#B39B8C;
+  --ok:#A9C79C; --ok-bg:#25301F; --warn:#E9B46A; --warn-bg:#3A2A14; --bad:#EE8F7D; --bad-bg:#3D1F19; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.6 var(--body)}
+h1,h2,h3{font-family:var(--display);font-weight:600;margin:0;line-height:1.1;text-wrap:balance}
+p{margin:0}
+a{color:var(--acc)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.lbl{font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)} .small{font-size:.85rem}
+.sig{font-family:var(--script);font-size:1.7rem;line-height:1}
+
+#app{display:grid;grid-template-columns:260px minmax(0,1fr);min-height:100%}
+.side{background:var(--side);color:var(--side-fg);position:sticky;top:env(safe-area-inset-top,0px);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.brand{padding:22px 20px 16px;border-bottom:1px solid var(--side-2)}
+.brand .lbl{color:var(--side-muted)}
+.brand h1{font-size:2rem;margin-top:4px;color:var(--side-fg)}
+.brand .sig{color:var(--bege);margin-top:2px}
+.nav{flex:1;overflow-y:auto;padding:12px 10px 20px;display:flex;flex-direction:column;gap:14px}
+.nav .lbl{color:var(--side-muted);padding:0 10px 4px;display:block;font-size:.62rem}
+.nav a{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;color:var(--side-fg);text-decoration:none;font-size:.92rem;opacity:.88}
+.nav a:hover{background:var(--side-2);opacity:1}
+.nav a[aria-current="page"]{background:var(--terracota);color:#fff;opacity:1;font-weight:600}
+.grp-h{display:flex;align-items:center;gap:8px;width:100%;border:0;background:transparent;color:var(--side-fg);font:600 .92rem var(--body);padding:8px 10px;border-radius:8px;cursor:pointer;text-align:left}
+.grp-h:hover{background:var(--side-2)}
+.grp-h .n{margin-left:auto;font-size:.72rem;opacity:.8}
+.grp-h .seta{margin-left:auto;font-size:1.2rem;line-height:1;color:var(--bege);transition:transform .15s}
+.grp-h .n+.seta{margin-left:6px}
+.grp-h[aria-expanded="true"] .seta{transform:rotate(90deg)}
+.grp-b{display:flex;flex-direction:column;padding-left:12px;border-left:1px solid var(--side-2);margin-left:14px}
+.nav .grp{display:flex;flex-direction:column}
+.nav > div:not(:first-child) > a{font-weight:600;opacity:1}
+[hidden]{display:none!important}
+.nav a .n{margin-left:auto;font-size:.72rem;opacity:.8;font-variant-numeric:tabular-nums}
+.sidefoot{padding:12px 14px calc(14px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--side-2);display:flex;flex-wrap:wrap;gap:6px}
+.sidefoot button{border:1px solid var(--side-2);background:transparent;color:var(--side-muted);border-radius:99px;padding:5px 11px;font-size:.76rem;cursor:pointer}
+.sidefoot button:hover{color:var(--side-fg);border-color:var(--bege)}
+
+main{min-width:0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 80px}
+.inner{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.topbar{display:none}
+.head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px;border-bottom:1px solid var(--line);padding-bottom:14px}
+.head h2{font-size:clamp(2rem,4vw,2.7rem)}
+.head p{color:var(--muted);max-width:62ch;margin-top:4px}
+.resp{display:inline-flex;align-items:center;gap:8px;border:1px dashed var(--bege);border-radius:99px;padding:5px 12px;font-size:.8rem;color:var(--muted);background:var(--panel);cursor:pointer;text-decoration:none}
+.resp b{color:var(--fg);font-weight:600}
+.resp.set{border-style:solid;border-color:var(--acc)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.card h3{font-size:1.4rem}
+.card.alert{border-left:4px solid var(--bad)}
+.card.dark{background:var(--castanho);color:#fff;border-color:var(--castanho)}
+.card.dark .lbl,.card.dark .muted{color:var(--bege)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.kpi b{display:block;font-family:var(--display);font-size:2.3rem;line-height:1;color:var(--acc);font-variant-numeric:tabular-nums}
+.kpi span{display:block;font-size:.84rem;color:var(--muted);margin-top:6px}
+.bar{height:10px;background:var(--sunk);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--acc);border-radius:99px}
+ul.clean{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
+.list{display:flex;flex-direction:column}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 14px;padding:11px 0;border-top:1px solid var(--line);align-items:center}
+.row:first-child{border-top:0}
+.row .t{font-weight:600}
+.row .s{grid-column:1/-1;font-size:.86rem;color:var(--muted)}
+.when{font-variant-numeric:tabular-nums;font-size:.82rem;color:var(--muted);white-space:nowrap}
+.pill{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 10px;border-radius:99px;background:var(--sunk);color:var(--muted);white-space:nowrap}
+.pill.ok{background:var(--ok-bg);color:var(--ok)} .pill.warn{background:var(--warn-bg);color:var(--warn)} .pill.bad{background:var(--bad-bg);color:var(--bad)} .pill.acc{background:var(--acc);color:var(--acc-fg)}
+.tablewrap{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:14px}
+table{border-collapse:collapse;width:100%;font-size:.9rem;font-variant-numeric:tabular-nums}
+th{text-align:left;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:11px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.num{text-align:right;white-space:nowrap;font-weight:600}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--acc);background:var(--acc);color:var(--acc-fg);border-radius:99px;padding:7px 16px;font-weight:600;font-size:.86rem;cursor:pointer;text-decoration:none}
+.btn.ghost{background:transparent;color:var(--acc)}
+.btn.sm{padding:3px 11px;font-size:.78rem}
+.x{border:0;background:transparent;color:var(--faint);cursor:pointer;font-size:1.1rem;line-height:1;padding:2px 6px;border-radius:6px}
+.x:hover{color:var(--bad);background:var(--bad-bg)}
+form.add{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:8px;align-items:end;background:var(--sunk);border-radius:12px;padding:12px}
+form.add label{display:flex;flex-direction:column;gap:3px;font-size:.74rem;font-weight:600;color:var(--muted)}
+form.add input,form.add select,form.add textarea,.inp{width:100%;border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:7px 10px;font-size:.9rem;color:var(--fg)}
+form.add .wide{grid-column:1/-1}
+.empty{border:1.5px dashed var(--line);border-radius:12px;padding:22px;text-align:center;color:var(--muted);font-size:.9rem}
+.filters{display:flex;flex-wrap:wrap;gap:6px}
+.filters button{border:1px solid var(--line);background:var(--panel);border-radius:99px;padding:5px 13px;font-size:.82rem;cursor:pointer;color:var(--fg)}
+.filters button[aria-pressed="true"]{background:var(--castanho);border-color:var(--castanho);color:#fff}
+.filters button[aria-pressed="true"] .muted{color:var(--bege)}
+.tl{border-left:2px dashed var(--acc);margin-left:8px;padding-left:24px;display:flex;flex-direction:column;gap:18px}
+.tl div{position:relative}
+.tl div::before{content:"";position:absolute;left:-32px;top:5px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:3px solid var(--acc)}
+.tl div.now::before{background:var(--acc)}
+.tl b{color:var(--acc);font-size:.85rem;display:block}
+.sw{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.sw div{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel)}
+.sw i{display:block;height:74px}
+.sw span{display:block;padding:8px 10px;font-size:.8rem}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:.82rem;padding:3px 11px;border-radius:99px;background:var(--sunk)}
+.tag.no{background:var(--bad-bg);color:var(--bad)}
+.check{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--line)}
+.check:first-child{border-top:0}
+.check input{margin-top:5px;accent-color:var(--acc);width:16px;height:16px;flex:none}
+.check.done .t{text-decoration:line-through;color:var(--faint)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--castanho);color:#fff;padding:9px 16px;border-radius:10px;font-size:.88rem;z-index:50}
+.tp-hero{position:relative;background:var(--castanho);color:#fff;border-radius:16px;padding:28px 28px 22px;display:grid;gap:8px}
+.tp-hero::after{content:"";position:absolute;inset:8px;border:1px dashed rgba(255,255,255,.28);border-radius:12px;pointer-events:none}
+.tp-data{font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--bege);margin:0}
+.tp-titulo{font-family:var(--display);font-weight:500;font-size:clamp(2rem,5vw,3rem);line-height:1.05;margin:0;color:#fff}
+.tp-titulo em{color:#f1dccd}
+.tp-lead{margin:0;max-width:62ch;color:#efe4dc}
+.tp-lead b{color:#fff;font-variant-numeric:tabular-nums}
+.tp-tiles{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr))}
+.tp-tile{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 18px;display:grid;gap:3px;align-content:start;min-width:0;text-decoration:none;color:var(--fg)}
+.tp-tile:hover{border-color:var(--acc)}
+.tp-tile.is-terra{background:var(--terracota);border-color:var(--terracota);color:#fff}
+.tp-tile.is-terra .lbl,.tp-tile.is-terra .tp-sub{color:#fbeee5}
+.tp-num{font-family:var(--display);font-size:2.2rem;line-height:1.1;font-variant-numeric:tabular-nums}
+.tp-prox{font-family:var(--display);font-size:1.3rem;line-height:1.2;overflow-wrap:anywhere}
+.tp-sub{font-size:.8rem;color:var(--muted)}
+.tp-grid{display:grid;gap:14px}
+@media (min-width:900px){.tp-grid{grid-template-columns:1.1fr 1fr;align-items:start}}
+.tp-col{display:grid;gap:14px;min-width:0}
+.tp-dia{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--acc);padding-top:10px;font-weight:700}
+.tp-ev{display:grid;grid-template-columns:48px 1fr;gap:8px;padding:6px 0 6px 10px;border-left:2px solid var(--ec,var(--bege));font-size:.92rem}
+.tp-ev time{font-variant-numeric:tabular-nums;color:var(--muted);font-size:.8rem;padding-top:2px}
+.tp-pilar{background:var(--bege);color:#3a251c;border-radius:14px;padding:18px 20px;display:grid;gap:6px}
+.tp-pilar .lbl{color:#5c3b2e}
+.tp-pilar p{font-family:var(--display);font-size:1.6rem;line-height:1.2;margin:0}
+.tp-pilar small{color:#5c3b2e}
+.tp-setores{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr))}
+.tp-setor{background:var(--panel);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.tp-setor:hover{border-color:var(--acc)}
+.tp-setor-main{display:grid;gap:4px;align-content:start;padding:14px 16px;text-decoration:none;color:var(--fg);flex:1}
+.tp-setor-main b{font-family:var(--display);font-size:1.35rem;font-weight:600}
+.tp-estado{font-size:.84rem;font-weight:600;color:var(--acc);margin-top:4px}
+.tp-ext{display:flex;flex-wrap:wrap;gap:6px;padding:10px 16px;border-top:1px solid var(--line);background:var(--sunk)}
+.tp-ext a{font-size:.78rem;text-decoration:none;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:99px;padding:2px 9px}
+.tp-ext a:hover{border-color:var(--acc)}
+.navscrim{display:none}
+.ev-cliente{--ec:var(--ok)} .ev-trabalho{--ec:var(--acc)} .ev-saude{--ec:var(--bad)} .ev-pessoal{--ec:var(--castanho)} .ev-rotina{--ec:var(--faint)} .ev-feriado{--ec:var(--warn)}
+:root[data-theme="dark"] .ev-pessoal{--ec:var(--bege)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ev-pessoal{--ec:var(--bege)}}
+.aghead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px}
+.agleg{display:flex;flex-wrap:wrap;gap:14px;font-size:.78rem;color:var(--muted)}
+.agleg i{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--ec);margin-right:5px;vertical-align:-1px}
+.agwrap{overflow-x:auto}
+.aggrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;min-width:560px}
+.agw{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:2px 6px}
+.agc{all:unset;box-sizing:border-box;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:10px;min-height:108px;padding:6px;display:flex;flex-direction:column;gap:3px;min-width:0;overflow:hidden}
+.agc:hover{border-color:var(--acc)}
+.agc:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+.agc.out{background:transparent;border-style:dashed;opacity:.4;cursor:default}
+.agc.hoje .agn{background:var(--acc);color:var(--acc-fg);border-radius:99px;padding:0 7px}
+.agc.sel{border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc)}
+.agn{font-weight:700;font-size:.82rem;align-self:flex-start;display:flex;align-items:center;gap:4px;font-variant-numeric:tabular-nums}
+.agdot{width:8px;height:8px;border-radius:50%;background:var(--bad);display:inline-block}
+.agfer{font-size:.66rem;color:var(--warn);font-weight:600;line-height:1.2}
+.agch{font-size:.7rem;line-height:1.25;padding:2px 5px;border-radius:5px;background:color-mix(in srgb,var(--ec) 16%,var(--panel));border-left:3px solid var(--ec);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.agch b{font-weight:700;font-variant-numeric:tabular-nums}
+.agmais{font-size:.7rem;color:var(--muted);font-weight:600}
+.agrow{display:grid;grid-template-columns:96px minmax(0,1fr) auto;gap:10px;align-items:start;padding:9px 0 9px 10px;border-top:1px solid var(--line);border-left:3px solid var(--ec)}
+.agrow:first-child{border-top:0}
+.agrow.imp .t{font-weight:700}
+.agrow:not(.imp) .t{font-weight:500}
+.agalert{background:var(--bad-bg);color:var(--bad);border-radius:10px;padding:10px 12px;font-size:.86rem}
+
+@media (max-width:860px){
+  .agrow{grid-template-columns:70px minmax(0,1fr)}
+  .agrow .pill{display:none}
+  #app{grid-template-columns:minmax(0,1fr)}
+  .side{position:fixed;left:0;top:0;bottom:0;width:min(290px,86%);z-index:40;transform:translateX(-105%);transition:transform .2s;height:auto;padding-top:env(safe-area-inset-top,0px)}
+  body.navopen .side{transform:none}
+  body.navopen .navscrim{display:block;position:fixed;inset:0;background:rgba(20,10,6,.45);z-index:39}
+  .topbar{display:flex;align-items:center;gap:12px;position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--side);color:var(--side-fg);padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));}
+  .topbar button{border:0;background:var(--side-2);color:var(--side-fg);border-radius:8px;width:38px;height:38px;font-size:1.1rem;cursor:pointer}
+  .topbar b{font-family:var(--display);font-size:1.3rem}
+  body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--side)}
+  main{padding-block:18px 70px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="topbar"><button type="button" id="menuBtn" aria-label="Abrir menu">☰</button><b>Central FIBRA</b></div>
+<div id="app">
+  <aside class="side" aria-label="Áreas">
+    <div class="brand"><div class="lbl">Universo FIBRA</div><h1>Central FIBRA</h1><div class="sig">Tânia Silveira</div></div>
+    <nav class="nav" id="nav"></nav>
+    <div class="sidefoot">
+      <button type="button" id="expBtn">Copiar dados</button>
+      <button type="button" id="impBtn">Colar dados</button>
+    </div>
+  </aside>
+  <main><div class="inner" id="view"></div></main>
+</div>
+<div class="navscrim" id="scrim"></div>
+
+<script>
+/* ===== Dados de base (fotografia de 20/11/2026) ===== */
+const AREAS=[
+ {g:"Painel",plain:true,items:[["hoje","Hoje"]]},
+ {g:"Tempo",items:[["agenda","Agenda"],["mail","Mail"]]},
+ {g:"Clientes",plain:true,items:[["clientes","Clientes"]]},
+ {g:"Negócio",items:[["dinheiro","Finanças"],["servicos","Serviços e preços"],["analise","Análise do negócio"],["site","Site"]]},
+ {g:"Radares",items:[["radar","Radar Têxtil"],["radaremail","Radar do email"]]},
+ {g:"Conteúdo",items:[["copy","Copy"],["ideias","Ideias"]]},
+ {g:"Raiz",items:[["marca","Marca"],["historia","História"],["ferramentas","Ferramentas"]]},
+ {g:"Equipa",items:[["responsaveis","Responsáveis"]]}
+];
+const LABEL=Object.fromEntries(AREAS.flatMap(a=>a.items));
+const FUNCAO={
+ hoje:"Abre o dia: o que arde, o que entra, o que vem a seguir.",
+ dinheiro:"Regista entradas e saídas e mede a distância à meta.",
+ clientes:"Acompanha cada cliente: sessões, estado, próximo passo.",
+ servicos:"Guarda a esteira de ofertas e os preços em vigor.",
+ copy:"Escreve e revê o conteúdo da semana na voz da Tânia.",
+ ideias:"Recebe as ideias soltas e decide o que avança.",
+ radar:"Pesquisa a web toda as semanas: têxtil, moda, negócios e IA.",
+ radaremail:"Lê as newsletters do setor e o Pinterest e diz o que interessa.",
+ agenda:"Organiza sessões, eventos e prazos.",
+ mail:"Faz a triagem do email: o que responder, o que cortar.",
+ marca:"Guarda a identidade: cores, letra, voz e regras.",
+ historia:"Conta o percurso e as provas reais.",
+ ferramentas:"Reúne os links de tudo o que já foi construído.",
+ responsaveis:"Define quem trata de cada área.",
+ analise:"Lê os números e diz onde o negócio está e para onde vai.",
+ site:"Mantém o site, o portal e as páginas de venda."
+};
+
+const DEF={
+ meta:3000,
+ resp:{},
+ movs:[],
+ clientes:[
+  {id:"c1",nome:"Susana Nicau",marca:"Nicau Couture",servico:"Método FIBRA",estado:"Ativa",valor:"",prox:"Sessão 3/12, 15h (Meet). Seguinte a 17/12.",nota:"Coleção de Natal 2026."},
+  {id:"c2",nome:"Lara",marca:"SAL Beach Couture · Empório Foot Academy",servico:"Gestão de redes + estratégia",estado:"Ativa",valor:"",prox:"Gestão de redes termina em janeiro de 2027.",nota:"568 peças e tecido parado. Posicionamento: para quem o mar não é fundo de foto."},
+  {id:"c3",nome:"Sílvia",marca:"",servico:"Gestão de redes",estado:"A sair",valor:"",prox:"Fica até janeiro de 2027.",nota:""},
+  {id:"c4",nome:"Cátia Cardoso",marca:"",servico:"Gestão de redes / plano",estado:"Saiu",valor:"",prox:"",nota:"Saiu em novembro."},
+  {id:"c5",nome:"Traços D'Amor",marca:"Moda infantil premium",servico:"Consultoria de coleção",estado:"Concluída",valor:"",prox:"",nota:"SS26 Jardim das Descobertas. Caso fixado no perfil."},
+  {id:"c6",nome:"Imaginarium Park",marca:"Chaves",servico:"Estratégia, site e calendário",estado:"Concluída",valor:"",prox:"",nota:"Antigo Altamente Park, que foi teu."},
+  {id:"c7",nome:"ROMEO (Vanessa)",marca:"",servico:"Rebranding",estado:"Antiga",valor:"",prox:"",nota:"Posicionamento em 5 dias. «Não foi velocidade. Foi clareza.»"},
+  {id:"c8",nome:"LEFKOT",marca:"",servico:"Marca do zero",estado:"Antiga",valor:"",prox:"",nota:"«Não dei ideias soltas. Dei método.»"},
+  {id:"c9",nome:"DOMPURE",marca:"",servico:"Consultoria",estado:"Antiga",valor:"",prox:"",nota:"A marca fechou. «Nem todas as histórias continuam.»"},
+  {id:"c10",nome:"Henza (Anita Epalanga)",marca:"Afro-contemporânea handmade",servico:"Consultoria",estado:"Antiga",valor:"",prox:"",nota:""},
+  {id:"c11",nome:"Belloria",marca:"",servico:"Estúdio de marca",estado:"Antiga",valor:"",prox:"",nota:""},
+  {id:"c12",nome:"Little Leflot · Hosmos · Amore · RP",marca:"",servico:"Vários",estado:"Antiga",valor:"",prox:"",nota:"Hosmos nas Conversas Tramadas."}
+ ],
+ ideias:[
+  {id:"i1",estado:"Viva",t:"IA aplicada ao têxtil",d:"Ligar a IA ao setor, não abandoná-la. É a aposta para 2027."},
+  {id:"i2",estado:"Viva",t:"Parceria ATP como oradora",d:"Talk: IA no têxtil português. Tens contacto direto."},
+  {id:"i3",estado:"Viva",t:"Comunidade de empreendedoras do Norte",d:"Com a Marta Lobo. Guimarães–Chaves."},
+  {id:"i4",estado:"Viva",t:"Agente de sourcing internacional",d:"Feiras e representação de fábricas portuguesas. Barreira: o inglês."},
+  {id:"i5",estado:"Viva",t:"Imersão Fibra IA",d:"37€. Lançada em outubro. Falta saber quantas venderam."},
+  {id:"i6",estado:"Parada",t:"Subida de preços",d:"FIBRA 400–450€/mês, Tafetá 350–400€, Diagnóstico pago 47–67€."},
+  {id:"i7",estado:"Parada",t:"Comunidade paga com hotseats",d:"Skool ou Circle, quinzenal, membros fundadores."},
+  {id:"i8",estado:"Parada",t:"Academia FIBRA",d:"Produto de entrada, camada de formação."},
+  {id:"i9",estado:"Parada",t:"Loom (lookbooks)",d:"Protótipo funcional."},
+  {id:"i10",estado:"Parada",t:"Espaço físico",d:"Sem decisão."},
+  {id:"i11",estado:"Descartada",t:"Gestão de redes",d:"Acaba em janeiro de 2027."},
+  {id:"i12",estado:"Descartada",t:"Pagar para ser oradora",d:"Recusaste o MAE Summit."}
+ ],
+ radar:[
+  {id:"r1",data:"2026-11-25",fonte:"MODAPORTUGAL / CENIT",t:"O Futuro da Indústria da Moda, em Guimarães",d:"Convite recebido a 19/11. Resultados do projeto 100% MODAPORTUGAL 24–26. É à tua porta e é o teu público de 2027.",tipo:"Evento"},
+  {id:"r2",data:"2026-11-19",fonte:"Portugal Têxtil",t:"Empresas pedem valorização do vestuário profissional",d:"Axfilia, Jobs Uniforms, Trot e outras defendem durabilidade e especialização técnica.",tipo:"Setor"},
+  {id:"r3",data:"2026-11-19",fonte:"T Jornal (ATP)",t:"Moda portuguesa com showcase em Seul",d:"Newsletter da ATP. Bom gancho para a conversa com a ATP.",tipo:"Setor"},
+  {id:"r4",data:"2026-11-19",fonte:"Laboratório da IA",t:"O ChatGPT já recomenda lojas, nem sempre a tua",d:"Tema de conteúdo: marcas de moda invisíveis para a IA.",tipo:"IA"}
+ ],
+ mail:[
+  {id:"m1",feito:false,t:"Decidir se vais ao «Futuro da Indústria da Moda» (25/11, Guimarães)",s:"MODAPORTUGAL · 10h. Coincide com a Aula Impulsia das 15h, dá para as duas."},
+  {id:"m2",feito:false,t:"Responder ao convite da Hélia Carvalho (30/11, 10h30)",s:"Mentoria 1:1 HELIUM. Ainda não está na agenda."},
+  {id:"m3",feito:false,t:"Ver a menção da Sarah no Trello",s:"Cartão «Segunda: Respondendo perguntas comuns de quem está a começar»."},
+  {id:"m4",feito:true,t:"Bilhete do encontro da Escola de Assistentes Virtuais",s:"Sábado 21/11, Porto. Já está na agenda como Evento AV."},
+  {id:"m5",feito:false,t:"Cancelar newsletters que não te servem",s:"Luana Carolina, Clara do Vale, Seekers, Indeed, Zaask, Make, Metricool, MailerLite, Pinterest, Google Developer, ITV, Unike. Ocupam mais de metade da caixa de entrada."}
+ ]
+};
+
+const AGENDA=[
+ ["2026-11-20","09:30","Gravar Reels","trabalho"],
+ ["2026-11-20","11:15","Ver site da Lara (SAL Beach Couture)","cliente"],
+ ["2026-11-20","14:00","Reunião com Marta Lobo","trabalho"],
+ ["2026-11-20","15:15","Agendar os posts de 23 a 29 nov","trabalho"],
+ ["2026-11-21","10:00","Evento AV (Escola de Assistentes Virtuais, Porto)","trabalho"],
+ ["2026-11-21","14:30","Catequese","pessoal"],
+ ["2026-11-22","10:30","Missa","pessoal"],
+ ["2026-11-23","09:00","Ler o Radar da semana","trabalho"],
+ ["2026-11-23","09:30","Responder à Hélia (30/11) e ver a menção da Sarah no Trello","trabalho"],
+ ["2026-11-23","10:00","Cancelar newsletters que não servem","trabalho"],
+ ["2026-11-24","10:30","Dentista","pessoal"],
+ ["2026-11-24","14:00","Unhas","pessoal"],
+ ["2026-11-25","10:00","O Futuro da Indústria da Moda (por confirmar)","trabalho"],
+ ["2026-11-25","15:00","Aula Impulsia","trabalho"],
+ ["2026-11-27","","Black Friday · GBR Peniche 175€ (27–28)","trabalho"],
+ ["2026-11-28","12:30","Almoço cá em casa","pessoal"],
+ ["2026-11-28","15:00","Aniversário Bruno e Ariana","pessoal"],
+ ["2026-11-30","10:30","Mentoria HELIUM com Hélia Carvalho (por responder)","trabalho"],
+ ["2026-11-30","18:00","Fecho do mês: lançar entradas e saídas na Central","trabalho"],
+ ["2026-12-02","15:00","Aula Impulsia","trabalho"],
+ ["2026-12-03","15:00","Método FIBRA · Susana Nicau","cliente"],
+ ["2026-12-05","14:30","Catequese","pessoal"],
+ ["2026-12-09","15:00","Aula Impulsia","trabalho"],
+ ["2026-12-10","09:30","Cabeleireiro","pessoal"],
+ ["2026-12-11","","Passeio Mar Shopping (levar cadeira para o Tomás)","pessoal"],
+ ["2026-12-13","10:30","Missa","pessoal"],
+ ["2026-12-14","10:00","Decidir preços de 2027 (FIBRA, Tafétá, Diagnóstico)","trabalho"],
+ ["2026-12-15","12:00","Consulta de cirurgia geral, hospital","pessoal"],
+ ["2026-12-16","15:00","Aula Impulsia","trabalho"],
+ ["2026-12-17","15:00","Método FIBRA · Susana Nicau","cliente"]
+];
+
+const COPY=[
+ ["2026-11-23","Segunda","Feed + stories","Marcas que já vendem e já sentiram a primeira coleção a falhar","Comenta DIAGNÓSTICO"],
+ ["2026-11-24","Terça","Carrossel + stories","IA usada todos os dias, mas não para o que pensas","Mensagem com a foto da peça"],
+ ["2026-11-25","Quarta","Feed + stories","Análise: conteúdo de marca feito com IA","Guardar e partilhar"],
+ ["2026-11-26","Quinta","Carrossel 9 slides","Dona de marca que vive a apagar fogos","Pergunta nos comentários"],
+ ["2026-11-27","Sexta","Reels ou carrossel","Black Friday sem desconto: a pergunta para quem tem","Partilhar"],
+ ["2026-11-28","Sábado","Só stories","Feed em pausa","—"],
+ ["2026-11-29","Domingo","Post leve","Conexão: para quem chega agora","Pergunta"]
+];
+
+const SERVICOS=[
+ ["Método FIBRA","6 meses, 12 sessões de 90 min, WhatsApp, Notion, gravações. Por candidatura.","265€/mês","Subir para 400–450€/mês. Também apareceu 1.500€ pelos 6 meses: fecha um."],
+ ["Consultoria Tafetá 360","2h de análise + 1h de seguimento ao fim de um mês.","250€","Subir para 350–400€."],
+ ["Diagnóstico Estratégico","30 min, porta de entrada.","Gratuito","Passar a 47–67€, a descontar no FIBRA."],
+ ["Lista Estratégica de Fornecedores","Digital, 6 meses de acesso, atualizações mensais. SalesPark.","49€ · 67€ dupla","Black Week: 37€ com BLACK26. Combo 57€."],
+ ["Imersão Fibra IA","IA nas decisões de Black Friday.","37€","Vendas por apurar."],
+ ["Gestão de redes","Serviço a clientes.","—","Termina em janeiro de 2027."]
+];
+
+const HIST=[
+ ["Até 2022","7 anos numa têxtil: matérias-primas, armazém, planeamento, produção, comercial. No planeamento recuperaste faturação que a empresa não via há anos."],
+ ["2023","Altamente Park abre em abril. Em outubro, Assistência Fio de Ouro."],
+ ["Jan 2025","Trespasse do parque. Foco em estratégia para marcas de moda. Nasce o Método FIBRA."],
+ ["Mar 2026","38 mil visualizações com menos de 2 mil seguidores. Preços revistos. 700€/mês."],
+ ["Abr 2026","Meta de 3.000€/mês."],
+ ["Ago 2026","Palavra «estrutura» banida. Formato de Reels fechado. Caso SAL."],
+ ["Set 2026","Série sobre IA. Três clientes. Exaustão com o modelo."],
+ ["Out 2026","Imersão Fibra IA a 37€. Recusa do MAE Summit. Comunidade com a Marta Lobo."],
+ ["Nov 2026","De 5 para 2 clientes FIBRA. Linha de 2027: IA e planeamento para marcas que já vendem e fábricas com marca própria. Black Week da lista."]
+];
+
+const PROVAS=["568 peças paradas (SAL)","150 sweats perdidas por falta de rigor com a fábrica","Bordado não escalado: 2 cm inutilizaram uma coleção","6.550€ em stock parado","Produção avançada sem marca registada"];
+
+const LINKS=[
+ ["Negócio","Tânia Silveira 2027","https://claude.ai/artifact/RyyFyBv8cyWcLB4zv9cHYQ"],
+ ["Negócio","Compilação do negócio","https://claude.ai/artifact/UtMrxL9VL1RNgeC3CZDHnn"],
+ ["Negócio","Raio-X do negócio","https://claude.ai/artifact/WkkcEyShWZcH4qay1vCe3r"],
+ ["Negócio","Dossiê taniasilveira.pt","https://claude.ai/artifact/RAUQYebeFoMpbF1pzUNtLC"],
+ ["Negócio","Resumo do negócio (jun–nov)","https://claude.ai/artifact/BcFxnMF27AmjYgo2zN8BS3"],
+ ["Negócio","Viragem do Negócio","https://claude.ai/artifact/8GPEAA5rkKNUze4j3C9ctH"],
+ ["Método","Raio-X Fibra · modelo","https://claude.ai/artifact/SLgUjGWsEdeuo4NrQUCoRU"],
+ ["Método","Raio-X Fibra · Perguntas","https://claude.ai/artifact/UEKwNa7jSEnxEsV5kTdnrJ"],
+ ["Método","Raio-X Fibra · Clube Ella","https://claude.ai/artifact/3MS2qAY8D9Md5AhgHLurn5"],
+ ["Método","Diagnóstico de Produção","https://claude.ai/artifact/LtaH6aAzagoNq3hYHqsEb3"],
+ ["Método","Quanto sobra da tua peça","https://claude.ai/artifact/3m9FqXM9NigsuysBX97Ydy"],
+ ["Método","Painel de Prompts FIBRA","https://claude.ai/artifact/DhJCM4EZXYf2n731UBxnZn"],
+ ["Conteúdo","Copy FIBRA (app)","https://claude.ai/artifact/MdsQ4oaNDMD5kuwoVazL4w"],
+ ["Conteúdo","Instagram que vende","https://claude.ai/artifact/MCskUgmTp6KZMiUAtCYzRJ"],
+ ["Conteúdo","Radar Têxtil","https://claude.ai/artifact/FMcpzQckzBaMehdF8tea41"],
+ ["Conteúdo","2027: o que vai ditar o mercado","https://claude.ai/artifact/VaC8NwGg6H9z35WgSqQtvW"],
+ ["Venda","Lista de Fornecedores · Black Week","https://claude.ai/artifact/914C4UTNyrXc8Fc8fgsZxu"],
+ ["Venda","Imersão Fibra IA · Black Friday","https://claude.ai/artifact/TzeWSAaFovCsGBXZhct1Ys"],
+ ["Venda","IA com Fibra · Landing Page","https://claude.ai/artifact/Qez3BsowieiNwiZZZvPnyG"],
+ ["Venda","4 conceitos de site","https://claude.ai/artifact/ToPMK6jgh97epZcU2uehPh"],
+ ["Clientes","Sal Beach Couture","https://claude.ai/artifact/Wrw7mfpLFxJiSkUR267vnz"],
+ ["Clientes","Estúdio Susana Nicau","https://claude.ai/artifact/UnQ4SYLFjoTsYMMDqZ5mbk"],
+ ["Clientes","Estúdio Traços D'Amor","https://claude.ai/artifact/D3MiggwcKrr8yggsoKk3vz"],
+ ["Clientes","Estúdio Belloria","https://claude.ai/artifact/P4oxEdNkBYquPPaju37QSu"],
+ ["Clientes","Proposta Lara","https://claude.ai/artifact/BnMZvMdHriPdrwM6EEYkns"],
+ ["Comunidade","IA na prática · Clube ELLA","https://claude.ai/artifact/EywWHTRDqbD6wZX7p9jbVN"],
+ ["Comunidade","Comunidade de Empreendedoras do Norte","https://claude.ai/artifact/XUXgREjPtZQSXDdcCLmJNS"],
+ ["Plataformas","Portal FIBRA (área de alunas)","https://imersao-fibra.netlify.app/"],
+ ["Plataformas","App Método FIBRA","https://metodofibra.base44.app"],
+ ["Plataformas","Site","https://taniasilveira.pt"]
+];
+
+/* ===== Estado guardado neste browser ===== */
+const KEY="centralFibra.v1";
+let S;
+try{S=JSON.parse(localStorage.getItem(KEY))||null}catch(e){S=null}
+if(!S)S=JSON.parse(JSON.stringify(DEF));
+for(const k in DEF)if(S[k]===undefined)S[k]=JSON.parse(JSON.stringify(DEF[k]));
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+
+/* ===== Utilitários ===== */
+const $=s=>document.querySelector(s);
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const eur=n=>new Intl.NumberFormat("pt-PT",{style:"currency",currency:"EUR",maximumFractionDigits:0}).format(n||0);
+const HOJE=(()=>{const d=new Date();return d.toISOString().slice(0,10)})();
+const fdata=s=>{if(!s)return"";const [y,m,d]=s.split("-");const M=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];return `${+d} ${M[m-1]}`};
+const dsem=s=>["dom","seg","ter","qua","qui","sex","sáb"][new Date(s+"T12:00").getDay()];
+const uid=()=>Math.random().toString(36).slice(2,9);
+function toast(t){const e=document.createElement("div");e.className="toast";e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),2200)}
+function respChip(area){const r=S.resp[area];return `<a class="resp${r?" set":""}" href="#responsaveis">Responsável: <b>${r?esc(r):"a definir"}</b></a>`}
+function head(area,txt){return `<div class="head"><div><div class="lbl">Central FIBRA</div><h2>${LABEL[area]}</h2><p>${txt}</p></div>${area==="responsaveis"?"":respChip(area)}</div>`}
+const mesAtual=()=>HOJE.slice(0,7);
+let DIN=null;
+fetch("dinheiro.json").then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{DIN=d;render()}).catch(()=>{DIN={movimentos:[]}});
+const eur2=n=>new Intl.NumberFormat("pt-PT",{style:"currency",currency:"EUR",minimumFractionDigits:2}).format(n||0);
+const todosMovs=()=>[...S.movs,...((DIN&&DIN.movimentos)||[]).map(m=>({...m,auto:true}))];
+function totais(mes){let e=0,s=0;for(const m of todosMovs()){if(mes&&!m.data.startsWith(mes))continue;const v=+m.valor||0;if(m.tipo==="Entrada")e+=v;else s+=v}return{e,s,l:e-s}}
+
+/* ===== Vistas ===== */
+const V={};
+const PILARES=["Produto antes da comunicação.","Clareza antes da execução.","Decisão antes da ação.","Autoridade com verdade.","Margem antes do volume."];
+const SETORES=[
+ {id:"agenda",n:"Agenda",d:"Os teus calendários todos, por mês.",ext:[]},
+ {id:"mail",n:"Mail",d:"O que pede resposta na caixa de entrada.",ext:[]},
+ {id:"clientes",n:"Clientes",d:"Quem está, o próximo passo e as provas.",ext:[["Estúdio Susana Nicau","https://claude.ai/artifact/UnQ4SYLFjoTsYMMDqZ5mbk"],["SAL Black Friday","https://claude.ai/artifact/QMxsCmyZtRx8nAgFuXL4MF"],["Estúdio Traços D'Amor","https://claude.ai/artifact/D3MiggwcKrr8yggsoKk3vz"]]},
+ {id:"dinheiro",n:"Finanças",d:"Entradas, saídas, meta e alertas.",ext:[["Central Financeira","financas.html"],["Quanto sobra da tua peça","https://claude.ai/artifact/3m9FqXM9NigsuysBX97Ydy"]]},
+ {id:"copy",n:"Copy",d:"A semana de conteúdo e as regras da voz.",ext:[["Copy FIBRA (app)","https://claude.ai/artifact/MdsQ4oaNDMD5kuwoVazL4w"],["Instagram que vende","https://claude.ai/artifact/MCskUgmTp6KZMiUAtCYzRJ"]]},
+ {id:"analise",n:"Análise do negócio",d:"Onde estás, o que está mal e para onde vais.",ext:[["Raio-X do negócio","https://claude.ai/artifact/WkkcEyShWZcH4qay1vCe3r"],["Tânia Silveira 2027","https://claude.ai/artifact/RyyFyBv8cyWcLB4zv9cHYQ"]]},
+ {id:"site",n:"Site",d:"taniasilveira.pt, portal e páginas de venda.",ext:[["taniasilveira.pt","https://taniasilveira.pt"],["Site novo (rascunho)","https://claude.ai/artifact/NnTRBNp7g2TzuTT3dWtHiq"]]},
+ {id:"radar",n:"Radares",d:"Radar Têxtil (web) e Radar do email.",ext:[]},
+ {id:"ideias",n:"Ideias",d:"O que te passa pela cabeça e o que avança.",ext:[]},
+ {id:"marca",n:"Marca",d:"Cores, letra, voz e o que é proibido.",ext:[]},
+ {id:"responsaveis",n:"Equipa",d:"Quem trata de cada setor.",ext:[]}
+];
+function estadoSetor(id){
+ const t=totais(mesAtual());
+ switch(id){
+  case"agenda":{if(!AG)return"";let n=0;for(let i=0;i<7;i++)n+=evDia(addDias(HOJE,i)).filter(e=>e.imp&&e.c!=="rotina"&&e.c!=="feriado").length;const a=Array.from({length:8},(_,i)=>alertasDe(addDias(HOJE,i)).length).reduce((x,y)=>x+y,0);return `${n} compromissos em 7 dias${a?` · ${a} alertas`:""}`}
+  case"mail":{if(!MAIL)return"";const p=mailPend();return `${p.length} pendentes · ${p.filter(x=>x.p==="alta").length} urgentes`}
+  case"clientes":return `${S.clientes.filter(c=>c.estado==="Ativa").length} ativas · ${S.clientes.filter(c=>c.estado==="A sair").length} a sair`;
+  case"dinheiro":{const al=(DIN&&DIN.alertas||[]).filter(a=>a.p==="alta").length;return `${eur(t.e)} entradas · ${eur(t.s)} saídas este mês${al?` · ${al} urgentes`:""}`}
+  case"copy":return `${COPY.length} dias planeados esta semana`;
+  case"radar":return RADAR&&RADAR.length?`Semana ${RADAR[0].short} · ${RADAR[0].news.length} notícias`+(MAIL?` · email ${(MAIL.radar||[]).length}`:""):"";
+  case"ideias":return `${S.ideias.filter(i=>i.estado==="Viva").length} vivas · ${S.ideias.filter(i=>i.estado==="Parada").length} paradas`;
+  case"responsaveis":{const n=Object.values(S.resp).filter(Boolean).length;return n?`${n} setores com responsável`:"Responsáveis por definir"}
+  case"analise":return "Meta 3.000 €/mês · último número: 700 € em março";
+  case"site":return "Rascunho novo de 20/11 por publicar";
+  default:return"";
+ }
+}
+V.hoje=()=>{
+ if(!S.top3)S.top3=[];
+ const h=+new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Lisbon",hour:"2-digit",hourCycle:"h23"}).format(new Date());
+ const saud=h<6?"Boa noite":h<13?"Bom dia":h<20?"Boa tarde":"Boa noite";
+ const dt=new Date(HOJE+"T12:00");
+ const semana=AG?Array.from({length:7},(_,i)=>addDias(HOJE,i)).map(d=>[d,evDia(d).filter(e=>e.imp&&e.c!=="rotina")]):[];
+ const nAg=semana.reduce((s,[,es])=>s+es.filter(e=>e.c!=="feriado").length,0);
+ const pend=MAIL?mailPend():[]; const urg=pend.filter(p=>p.p==="alta");
+ const agora=new Date().toTimeString().slice(0,5);
+ let prox=null; for(const [d,es] of semana){for(const e of es){if(e.c==="feriado")continue;if(d>HOJE||!e.s||e.s>=agora){prox=[d,e];break}}if(prox)break}
+ const alHoje=AG?alertasDe(HOJE):[];
+ const dinAl=(DIN&&DIN.alertas||[]).filter(a=>a.p==="alta");
+ const t=totais(mesAtual());
+ const pilar=PILARES[Math.floor(Date.parse(HOJE+"T00:00:00Z")/864e5)%PILARES.length];
+ const t3=S.top3.slice(0,3);
+ return `<header class="tp-hero"><p class="tp-data">${DSEM[dt.getDay()]}, ${dt.getDate()} de ${MESES[dt.getMonth()]}</p>
+ <h1 class="tp-titulo">${saud}, <em>Tânia</em></h1>
+ <p class="tp-lead">Tens <b>${nAg}</b> compromissos nos próximos 7 dias, <b>${pend.length}</b> pendentes no mail e <b>${urg.length+dinAl.length}</b> urgências. Aqui estão as tuas três de hoje e o que vem aí.</p></header>
+ <section class="tp-tiles">
+  <a class="tp-tile is-terra" href="#agenda"><span class="lbl">Agenda · 7 dias</span><span class="tp-num">${nAg}</span><span class="tp-sub">compromissos importantes</span></a>
+  <a class="tp-tile" href="#mail"><span class="lbl">Mail · pendentes</span><span class="tp-num">${pend.length}</span><span class="tp-sub">${urg.length} urgentes</span></a>
+  <a class="tp-tile" href="#agenda"><span class="lbl">A seguir</span><span class="tp-prox">${prox?esc(prox[1].t):"Semana livre"}</span><span class="tp-sub">${prox?(prox[0]===HOJE?"Hoje":dsem(prox[0])+" "+fdata(prox[0]))+(prox[1].s?" · "+prox[1].s:" · dia inteiro"):"nada marcado"}</span></a>
+  <a class="tp-tile" href="#dinheiro"><span class="lbl">Finanças · ${MESES[dt.getMonth()]}</span><span class="tp-num">${eur(t.l)}</span><span class="tp-sub">${eur(t.e)} entradas · ${eur(t.s)} saídas</span></a>
+ </section>
+ ${alHoje.length||urg.length||dinAl.length?`<div class="card alert"><div class="lbl">Alertas de hoje</div><div class="list">${alHoje.map(e=>`<div class="row"><span class="t">${e.s?e.s+" · ":""}${esc(e.t)}</span><span class="pill warn">Agenda</span><span class="s">${esc(e.nota)}</span></div>`).join("")}${urg.map(p=>`<div class="row"><span class="t">${esc(p.t)}</span><span class="pill bad">Mail</span><span class="s">${esc(p.s)}</span></div>`).join("")}${dinAl.filter(a=>!urg.some(p=>p.t.slice(0,12)===a.t.slice(0,12))).map(a=>`<div class="row"><span class="t">${esc(a.t)}</span><span class="pill bad">Finanças</span><span class="s">${esc(a.s)}</span></div>`).join("")}</div></div>`:""}
+ <div class="tp-grid">
+  <div class="tp-col">
+   <section class="card"><h3 style="display:flex;justify-content:space-between;gap:8px;align-items:baseline">As tuas três de hoje <span class="pill acc">só tu vês</span></h3>
+    ${t3.length?`<div>${t3.map(x=>`<label class="check${x.feito?" done":""}"><input type="checkbox" data-t3="${x.id}"${x.feito?" checked":""}><span class="t" style="flex:1">${esc(x.t)}</span><button type="button" class="x" data-del-t3="${x.id}" aria-label="Apagar">×</button></label>`).join("")}</div>`:`<p class="small muted">Escreve as três coisas que, feitas hoje, mexem no negócio. O resto espera.</p>`}
+    ${t3.length<3?`<form class="add" id="t3Form"><label class="wide">Nova prioridade<input name="t" maxlength="140" required placeholder="Ex.: anular a fatura duplicada"></label><button class="btn" type="submit">Adicionar</button></form>`:""}
+   </section>
+   <section class="card"><h3 style="display:flex;justify-content:space-between;gap:8px;align-items:baseline">Mail por tratar <a class="pill" href="#mail">Mail</a></h3><div class="list">${pend.slice(0,6).map(p=>`<div class="row"><span class="t">${esc(p.t)}</span><span class="when">${esc(p.q||"")}</span></div>`).join("")||'<p class="small muted">Caixa limpa.</p>'}</div></section>
+  </div>
+  <div class="tp-col">
+   <section class="card"><h3 style="display:flex;justify-content:space-between;gap:8px;align-items:baseline">A tua semana <a class="pill" href="#agenda">Agenda</a></h3>
+    <div>${semana.filter(([,es])=>es.length).map(([d,es])=>`<div class="tp-dia">${d===HOJE?"Hoje":d===addDias(HOJE,1)?"Amanhã":dsem(d)+" "+fdata(d)}</div>${es.map(e=>`<div class="tp-ev ev-${e.c}"><time>${e.s||"dia"}</time><span>${esc(e.t)}${e.nota?`<br><span class="small muted">${esc(e.nota)}</span>`:""}</span></div>`).join("")}`).join("")||'<p class="small muted">Nada marcado nos próximos 7 dias.</p>'}</div></section>
+   <aside class="tp-pilar"><span class="lbl">Pilar do dia 🧵</span><p>${pilar}</p><small>Método FIBRA · Mentalidade, Produto, Digital</small></aside>
+  </div>
+ </div>
+ <section><div class="lbl" style="margin-bottom:10px">Os teus setores</div><div class="tp-setores">${SETORES.map(s=>`<div class="tp-setor"><a class="tp-setor-main" href="#${s.id}"><b>${s.n}</b><span class="small muted">${s.d}</span><span class="tp-estado">${esc(estadoSetor(s.id))}</span>${s.falta?`<span class="small" style="color:var(--bad)">${esc(s.falta)}</span>`:""}</a>${s.ext.length?`<div class="tp-ext">${s.ext.map(([n,u])=>`<a href="${u}" target="_blank" rel="noopener">${esc(n)} ↗</a>`).join("")}</div>`:""}</div>`).join("")}</div></section>
+ ${RADAR&&RADAR.length?`<div class="card"><div class="lbl">Radar Têxtil · ${esc(RADAR[0].label)}</div><h3>${esc(RADAR[0].reading?.title)}</h3><p class="small muted">Prioridade: ${esc(RADAR[0].priority?.title)}</p><a href="#radar" class="small">Ver as ${RADAR[0].news.length} notícias</a></div>`:""}`;
+};
+
+V.dinheiro=()=>{
+ const t=totais(mesAtual()), all=totais(null);
+ const pct=Math.min(100,Math.round(t.e/S.meta*100));
+ const rows=todosMovs().sort((a,b)=>b.data.localeCompare(a.data));
+ const al=(DIN&&DIN.alertas)||[];
+ return head("dinheiro","Entradas e saídas, mês a mês. O que não está aqui não existe.")+`
+ <a class="btn" href="financas.html" style="align-self:flex-start;text-decoration:none">Abrir a Central Financeira</a>
+ ${al.length?`<div class="card alert"><div class="lbl">Alertas de dinheiro</div><div class="list">${al.map(a=>`<div class="row"><span class="t">${esc(a.t)}</span><span class="pill ${a.p==="alta"?"bad":"warn"}">${a.p==="alta"?"Urgente":"A ver"}</span><span class="s">${esc(a.s)}</span></div>`).join("")}</div></div>`:""}
+ ${DIN&&DIN.nota?`<div class="card"><div class="lbl">O que encontrei no email</div><p class="small">${esc(DIN.nota)}</p><p class="small muted">Atualizado a ${esc((DIN.atualizado||"").replace("T"," às "))}. Os movimentos marcados «email» vêm dos recibos e faturas da caixa taniasilveira.digital.</p></div>`:""}
+ <div class="kpis">
+  <div class="kpi"><b>${eur(t.e)}</b><span>entradas este mês</span></div>
+  <div class="kpi"><b>${eur(t.s)}</b><span>saídas este mês</span></div>
+  <div class="kpi"><b>${eur(t.l)}</b><span>sobra este mês</span></div>
+  <div class="kpi"><b>${pct}%</b><span>da meta de <input class="inp" id="meta" type="number" min="0" step="50" value="${S.meta}" style="width:90px;display:inline-block;padding:2px 6px"> €</span><div class="bar" style="margin-top:8px"><i style="width:${pct}%"></i></div></div>
+ </div>
+ <form class="add" id="movForm">
+  <label>Data<input type="date" name="data" required value="${HOJE}"></label>
+  <label>Tipo<select name="tipo"><option>Entrada</option><option>Saída</option></select></label>
+  <label>Descrição<input name="desc" required placeholder="Ex: FIBRA Susana · dezembro"></label>
+  <label>Área<select name="cat"><option>Método FIBRA</option><option>Tafetá 360</option><option>Diagnóstico</option><option>Lista de Fornecedores</option><option>Imersão</option><option>Gestão de redes</option><option>Anúncios</option><option>Ferramentas</option><option>Mentoria</option><option>Impostos e Segurança Social</option><option>Outro</option></select></label>
+  <label>Valor (€)<input type="number" name="valor" min="0" step="0.01" required></label>
+  <button class="btn" type="submit">Lançar</button>
+ </form>
+ ${rows.length?`<div class="tablewrap"><table><thead><tr><th>Data</th><th>Descrição</th><th>Área</th><th>Tipo</th><th style="text-align:right">Valor</th><th></th></tr></thead><tbody>${rows.map(m=>`<tr><td>${fdata(m.data)} ${m.data.slice(0,4)}</td><td>${esc(m.desc)}</td><td>${esc(m.cat)}</td><td><span class="pill ${m.tipo==="Entrada"?"ok":"bad"}">${m.tipo}</span></td><td class="num">${eur2(m.valor)}</td><td>${m.auto?'<span class="pill" title="Vem do email">email</span>':`<button class="x" data-del-mov="${m.id}" aria-label="Apagar">×</button>`}</td></tr>`).join("")}</tbody></table></div><p class="small muted">Desde o início: ${eur(all.e)} de entradas, ${eur(all.s)} de saídas.</p>`:`<div class="empty">Ainda não há movimentos. Lança o primeiro pagamento que recebeste em novembro.</div>`}
+ <div class="grid">
+  <div class="card"><div class="lbl">Mapa para os 3.000€</div><p>5 FIBRA a 400€ (2.000€) + 2 Tafetá a 350€ (700€) + 4 listas duplas (268€) ≈ <b>2.968€/mês</b>.</p><p class="muted small">Com os preços atuais, só com FIBRA, precisavas de 10 clientes ao mesmo tempo.</p></div>
+  <div class="card"><div class="lbl">Anúncios da Black Week</div><p>7€/dia durante 10 dias, cerca de 70€. Corta ao 3.º dia se houver menos de 20 cliques ou 40€ gastos sem venda.</p></div>
+ </div>`;
+};
+
+V.clientes=()=>{
+ const ord={"Ativa":0,"A sair":1,"Concluída":2,"Saiu":3,"Antiga":4};
+ const cl=[...S.clientes].sort((a,b)=>(ord[a.estado]??9)-(ord[b.estado]??9));
+ const pc={"Ativa":"ok","A sair":"warn","Saiu":"bad","Concluída":"","Antiga":""};
+ return head("clientes","Quem está, quem sai e o que cada caso prova.")+`
+ <div class="grid">${cl.map(c=>`<div class="card"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><h3>${esc(c.nome)}</h3><span class="pill ${pc[c.estado]||""}">${esc(c.estado)}</span></div>
+  ${c.marca?`<p class="muted small">${esc(c.marca)}</p>`:""}<p><b>${esc(c.servico)}</b></p>
+  ${c.prox?`<p class="small">${esc(c.prox)}</p>`:""}${c.nota?`<p class="small muted">${esc(c.nota)}</p>`:""}
+  <div style="display:flex;gap:8px;align-items:center;margin-top:auto"><select class="inp" data-cli-estado="${c.id}" aria-label="Estado de ${esc(c.nome)}" style="width:auto">${Object.keys(ord).map(o=>`<option${o===c.estado?" selected":""}>${o}</option>`).join("")}</select><button class="x" data-del-cli="${c.id}" aria-label="Apagar ${esc(c.nome)}">×</button></div></div>`).join("")}</div>
+ <form class="add" id="cliForm">
+  <label>Nome<input name="nome" required></label><label>Marca<input name="marca"></label>
+  <label>Serviço<select name="servico"><option>Método FIBRA</option><option>Tafetá 360</option><option>Diagnóstico</option><option>Lista de Fornecedores</option><option>Outro</option></select></label>
+  <label>Próximo passo<input name="prox"></label>
+  <button class="btn" type="submit">Adicionar cliente</button>
+ </form>
+ <div class="card"><div class="lbl">Provas reais para usar no conteúdo</div><ul class="clean">${PROVAS.map(p=>`<li>${esc(p)}</li>`).join("")}</ul></div>`;
+};
+
+V.servicos=()=>head("servicos","A esteira, do mais rápido ao mais fundo. Preço em vigor e o que eu mudava.")+`
+ <div class="tablewrap"><table><thead><tr><th>Oferta</th><th>Formato</th><th>Preço</th><th>O que mudar</th></tr></thead><tbody>${SERVICOS.map(s=>`<tr><td><b>${s[0]}</b></td><td>${s[1]}</td><td class="num">${s[2]}</td><td>${s[3]}</td></tr>`).join("")}</tbody></table></div>
+ <div class="grid">
+  <div class="card"><div class="lbl">Site em dois níveis</div><p>Nível 1, aprendo sozinha: lista de fornecedores. Nível 2, faço contigo: Tafetá 360 e FIBRA.</p></div>
+  <div class="card"><div class="lbl">Método FIBRA</div><p>Mentalidade · Produto · Digital. Quatro fases: diagnóstico, produto, comunicação, consolidação.</p></div>
+  <div class="card alert"><div class="lbl">Por fechar</div><p>FIBRA a 265€/mês ou 1.500€ pelos 6 meses? Os dois andam por aí. Escolhe um antes de janeiro.</p></div>
+ </div>`;
+
+V.copy=()=>head("copy","A semana de conteúdo, com o briefing da Sarah e as regras da voz.")+`
+ <div class="tablewrap"><table><thead><tr><th>Dia</th><th>Formato</th><th>Tema</th><th>CTA</th></tr></thead><tbody>${COPY.map(c=>`<tr><td>${c[1]} ${fdata(c[0])}</td><td>${c[2]}</td><td>${esc(c[3])}</td><td>${esc(c[4])}</td></tr>`).join("")}</tbody></table></div>
+ <p class="small muted">Copies completas na pasta <code>copies/semana-23-29-nov</code> e na app Copy FIBRA.</p>
+ <div class="grid">
+  <div class="card"><div class="lbl">Regras da Sarah</div><ul class="clean"><li>Gancho firme, sem voz morna.</li><li>A resposta vai para o fim.</li><li>Ensinar com passos, não só refletir.</li><li>Reels de 30 a 45 segundos, conversa corrida.</li><li>CTA sempre, e variado. DIAGNÓSTICO no máximo 1 a 2 vezes por semana.</li></ul></div>
+  <div class="card"><div class="lbl">Cortar</div><div class="tags">${["estrutura","jornada","paixão","sonho","autêntico","incrível","você","estoque","planejar","gerúndios","Não é X, é Y em todos os posts"].map(t=>`<span class="tag no">${t}</span>`).join("")}</div></div>
+  <div class="card"><div class="lbl">Ferramentas</div><a href="https://claude.ai/artifact/MdsQ4oaNDMD5kuwoVazL4w" target="_blank" rel="noopener">Copy FIBRA (app)</a><a href="https://claude.ai/artifact/MCskUgmTp6KZMiUAtCYzRJ" target="_blank" rel="noopener">Instagram que vende</a></div>
+ </div>`;
+
+let ideiaF="Todas";
+V.ideias=()=>{
+ const l=S.ideias.filter(i=>ideiaF==="Todas"||i.estado===ideiaF);
+ const pc={"Viva":"ok","Parada":"warn","Descartada":"bad"};
+ return head("ideias","Tudo o que te passa pela cabeça entra aqui. Só avança o que estiver Viva.")+`
+ <form class="add" id="ideiaForm"><label class="wide">Ideia<input name="t" required placeholder="Escreve e carrega em Guardar"></label><label class="wide">Notas<input name="d"></label><button class="btn" type="submit">Guardar</button></form>
+ <div class="filters" role="group" aria-label="Filtrar">${["Todas","Viva","Parada","Descartada"].map(f=>`<button type="button" data-if="${f}" aria-pressed="${f===ideiaF}">${f}</button>`).join("")}</div>
+ <div class="grid">${l.map(i=>`<div class="card"><div style="display:flex;justify-content:space-between;gap:8px"><span class="pill ${pc[i.estado]}">${i.estado}</span><button class="x" data-del-ideia="${i.id}" aria-label="Apagar">×</button></div><h3>${esc(i.t)}</h3>${i.d?`<p class="small muted">${esc(i.d)}</p>`:""}<select class="inp" data-ideia-estado="${i.id}" aria-label="Estado" style="width:auto;margin-top:auto">${["Viva","Parada","Descartada"].map(o=>`<option${o===i.estado?" selected":""}>${o}</option>`).join("")}</select></div>`).join("")||'<div class="empty">Nada aqui.</div>'}</div>`;
+};
+
+let RADAR=null, radarW=0, radarF="Tudo";
+fetch("radar.json").then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{RADAR=Array.isArray(d)?d:[];if(location.hash==="#radar"||location.hash==="#hoje"||!location.hash)render()}).catch(()=>{RADAR=[];if(location.hash==="#radar")render()});
+const rArea=n=>n.a||(n.r==="IA"?"IA":"");
+V.radar=()=>{
+ let semana;
+ if(RADAR===null) semana=`<div class="empty">A carregar o radar…</div>`;
+ else if(!RADAR.length) semana=`<div class="empty">O radar das semanas não carregou. Abre o <a href="https://claude.ai/artifact/FMcpzQckzBaMehdF8tea41" target="_blank" rel="noopener">Radar Têxtil</a>.</div>`;
+ else{
+  const w=RADAR[Math.min(radarW,RADAR.length-1)], F=["Tudo","Têxtil","Moda","Negócios","IA","Portugal","Mundo"];
+  const cnt=f=>f==="Tudo"?w.news.length:w.news.filter(n=>rArea(n)===f||n.r===f).length;
+  const ns=w.news.filter(n=>radarF==="Tudo"||rArea(n)===radarF||n.r===radarF);
+  semana=`
+  <div class="filters" role="group" aria-label="Semana">${RADAR.map((x,i)=>`<button type="button" data-rw="${i}" aria-pressed="${i===radarW}">${esc(x.short)}${i===0?" · atual":""}</button>`).join("")}</div>
+  <div class="card dark"><div class="lbl">A leitura da semana · ${esc(w.label)}</div><p style="font-family:var(--display);font-size:1.6rem;line-height:1.2">${esc(w.reading?.title)}</p><p class="muted">${esc(w.reading?.text)}</p></div>
+  <div class="grid">
+   <div class="card"><div class="lbl">Prioridade n.º 1</div><h3>${esc(w.priority?.title)}</h3><p class="small">${esc(w.priority?.text)}</p></div>
+   <div class="card"><div class="lbl">Movimento da semana</div><h3>${esc(w.move?.title)}</h3><p class="small">${esc(w.move?.text)}</p></div>
+  </div>
+  ${w.aiNote?`<div class="card alert"><p class="small">${esc(w.aiNote)}</p></div>`:""}
+  <div class="filters" role="group" aria-label="Filtrar notícias">${F.map(f=>`<button type="button" data-rf="${f}" aria-pressed="${f===radarF}">${f} <span class="muted">${cnt(f)}</span></button>`).join("")}</div>
+  <div class="grid">${ns.map(n=>`<div class="card"><div style="display:flex;gap:6px;flex-wrap:wrap"><span class="pill acc">${esc(rArea(n)||n.r)}</span>${n.r!=="IA"?`<span class="pill">${esc(n.r)}</span>`:""}</div><h3>${esc(n.t)}</h3><p class="small">${esc(n.d)}</p><p class="small" style="color:var(--acc);font-weight:600">Porque importa: ${esc(n.w)}</p><p class="small muted">${n.u?`<a href="${esc(n.u)}" target="_blank" rel="noopener">${esc(n.s)}</a>`:esc(n.s)}</p></div>`).join("")||'<div class="empty">Sem notícias nesta área esta semana.</div>'}</div>
+  <div class="card"><div class="lbl">Ideias de posts</div><div class="list">${(w.posts||[]).map(p=>`<div class="row"><span class="t">«${esc(p.hook)}»</span><span class="pill">${esc(p.format)}</span><span class="s">${esc(p.angle)}</span></div>`).join("")}</div></div>
+  <div class="card"><div class="lbl">Ideias a implementar</div><div class="list">${(w.ideas||[]).map(i=>`<div class="row"><span class="t">${esc(i.h)}</span>${i.n1?'<span class="pill ok">Prioridade</span>':"<span></span>"}<span class="s">${esc(i.what)} <b>Começa por:</b> ${esc(i.first)}</span></div>`).join("")}</div></div>`;
+ }
+ return head("radar","Têxtil, moda, negócios e IA, esmiuçados todas as semanas. Entra uma semana nova à segunda de manhã.")+semana+`
+ <h3 style="margin-top:8px">As tuas notas do radar</h3>
+ <form class="add" id="radarForm"><label>Data<input type="date" name="data" value="${HOJE}"></label><label>Fonte<input name="fonte" required></label><label>Tipo<select name="tipo"><option>Setor</option><option>IA</option><option>Evento</option><option>Concorrência</option></select></label><label class="wide">Título<input name="t" required></label><label class="wide">Porque importa<input name="d"></label><button class="btn" type="submit">Guardar</button></form>
+ <div class="list card">${[...S.radar].sort((a,b)=>b.data.localeCompare(a.data)).map(r=>`<div class="row"><span class="t">${esc(r.t)}</span><span><span class="pill acc">${esc(r.tipo)}</span> <button class="x" data-del-radar="${r.id}" aria-label="Apagar">×</button></span><span class="s">${fdata(r.data)} · ${esc(r.fonte)}${r.d?" — "+esc(r.d):""}</span></div>`).join("")}</div>
+ <p class="small"><a href="https://claude.ai/artifact/FMcpzQckzBaMehdF8tea41" target="_blank" rel="noopener">Radar Têxtil (plano por dias e onde te destacas)</a> · <a href="https://claude.ai/artifact/VaC8NwGg6H9z35WgSqQtvW" target="_blank" rel="noopener">2027: o que vai ditar o mercado</a></p>`;};
+
+/* ===== Agenda (mês, como no Google) ===== */
+let AG=null, AGD={}, agMes=HOJE.slice(0,7), agDia=HOJE, agRot=true;
+try{agRot=localStorage.getItem("centralFibra.rotina")!=="0"}catch(e){}
+const MESES=["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+const DSEM=["domingo","segunda","terça","quarta","quinta","sexta","sábado"];
+const CATN={cliente:"Cliente",trabalho:"Trabalho",saude:"Saúde",pessoal:"Pessoal",rotina:"Rotina",feriado:"Feriado"};
+const addDias=(d,n)=>{const x=new Date(d+"T12:00");x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)};
+fetch("agenda.json").then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{AG=d;AGD={};for(const e of d.eventos||[])for(let i=0;i<(e.dias||1);i++){const k=addDias(e.d,i);(AGD[k]=AGD[k]||[]).push(e)}render()}).catch(()=>{AG={eventos:[]};render()});
+const evDia=d=>(AGD[d]||[]).slice().sort((a,b)=>(a.s||"00:00").localeCompare(b.s||"00:00"));
+const alertasDe=d=>evDia(d).filter(e=>e.nota&&e.c!=="rotina");
+function agDiaHTML(d){
+ const evs=evDia(d).filter(e=>agRot||e.c!=="rotina"), al=alertasDe(d);
+ const dt=new Date(d+"T12:00");
+ return `<div class="card agday"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline"><h3>${DSEM[dt.getDay()]}, ${dt.getDate()} de ${MESES[dt.getMonth()]}</h3><span class="small muted">${evs.length} ${evs.length===1?"evento":"eventos"}</span></div>
+ ${al.map(e=>`<div class="agalert"><b>Atenção · ${esc(e.t)}</b><br>${esc(e.nota)}</div>`).join("")}
+ <div class="list">${evs.map(e=>`<div class="agrow ev-${e.c}${e.imp?" imp":""}"><span class="when">${e.s?e.s+(e.e?"–"+e.e:""):"Dia todo"}</span><span><span class="t">${esc(e.t)}</span>${e.nota&&!al.includes(e)?`<br><span class="small muted">${esc(e.nota)}</span>`:""}</span><span class="pill">${CATN[e.c]||e.c}</span></div>`).join("")||'<div class="empty">Dia livre.</div>'}</div></div>`;
+}
+V.agenda=()=>{
+ if(AG===null) return head("agenda","A carregar a agenda…")+`<div class="empty">A carregar…</div>`;
+ const [y,m]=agMes.split("-").map(Number), first=new Date(y,m-1,1), off=(first.getDay()+6)%7, dim=new Date(y,m,0).getDate();
+ const cells=Math.ceil((off+dim)/7)*7; let g="";
+ for(let i=0;i<cells;i++){
+  const dn=i-off+1; if(dn<1||dn>dim){g+=`<div class="agc out"></div>`;continue}
+  const d=`${agMes}-${String(dn).padStart(2,"0")}`, all=evDia(d), fer=all.find(e=>e.c==="feriado");
+  const vis=all.filter(e=>e.c!=="feriado"&&(agRot||e.c!=="rotina"));
+  const top=vis.filter(e=>e.imp||e.c!=="rotina").slice(0,3), resto=vis.length-top.length, al=alertasDe(d).length;
+  g+=`<button type="button" class="agc${d===HOJE?" hoje":""}${d===agDia?" sel":""}" data-agd="${d}" aria-label="${dn} de ${MESES[m-1]}, ${vis.length} eventos"><span class="agn">${dn}${al?'<i class="agdot" title="Alerta"></i>':""}</span>${fer?`<span class="agfer">${esc(fer.t)}</span>`:""}${top.map(e=>`<span class="agch ev-${e.c}">${e.s?`<b>${e.s}</b> `:""}${esc(e.t)}</span>`).join("")}${resto>0?`<span class="agmais">+${resto}</span>`:""}</button>`;
+ }
+ const prox=[];for(let i=0;i<8;i++){const d=addDias(HOJE,i);for(const e of alertasDe(d))prox.push([d,e])}
+ return head("agenda","Todos os teus calendários num só: a tua agenda, A Minha Agenda, o taniasilveira.digital e os feriados.")+`
+ ${prox.length?`<div class="card alert"><div class="lbl">Alertas dos próximos 8 dias</div><div class="list">${prox.map(([d,e])=>`<div class="row"><span class="t">${esc(e.t)}</span><span class="when">${dsem(d)} ${fdata(d)}${e.s?" · "+e.s:""}</span><span class="s">${esc(e.nota)}</span></div>`).join("")}</div></div>`:""}
+ <div class="aghead"><div style="display:flex;gap:6px;align-items:center"><button type="button" class="btn ghost sm" data-agm="-1" aria-label="Mês anterior">‹</button><h3 style="min-width:9.5em;text-align:center;text-transform:capitalize">${MESES[m-1]} ${y}</h3><button type="button" class="btn ghost sm" data-agm="1" aria-label="Mês seguinte">›</button><button type="button" class="btn sm" data-agm="0">Hoje</button></div>
+ <label class="small" style="display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="agRot"${agRot?" checked":""} style="accent-color:var(--acc)"> Mostrar a rotina (A Minha Agenda)</label></div>
+ <div class="agleg">${["cliente","trabalho","saude","pessoal","rotina"].map(c=>`<span class="ev-${c}"><i></i>${CATN[c]}</span>`).join("")}</div>
+ <div class="agwrap"><div class="aggrid">${["seg","ter","qua","qui","sex","sáb","dom"].map(w=>`<div class="agw">${w}</div>`).join("")}${g}</div></div>
+ ${agDiaHTML(agDia)}
+ <p class="small muted">Atualizado a ${esc((AG.atualizado||"").replace("T"," às "))}. Fonte: ${esc(AG.fonte||"")}. Atualiza todos os dias de manhã.</p>`;
+};
+
+/* ===== Mail ===== */
+let MAIL=null, mailF="Tudo";
+fetch("mail.json").then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{MAIL=d;render()}).catch(()=>{MAIL={pendentes:[],radar:[]};render()});
+if(!S.mailFeito)S.mailFeito={};
+const mailPend=()=>(MAIL?.pendentes||[]).filter(p=>!S.mailFeito[p.t]);
+V.mail=()=>{
+ if(MAIL===null) return head("mail","A carregar o mail…")+`<div class="empty">A carregar…</div>`;
+ const pc={alta:"bad",media:"warn",baixa:""}, pn={alta:"Urgente",media:"Esta semana",baixa:"Quando der"};
+ return head("mail","O que está pendente na caixa taniasilveira.digital. Atualiza todos os dias de manhã. As newsletters estão no Radar do email.")+`
+ ${MAIL.resumo?`<div class="card dark"><div class="lbl">Hoje no mail</div><p style="font-family:var(--display);font-size:1.4rem;line-height:1.25">${esc(MAIL.resumo)}</p></div>`:""}
+ <div class="card"><div class="lbl">Pendentes · ${mailPend().length} por tratar</div>${(MAIL.pendentes||[]).map(p=>{const f=!!S.mailFeito[p.t];return `<label class="check${f?" done":""}"><input type="checkbox" data-mp="${esc(p.t)}"${f?" checked":""}><span style="flex:1"><span class="t">${esc(p.t)}</span> <span class="pill ${pc[p.p]}">${pn[p.p]}</span>${p.q&&p.q!=="—"?` <span class="when">${esc(p.q)}</span>`:""}<br><span class="small muted">${esc(p.s)}</span></span></label>`}).join("")||'<div class="empty">Nada pendente.</div>'}</div>
+ <div class="card"><div class="lbl">As tuas tarefas de email</div>${S.mail.map(m=>`<label class="check${m.feito?" done":""}"><input type="checkbox" data-mail="${m.id}"${m.feito?" checked":""}><span><span class="t">${esc(m.t)}</span>${m.s?`<br><span class="small muted">${esc(m.s)}</span>`:""}</span></label>`).join("")}
+ <form class="add" id="mailForm" style="margin-top:8px"><label class="wide">Nova tarefa<input name="t" required></label><button class="btn" type="submit">Adicionar</button></form></div>
+ <p class="small muted">${esc(MAIL.arrumado||"")} Atualizado a ${esc((MAIL.atualizado||"").replace("T"," às "))}.</p>`;
+};
+
+V.radaremail=()=>{
+ if(MAIL===null) return head("radaremail","A carregar…")+`<div class="empty">A carregar…</div>`;
+ const F=["Tudo","Têxtil","Moda","Negócios","IA"], rs=(MAIL.radar||[]).filter(r=>mailF==="Tudo"||r.a===mailF);
+ const P=MAIL.pinterest||{};
+ return head("radaremail","As newsletters que chegam ao teu email (Portugal Têxtil, T Jornal/ATP, FashionNetwork, WGSN, MODAPORTUGAL) e o Pinterest, lidos por ti. Só o que interessa. Atualiza todos os dias de manhã.")+`
+ <div class="filters" role="group" aria-label="Filtrar">${F.map(f=>`<button type="button" data-mf="${f}" aria-pressed="${f===mailF}">${f} <span class="muted">${f==="Tudo"?(MAIL.radar||[]).length:(MAIL.radar||[]).filter(r=>r.a===f).length}</span></button>`).join("")}</div>
+ <div class="grid">${rs.map(r=>`<div class="card"><div style="display:flex;gap:6px;flex-wrap:wrap"><span class="pill acc">${esc(r.a)}</span><span class="pill">${fdata(r.d)}</span></div><h3>${esc(r.t)}</h3><p class="small">${esc(r.x)}</p><p class="small" style="color:var(--acc);font-weight:600">Para ti: ${esc(r.w)}</p><p class="small muted">${esc(r.f)}</p></div>`).join("")||'<div class="empty">Sem notícias nesta área.</div>'}</div>
+ ${(MAIL.eventos||[]).length?`<div class="card"><div class="lbl">Eventos do setor</div><div class="list">${MAIL.eventos.map(e=>`<div class="row"><span class="t">${esc(e.t)}</span><span class="when">${fdata(e.d)} ${e.d.slice(0,4)}</span><span class="s">${esc(e.l)}</span></div>`).join("")}</div></div>`:""}
+ ${P.leitura?`<div class="card"><div class="lbl">Pinterest · o que serve à tua marca</div><p class="small">${esc(P.leitura)}</p><div class="list">${(P.ideias||[]).map(i=>`<div class="row"><span class="t">${esc(i.t)}</span><span></span><span class="s">${esc(i.d)}</span></div>`).join("")}</div></div>`:""}
+ <p class="small muted">${esc(MAIL.arrumado||"")} Atualizado a ${esc((MAIL.atualizado||"").replace("T"," às "))}.</p>`;
+};
+
+const lk=(n,u,d)=>`<div class="row"><a class="t" href="${u}" target="_blank" rel="noopener">${esc(n)} ↗</a><span></span>${d?`<span class="s">${esc(d)}</span>`:""}</div>`;
+V.analise=()=>head("analise","Onde o negócio está, o que está mal e para onde vai. As análises completas estão nas páginas ligadas em baixo.")+`
+ <div class="card alert"><div class="lbl">O que está mal</div><ul class="clean">
+  <li><b>Faturação sem registo desde março</b> (700 €/mês). Sem números atuais, nenhuma análise fecha. Lança-os na Central Financeira.</li>
+  <li><b>De 5 para 2 clientes FIBRA</b> entre setembro e novembro. As que saíram tinham pouca operação e pouco dinheiro.</li>
+  <li><b>Preços baixos para a meta.</b> Com FIBRA a 265 €/mês precisavas de 10 clientes em simultâneo para os 3.000 €.</li>
+  <li><b>Dispersão.</b> 12 frentes abertas num ano, nenhuma com tempo para provar se funciona.</li>
+ </ul></div>
+ <div class="kpis">
+  <div class="kpi"><b>2</b><span>clientes FIBRA ativas</span></div>
+  <div class="kpi"><b>700 €</b><span>último mês registado (março)</span></div>
+  <div class="kpi"><b>3.000 €</b><span>meta mensal</span></div>
+  <div class="kpi"><b>38 mil</b><span>visualizações no Instagram em março, com menos de 2 mil seguidores</span></div>
+ </div>
+ <div class="card dark"><div class="lbl">A leitura</div><p style="font-family:var(--display);font-size:1.4rem;line-height:1.25">O problema não é o têxtil. É o cliente que escolheste servir.</p><p class="muted small">Em janeiro, quando a gestão de redes sair, testa 90 dias de IA e planeamento para marcas que já vendem e fábricas com marca própria. Se não pagar, decides com dados, não com cansaço.</p></div>
+ <div class="grid">
+  <div class="card"><div class="lbl">Análises completas</div><div class="list">
+   ${lk("Raio-X do negócio","https://claude.ai/artifact/WkkcEyShWZcH4qay1vCe3r","18/11")}
+   ${lk("Compilação do negócio","https://claude.ai/artifact/UtMrxL9VL1RNgeC3CZDHnn","Março a novembro, com a leitura sem algodão")}
+   ${lk("Resumo do negócio (jun–nov)","https://claude.ai/artifact/BcFxnMF27AmjYgo2zN8BS3","")}
+   ${lk("Dossiê taniasilveira.pt","https://claude.ai/artifact/RAUQYebeFoMpbF1pzUNtLC","")}
+   ${lk("Viragem do Negócio","https://claude.ai/artifact/8GPEAA5rkKNUze4j3C9ctH","")}
+  </div></div>
+  <div class="card"><div class="lbl">Para onde vais</div><div class="list">
+   ${lk("Tânia Silveira 2027","https://claude.ai/artifact/RyyFyBv8cyWcLB4zv9cHYQ","A linha de 2027")}
+   ${lk("2027: o que vai ditar o mercado","https://claude.ai/artifact/VaC8NwGg6H9z35WgSqQtvW","")}
+   ${lk("Diagnóstico de Produção","https://claude.ai/artifact/LtaH6aAzagoNq3hYHqsEb3","")}
+   ${lk("Raio-X Fibra · modelo","https://claude.ai/artifact/SLgUjGWsEdeuo4NrQUCoRU","")}
+  </div></div>
+ </div>`;
+V.site=()=>head("site","O teu site, o portal das alunas e as páginas de venda, num sítio.")+`
+ <div class="card alert"><div class="lbl">O que está mal</div><ul class="clean">
+  <li><b>O rascunho novo do site (20/11) ainda não está publicado.</b> O taniasilveira.pt continua com a versão antiga.</li>
+  <li><b>Site em dois níveis por montar:</b> «aprendo sozinha» (lista de fornecedores) e «faço contigo» (Tafetá 360 e FIBRA).</li>
+  <li><b>Palavra proibida:</b> a frase de posicionamento antiga usa «estrutura». Confirma que não ficou no site.</li>
+ </ul></div>
+ <div class="grid">
+  <div class="card"><div class="lbl">Site</div><div class="list">
+   ${lk("taniasilveira.pt","https://taniasilveira.pt","No ar")}
+   ${lk("Site novo (rascunho)","https://claude.ai/artifact/NnTRBNp7g2TzuTT3dWtHiq","Estratégia para marcas de moda e negócios têxteis · 20/11")}
+   ${lk("4 conceitos de site","https://claude.ai/artifact/ToPMK6jgh97epZcU2uehPh","")}
+  </div></div>
+  <div class="card"><div class="lbl">Portal e apps</div><div class="list">
+   ${lk("Portal FIBRA (área de alunas)","https://imersao-fibra.netlify.app/","Netlify · login das alunas")}
+   ${lk("App Método FIBRA","https://metodofibra.base44.app","")}
+  </div></div>
+  <div class="card"><div class="lbl">Páginas de venda</div><div class="list">
+   ${lk("Lista de Fornecedores · Black Week","https://claude.ai/artifact/914C4UTNyrXc8Fc8fgsZxu","37 € com BLACK26")}
+   ${lk("IA com Fibra · Landing Page","https://claude.ai/artifact/Qez3BsowieiNwiZZZvPnyG","")}
+   ${lk("Imersão Fibra IA · Black Friday","https://claude.ai/artifact/TzeWSAaFovCsGBXZhct1Ys","")}
+  </div></div>
+ </div>
+ <div class="card"><div class="lbl">Central FIBRA no cPanel</div><p class="small">Para pôr esta Central no teu alojamento: sobe a pasta <code>central-fibra</code> (index.html e os ficheiros .json) para o cPanel, numa pasta protegida por palavra-passe (Privacidade de diretório). Os .json têm de ser atualizados a cada dia para a agenda e o mail estarem frescos.</p></div>`;
+
+V.marca=()=>head("marca","A identidade em que tudo assenta. Esta página usa-a.")+`
+ <div class="card dark"><div class="lbl">Posicionamento</div><p style="font-family:var(--display);font-size:1.7rem;line-height:1.2">Uma marca de moda que sabe onde ganha dinheiro.</p><p class="muted">Estrategista de produto para marcas de moda e negócios têxteis. Nascida no chão.</p></div>
+ <div class="sw">${[["#5C3B2E","Castanho escuro","Peso e contraste"],["#B26D47","Terracota","Cor central"],["#BA8166","Terracota claro","Camada leve"],["#BFA795","Bege","Suporte"],["#FFFFFF","Branco","Respiro"]].map(c=>`<div><i style="background:${c[0]}"></i><span><b>${c[1]}</b><br>${c[0]} · ${c[2]}</span></div>`).join("")}</div>
+ <div class="grid">
+  <div class="card"><div class="lbl">Letra</div><p style="font-family:var(--display);font-size:2rem;line-height:1">Aparajita</p><p class="small muted">Títulos. Aqui no ecrã: Cormorant Garamond.</p><p style="font-weight:600">Raleway</p><p class="small muted">Texto corrido.</p><p class="sig">Angella White</p><p class="small muted">Só em pormenores. Aqui: Dr Sugiyama.</p></div>
+  <div class="card"><div class="lbl">Pilares</div><ul class="clean"><li>Produto antes da comunicação</li><li>Clareza antes da execução</li><li>Decisão antes da ação</li><li>Autoridade com verdade</li></ul><div class="lbl" style="margin-top:6px">Valores</div><p>Disciplina · Inteligência · Respeito · Excelência · Amor</p></div>
+  <div class="card"><div class="lbl">Assinaturas tuas</div><ul class="clean"><li>Pega no café e vamos conversar.</li><li>Vamos costurar a tua marca?</li><li>Bora fazer acontecer.</li><li>Emoji da marca: 🧵</li></ul></div>
+  <div class="card"><div class="lbl">Proibido</div><div class="tags">${["estrutura","facilidade","rápido e barato","atalhos","promessas irreais","negociozinho","tadinha","✨ 🙌 💫 🔥"].map(t=>`<span class="tag no">${t}</span>`).join("")}</div></div>
+  <div class="card"><div class="lbl">Bio do Instagram</div><p class="small" style="white-space:pre-line">Tânia Silveira | Estrategista de Marcas Moda & Negócios Têxteis
+aqui a tua marca terá margem e estratégia para crescer com previsibilidade
++ de 10 anos na indústria têxtil
+Método FIBRA ↓
+www.taniasilveira.pt</p><p class="small muted">Tirei «estrutura» da bio, que estava lá e é palavra proibida.</p></div>
+  <div class="card alert"><div class="lbl">Por fechar</div><p>Tipografia: Aparajita + Raleway ou Cormorant + Open Sans. Andam as duas em uso. Esta Central segue Aparajita + Raleway.</p></div>
+ </div>`;
+
+V.historia=()=>head("historia","Da fábrica a hoje. A tua prova de autoridade.")+`
+ <div class="tl">${HIST.map((h,i)=>`<div${i===HIST.length-1?' class="now"':""}><b>${h[0]}</b><p>${h[1]}</p></div>`).join("")}</div>
+ <div class="card"><div class="lbl">Raiz</div><p>Nasceste em Chaves, cresceste em Carrazedo de Montenegro, vives em Guimarães. Transmontana. O melhor dia em 7 anos de têxtil foi no controlo do planeamento da produção.</p></div>`;
+
+V.ferramentas=()=>{
+ const gs=[...new Set(LINKS.map(l=>l[0]))];
+ return head("ferramentas","Tudo o que já construíste, num sítio. As versões repetidas ficaram de fora.")+`<div class="grid">${gs.map(g=>`<div class="card"><div class="lbl">${g}</div><div class="list">${LINKS.filter(l=>l[0]===g).map(l=>`<div class="row"><a href="${l[2]}" target="_blank" rel="noopener">${esc(l[1])}</a></div>`).join("")}</div></div>`).join("")}</div>`;
+};
+
+V.responsaveis=()=>head("responsaveis","Cada área tem um responsável. Por agora estão a definir: é o próximo passo.")+`
+ <div class="tablewrap"><table><thead><tr><th>Área</th><th>O que faz</th><th>Responsável</th></tr></thead><tbody>${Object.keys(LABEL).filter(a=>a!=="responsaveis").map(a=>`<tr><td><a href="#${a}"><b>${LABEL[a]}</b></a></td><td>${FUNCAO[a]}</td><td><input class="inp" data-resp="${a}" value="${esc(S.resp[a]||"")}" placeholder="a definir" aria-label="Responsável por ${LABEL[a]}" style="min-width:150px"></td></tr>`).join("")}</tbody></table></div>`;
+
+/* ===== Navegação ===== */
+let NAVOPEN={};try{NAVOPEN=JSON.parse(localStorage.getItem("centralFibra.nav"))||{}}catch(e){}
+let NAVCUR="hoje";
+function nav(cur){
+ NAVCUR=cur;
+ const n={clientes:S.clientes.filter(c=>c.estado==="Ativa").length,mail:(MAIL?mailPend().length:S.mail.filter(m=>!m.feito).length),ideias:S.ideias.filter(i=>i.estado==="Viva").length};
+ const link=([id,l])=>`<a href="#${id}"${id===cur?' aria-current="page"':""}>${l}${n[id]?`<span class="n">${n[id]}</span>`:""}</a>`;
+ $("#nav").innerHTML=AREAS.map((a,i)=>{
+  if(a.plain) return `<div>${i===0?`<span class="lbl">${a.g}</span>`:""}${a.items.map(link).join("")}</div>`;
+  const temCur=a.items.some(([id])=>id===cur), aberto=temCur||NAVOPEN[a.g];
+  const tot=a.items.reduce((s,[id])=>s+(n[id]||0),0);
+  return `<div class="grp"><button type="button" class="grp-h" data-grp="${a.g}" aria-expanded="${aberto}">${a.g}${!aberto&&tot?`<span class="n">${tot}</span>`:""}<span class="seta" aria-hidden="true">›</span></button><div class="grp-b"${aberto?"":" hidden"}>${a.items.map(link).join("")}</div></div>`;
+ }).join("");
+}
+function render(){
+ let r=location.hash.slice(1); if(!V[r])r="hoje";
+ nav(r); $("#view").innerHTML=V[r](); document.body.classList.remove("navopen");
+}
+window.addEventListener("hashchange",()=>{render();window.scrollTo(0,0)});
+$("#menuBtn").onclick=()=>document.body.classList.add("navopen");
+$("#scrim").onclick=()=>document.body.classList.remove("navopen");
+
+/* ===== Ações ===== */
+const fd=f=>Object.fromEntries(new FormData(f));
+document.addEventListener("submit",e=>{
+ const f=e.target; e.preventDefault(); const d=fd(f);
+ if(f.id==="movForm"){S.movs.push({id:uid(),...d,valor:+d.valor});toast("Lançado.")}
+ else if(f.id==="cliForm"){S.clientes.unshift({id:uid(),estado:"Ativa",valor:"",nota:"",...d});toast("Cliente adicionada.")}
+ else if(f.id==="ideiaForm"){S.ideias.unshift({id:uid(),estado:"Viva",...d});toast("Ideia guardada.")}
+ else if(f.id==="radarForm"){S.radar.unshift({id:uid(),...d});toast("Guardado no radar.")}
+ else if(f.id==="t3Form"){S.top3=(S.top3||[]).concat({id:uid(),t:d.t,feito:false}).slice(0,3);toast("Guardado.")}
+ else if(f.id==="mailForm"){S.mail.unshift({id:uid(),feito:false,s:"",...d});toast("Adicionado.")}
+ else return;
+ save(); render();
+});
+document.addEventListener("click",e=>{
+ const b=e.target.closest("button"); if(!b)return;
+ const ds=b.dataset; let k;
+ if(ds.delMov){S.movs=S.movs.filter(x=>x.id!==ds.delMov)}
+ else if(ds.delCli){S.clientes=S.clientes.filter(x=>x.id!==ds.delCli)}
+ else if(ds.delIdeia){S.ideias=S.ideias.filter(x=>x.id!==ds.delIdeia)}
+ else if(ds.delT3){S.top3=(S.top3||[]).filter(x=>x.id!==ds.delT3)}
+ else if(ds.delRadar){S.radar=S.radar.filter(x=>x.id!==ds.delRadar)}
+ else if(ds.if){ideiaF=ds.if;render();return}
+ else if(ds.rw){radarW=+ds.rw;radarF="Tudo";render();return}
+ else if(ds.rf){radarF=ds.rf;render();return}
+ else if(ds.agd){agDia=ds.agd;render();const el=document.querySelector(".agday");if(el)el.scrollIntoView({behavior:"smooth",block:"nearest"});return}
+ else if(ds.agm!==undefined){const k=+ds.agm;if(k===0){agMes=HOJE.slice(0,7);agDia=HOJE}else{const [y,m]=agMes.split("-").map(Number);const d=new Date(y,m-1+k,1);agMes=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");agDia=agMes+"-01"}render();return}
+ else if(ds.mf){mailF=ds.mf;render();return}
+ else if(ds.grp){const aberto=b.getAttribute("aria-expanded")==="true";NAVOPEN[ds.grp]=!aberto;try{localStorage.setItem("centralFibra.nav",JSON.stringify(NAVOPEN))}catch(e){}if(aberto&&AREAS.find(a=>a.g===ds.grp).items.some(([id])=>id===NAVCUR)){b.nextElementSibling.hidden=true;b.setAttribute("aria-expanded","false")}else nav(NAVCUR);return}
+ else return;
+ save(); render();
+});
+document.addEventListener("change",e=>{
+ const t=e.target, ds=t.dataset;
+ if(ds.cliEstado){S.clientes.find(x=>x.id===ds.cliEstado).estado=t.value}
+ else if(ds.ideiaEstado){S.ideias.find(x=>x.id===ds.ideiaEstado).estado=t.value}
+ else if(ds.mail){S.mail.find(x=>x.id===ds.mail).feito=t.checked}
+ else if(ds.t3){const x=(S.top3||[]).find(y=>y.id===ds.t3);if(x)x.feito=t.checked}
+ else if(ds.mp!==undefined){if(t.checked)S.mailFeito[ds.mp]=true;else delete S.mailFeito[ds.mp]}
+ else if(t.id==="agRot"){agRot=t.checked;try{localStorage.setItem("centralFibra.rotina",agRot?"1":"0")}catch(e){}render();return}
+ else if(ds.resp!==undefined){S.resp[ds.resp]=t.value.trim();save();toast("Responsável guardado.");return}
+ else if(t.id==="meta"){S.meta=+t.value||0}
+ else return;
+ save(); render();
+});
+$("#expBtn").onclick=async()=>{
+ const txt=JSON.stringify(S);
+ try{await navigator.clipboard.writeText(txt);toast("Dados copiados. Guarda-os num ficheiro.")}
+ catch(e){$("#view").insertAdjacentHTML("afterbegin",`<textarea class="inp" rows="4" readonly>${esc(txt)}</textarea>`);toast("Seleciona o texto e copia.")}
+};
+$("#impBtn").onclick=()=>{
+ $("#view").insertAdjacentHTML("afterbegin",`<form class="add" id="impForm"><label class="wide">Cola aqui os dados copiados<textarea name="j" rows="4" required></textarea></label><button class="btn" type="submit">Repor dados</button></form>`);
+ $("#impForm").addEventListener("submit",ev=>{ev.preventDefault();ev.stopPropagation();try{const o=JSON.parse(fd(ev.target).j);S={...JSON.parse(JSON.stringify(DEF)),...o};save();render();toast("Dados repostos.")}catch(err){toast("Esse texto não são dados da Central.")}},{capture:true});
+};
+render();
+</script>

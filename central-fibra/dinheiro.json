@@ -1,0 +1,15 @@
+{
+"atualizado":"2026-11-20T12:40",
+"nota":"Na caixa taniasilveira.digital só há recibos de despesas de novembro. Não há nenhum email de venda (SalesPark, Hotmart, transferências) nem faturas tuas emitidas. As entradas tens de as lançar tu, ou dizer-me onde estão (banco, programa de faturação, a contabilidade que mencionaste).",
+"alertas":[
+ {"p":"alta","t":"Fatura duplicada nas Finanças, por anular","s":"A contabilista da Sílvia (Inês Martins) confirmou a 12/11 que a tua fatura não está anulada nem creditada. As Finanças contactaram-te a 13/11. Respondeste à Sílvia a pedir urgência e não há resposta. Fala com o teu contabilista e emite a nota de crédito."},
+ {"p":"alta","t":"Pagamento dos anúncios recusado","s":"A 19/11 o Meta só conseguiu cobrar em partes e depois recusou. Os anúncios param até atualizares o cartão."},
+ {"p":"media","t":"Anúncios já gastaram 28,11 € esta semana","s":"17 a 19/11, sem nenhuma venda registada no email. Antes da Black Week, decide o teto."}
+],
+"movimentos":[
+ {"id":"e1","data":"2026-11-11","tipo":"Saída","desc":"Laboratório da IA (Progivers) · fatura-recibo D-11760","cat":"Ferramentas","valor":7.00,"fonte":"Moloni"},
+ {"id":"e2","data":"2026-11-17","tipo":"Saída","desc":"Anúncios Meta","cat":"Anúncios","valor":10.26,"fonte":"Meta"},
+ {"id":"e3","data":"2026-11-18","tipo":"Saída","desc":"Anúncios Meta","cat":"Anúncios","valor":10.00,"fonte":"Meta"},
+ {"id":"e4","data":"2026-11-19","tipo":"Saída","desc":"Anúncios Meta (3 cobranças parciais)","cat":"Anúncios","valor":7.85,"fonte":"Meta"}
+]
+}
