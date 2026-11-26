@@ -112,6 +112,21 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:now
 .ano td.mes-off{color:var(--faint)}
 .cli-grid td,.cli-grid th{font-size:.82rem;padding:8px 9px}
 .pill.mini{cursor:pointer;border:0;font:inherit;font-size:.72rem;font-weight:700}
+.ficha{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.ficha>summary{list-style:none;cursor:pointer;padding:16px 20px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 14px;align-items:center}
+.ficha>summary::-webkit-details-marker{display:none}
+.ficha>summary h3{font-size:1.45rem}
+.ficha .sub{grid-column:1/-1;font-size:.85rem;color:var(--muted)}
+.ficha .nums{grid-column:1/-1;display:flex;gap:18px;flex-wrap:wrap;font-size:.85rem}
+.ficha .nums b{font-variant-numeric:lining-nums tabular-nums}
+.ficha[open]>summary{border-bottom:1px solid var(--line)}
+.ficha .corpo{padding:16px 20px;display:flex;flex-direction:column;gap:14px}
+.dl{display:grid;grid-template-columns:minmax(110px,160px) minmax(0,1fr);gap:6px 14px;font-size:.9rem}
+.dl dt{color:var(--muted);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding-top:3px}
+.dl dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.ficha form.add{border:0;padding:0}
+.ficha .ref{font-size:.75rem;color:var(--faint);overflow-wrap:anywhere}
+@media (max-width:600px){.dl{grid-template-columns:1fr}.dl dt{padding-top:6px}}
 .sync{font-size:.75rem;color:var(--side-muted)}
 </style>
 <header class="top">
@@ -136,7 +151,7 @@ const CAT_OUT=["Anúncios","Ferramentas","Formação","Contabilidade","Impostos 
 const CFG_DEF={meta:3000,reserva:25,mapa:[{n:"Método FIBRA",p:265,q:2},{n:"Tafetá 360",p:250,q:0},{n:"Lista de Fornecedores",p:49,q:0},{n:"Imersão",p:37,q:0}]};
 
 /* ===== Estado (vem da base de dados) ===== */
-let ALL=[], MOVS=[], DBMOVS=[], BANCO=[], AJ={}, CONTA="Negócio", REC=[], FIX=[], CFG=JSON.parse(JSON.stringify(CFG_DEF));
+let NOVA=null; let ALL=[], MOVS=[], DBMOVS=[], BANCO=[], AJ={}, CONTA="Tudo", CLI=[], aEditar=null, REC=[], FIX=[], CFG=JSON.parse(JSON.stringify(CFG_DEF));
 let db=null, pronto=false, podeEscrever=true;
 const sync=t=>{const e=document.getElementById("sync");if(e)e.textContent=t};
 
@@ -288,25 +303,72 @@ function porCat(pref,tipo){
 }
 
 V.clientes=()=>{
- const ano=MES.slice(0,4), C={};
- for(const m of ALL){const c=clienteDe(m);if(!c||m.tipo!=="Entrada"||!String(m.data).startsWith(ano))continue;
-  const o=C[c]=C[c]||{n:c,t:0,k:0,cat:m.cat,pr:m.data,ul:m.data,mes:{}};o.t+=+m.valor||0;o.k++;if(m.data<o.pr)o.pr=m.data;if(m.data>o.ul)o.ul=m.data;const mm=+String(m.data).slice(5,7);o.mes[mm]=(o.mes[mm]||0)+(+m.valor||0)}
- const L=Object.values(C).sort((a,b)=>b.t-a.t), tt=L.reduce((a,x)=>a+x.t,0);
- const REF=ALL.reduce((a,m)=>String(m.data)>a?String(m.data):a,"")||hoje(); const dias=d=>Math.round((new Date(REF)-new Date(d))/864e5);
- const estado=o=>dias(o.ul)<=40?`<span class="pill ok">A pagar</span>`:`<span class="pill warn">Último há ${dias(o.ul)} dias</span>`;
- if(!L.length)return `<div class="empty">Ainda não há pagamentos de clientes em ${ano}.</div>`;
- const top=L[0];
+ const ano=MES.slice(0,4), pag={};
+ for(const m of ALL){const c=clienteDe(m);if(!c||m.tipo!=="Entrada")continue;(pag[c]=pag[c]||[]).push(m)}
+ for(const k in pag)pag[k].sort((a,b)=>String(b.data).localeCompare(String(a.data)));
+ const REF=ALL.reduce((a,m)=>String(m.data)>a?String(m.data):a,"")||hoje();
+ const dias=d=>Math.round((new Date(REF)-new Date(d))/864e5);
+ const fichas=[...CLI].sort((a,b)=>(+a.ordem||99)-(+b.ordem||99));
+ const chaves=new Set(fichas.map(c=>c.chave).filter(Boolean));
+ const soltos=Object.keys(pag).filter(k=>!chaves.has(k));
+ const totAno=k=>(pag[k]||[]).filter(m=>String(m.data).startsWith(ano)).reduce((a,m)=>a+(+m.valor||0),0);
+ const tt=[...chaves,...soltos].reduce((a,k)=>a+totAno(k),0)||1;
+ const EST={"Ativa":"ok","A sair":"warn","Saiu":"bad","Concluída":"","Antiga":""};
+ const form=(c)=>`<form class="add" id="cliForm" data-id="${esc(c.id||"")}">
+   <label class="wide">Nome<input id="cN" name="nome" required value="${esc(c.nome||"")}"></label>
+   <label class="wide">Marca<input id="cM" name="marca" value="${esc(c.marca||"")}"></label>
+   <label class="wide">Serviço<input id="cS" name="servico" value="${esc(c.servico||"")}"></label>
+   <label>Estado<select id="cE" name="estado">${Object.keys(EST).map(e=>`<option${c.estado===e?" selected":""}>${e}</option>`).join("")}</select></label>
+   <label>Valor combinado (€)<input id="cV" name="valor" value="${esc(c.valor||"")}" placeholder="Ex: 265 €/mês"></label>
+   <label>Início<input id="cI" type="date" name="inicio" value="${esc(c.inicio||"")}"></label>
+   <label>Fim<input id="cF" type="date" name="fim" value="${esc(c.fim||"")}"></label>
+   <label class="wide">NIF / faturação<input id="cNif" name="nif" value="${esc(c.nif||"")}"></label>
+   <label class="wide">Contacto (email, telefone)<input id="cC" name="contacto" value="${esc(c.contacto||"")}"></label>
+   <label class="wide">Próximo passo<input id="cP" name="prox" value="${esc(c.prox||"")}"></label>
+   <label class="wide">Notas<input id="cNo" name="nota" value="${esc(c.nota||"")}"></label>
+   <label class="wide">Documentos (um por linha: nome | link)<textarea id="cD" name="docs" rows="3" style="background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:8px 10px;font:inherit;text-transform:none;letter-spacing:0">${esc((c.docs||[]).map(d=>d.n+" | "+d.u).join("\n"))}</textarea></label>
+   <label class="wide">Nome no banco (para ligar os pagamentos)<input id="cK" name="chave" value="${esc(c.chave||"")}" placeholder="${esc(soltos[0]||"Ex: Susana Nicau")}"></label>
+   <button class="btn" type="submit">Guardar ficha</button><button class="btn ghost" type="button" data-cancelar>Cancelar</button>
+  </form>`;
+ const card=(c,solto)=>{
+  const k=solto?c:c.chave, ps=pag[k]||[], t=ps.reduce((a,m)=>a+(+m.valor||0),0), ta=totAno(k), ult=ps[0];
+  const f=solto?{nome:c}:c;
+  if(!solto&&aEditar===c.id)return `<div class="card"><div class="lbl">Editar ficha</div>${form(c)}</div>`;
+  return `<details class="ficha"${aEditar==="aberto:"+(c.id||k)?" open":""}>
+   <summary><h3>${esc(f.nome)}</h3>${solto?`<span class="pill warn">Sem ficha</span>`:`<span class="pill ${EST[f.estado]||""}">${esc(f.estado||"—")}</span>`}
+    <span class="sub">${esc([f.marca,f.servico].filter(Boolean).join(" · ")||"—")}</span>
+    <span class="nums"><span><b>${eur2(ta)}</b> em ${ano}</span><span><b>${ps.length}</b> pagamentos</span>${ult?`<span>último a <b>${fdata(ult.data)} ${String(ult.data).slice(0,4)}</b>${dias(ult.data)>40?` <span class="pill warn">há ${dias(ult.data)} dias</span>`:""}</span>`:`<span class="muted">sem pagamentos no banco</span>`}${ta?`<span><b>${Math.round(ta/tt*100)}%</b> do que os clientes pagaram</span>`:""}</span>
+   </summary>
+   <div class="corpo">
+    ${solto?`<p class="small">Este nome aparece nos pagamentos do banco mas não tem ficha.</p><div><button class="btn sm" data-novaficha="${esc(c)}">Criar ficha</button></div>`:`
+    <dl class="dl">
+     <dt>Serviço</dt><dd>${esc(f.servico||"—")}</dd>
+     <dt>Valor combinado</dt><dd>${esc(f.valor||"—")}</dd>
+     <dt>Início · fim</dt><dd>${f.inicio?fdata(f.inicio)+" "+f.inicio.slice(0,4):"—"} · ${f.fim?fdata(f.fim)+" "+f.fim.slice(0,4):"—"}</dd>
+     <dt>NIF / faturação</dt><dd>${esc(f.nif||"—")}</dd>
+     <dt>Contacto</dt><dd>${esc(f.contacto||"—")}</dd>
+     <dt>Próximo passo</dt><dd>${esc(f.prox||"—")}</dd>
+     <dt>Notas</dt><dd>${esc(f.nota||"—")}</dd>
+     <dt>Documentos</dt><dd>${(f.docs||[]).length?(f.docs||[]).map(d=>/^https:\/\//.test(d.u)?`<a href="${esc(d.u)}" target="_blank" rel="noopener">${esc(d.n)} ↗</a>`:esc(d.n+" "+d.u)).join("<br>"):"—"}</dd>
+     <dt>Nome no banco</dt><dd>${esc(f.chave||"—")}</dd>
+    </dl>
+    <div><button class="btn ghost sm" data-editar="${esc(c.id)}">Editar ficha</button></div>`}
+    ${ps.length?`<div class="tablewrap"><table><thead><tr><th>Data</th><th>Como aparece no banco</th><th>Área</th><th class="num">Valor</th></tr></thead><tbody>${ps.map(m=>`<tr><td>${fdata(m.data)} ${String(m.data).slice(0,4)}</td><td>${esc(m.desc)}<div class="ref">${esc(m.fonte||"")}${m.id?" · "+esc(m.id):""}</div></td><td>${esc(m.cat)}</td><td class="num">${eur2(m.valor)}</td></tr>`).join("")}<tr><td colspan="3"><b>Total desde janeiro</b></td><td class="num"><b>${eur2(t)}</b></td></tr></tbody></table></div>`:""}
+   </div></details>`;
+ };
+ const L=[...chaves,...soltos].map(k=>({k,t:totAno(k)})).sort((a,b)=>b.t-a.t), top=L[0]||{k:"",t:0};
+ const ativas=fichas.filter(c=>c.estado==="Ativa");
  return `
  <div class="kpis">
-  <div class="kpi ok"><b>${eur(tt)}</b><span>pagos por clientes em ${ano}</span></div>
-  <div class="kpi"><b>${L.length}</b><span>clientes que pagaram</span></div>
-  <div class="kpi"><b>${L.filter(o=>dias(o.ul)<=40).length}</b><span>pagaram nos 40 dias antes de ${fdata(REF)}, o último dia com dados</span></div>
-  <div class="kpi"><b>${Math.round(top.t/tt*100)}%</b><span>vem de ${esc(top.n)}</span></div>
+  <div class="kpi ok"><b>${eur(tt===1?0:tt)}</b><span>pagos por clientes em ${ano}</span></div>
+  <div class="kpi"><b>${ativas.length}</b><span>clientes ativas</span></div>
+  <div class="kpi"><b>${fichas.length}</b><span>fichas de clientes</span></div>
+  <div class="kpi"><b>${Math.round(top.t/tt*100)}%</b><span>vem de ${esc(top.k)}</span></div>
  </div>
- <div class="card dark"><div class="lbl">A leitura</div><p style="font-family:var(--display);font-size:1.35rem;line-height:1.25">${Math.round(top.t/tt*100)>=40?`${esc(top.n)} pesa ${Math.round(top.t/tt*100)}% de tudo o que recebeste. Se sai, o ano cai.`:`O dinheiro está espalhado: nenhuma cliente passa dos ${Math.round(top.t/tt*100)}%.`} ${L.filter(o=>Object.keys(o.mes).length>=3).length} pagam todos os meses; ${L.filter(o=>Object.keys(o.mes).length<3).map(o=>esc(o.n)).join(", ")||"nenhuma"} foram pontuais.</p></div>
- <div class="tablewrap"><table><thead><tr><th>Cliente</th><th>Serviço</th><th class="num">Total ${ano}</th><th class="num">Peso</th><th class="num">Pagamentos</th><th class="num">Média</th><th>Primeiro</th><th>Último</th><th>Estado</th></tr></thead><tbody>${L.map(o=>`<tr><td><b>${esc(o.n)}</b></td><td>${esc(o.cat)}</td><td class="num">${eur2(o.t)}</td><td class="num">${Math.round(o.t/tt*100)}%</td><td class="num">${o.k}</td><td class="num">${eur2(o.t/o.k)}</td><td>${fdata(o.pr)}</td><td>${fdata(o.ul)}</td><td>${estado(o)}</td></tr>`).join("")}</tbody></table></div>
- <div class="tablewrap cli-grid"><table><thead><tr><th>Cliente</th>${MC.map(m=>`<th class="num">${m}</th>`).join("")}</tr></thead><tbody>${L.map(o=>`<tr><td><b>${esc(o.n)}</b></td>${MC.map((_,i)=>`<td class="num">${o.mes[i+1]?eur(o.mes[i+1]):'<span class="muted">·</span>'}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
- <p class="small muted">Conta como cliente cada pagamento identificado no banco, mais as entradas do negócio que lanças à mão (o nome antes do «·» na descrição). Os clientes aparecem sempre, seja qual for a conta escolhida em cima.</p>`;
+ ${aEditar==="nova"?`<div class="card"><div class="lbl">Nova ficha</div>${form(NOVA||{})}</div>`:`<div><button class="btn" data-nova>Nova cliente</button></div>`}
+ <div class="list" style="gap:12px">${fichas.map(c=>card(c,false)).join("")}${soltos.map(k=>card(k,true)).join("")}</div>
+ <div class="tablewrap cli-grid"><table><thead><tr><th>Cliente · ${ano}</th>${MC.map(m=>`<th class="num">${m}</th>`).join("")}<th class="num">Total</th></tr></thead><tbody>${L.filter(x=>x.t).map(x=>{const mm={};for(const m of pag[x.k]||[])if(String(m.data).startsWith(ano)){const i=+String(m.data).slice(5,7);mm[i]=(mm[i]||0)+(+m.valor||0)}return `<tr><td><b>${esc(x.k)}</b></td>${MC.map((_,i)=>`<td class="num">${mm[i+1]?eur(mm[i+1]):'<span class="muted">·</span>'}</td>`).join("")}<td class="num"><b>${eur(x.t)}</b></td></tr>`}).join("")}</tbody></table></div>
+ <p class="small muted">Os pagamentos ligam-se à ficha pelo «Nome no banco». Os dados do banco vão de janeiro a ${fdata(REF)}.</p>`;
 };
 
 V.receber=()=>{
@@ -402,6 +464,10 @@ document.addEventListener("click",async e=>{
  if(d.f){filtro=d.f;render();return}
  if(d.conta){CONTA=d.conta;rebuild();render();return}
  if(d.vermes){MES=d.vermes;go("movimentos");return}
+ if(d.editar){aEditar=d.editar;render();return}
+ if(d.cancelar!==undefined){aEditar=null;NOVA=null;render();return}
+ if(d.nova!==undefined){aEditar="nova";NOVA={estado:"Ativa"};render();return}
+ if(d.novaficha){aEditar="nova";NOVA={nome:d.novaficha,chave:d.novaficha,estado:"Ativa"};render();window.scrollTo(0,0);return}
  if(d.mudar){const b=BANCO.find(x=>x.id===d.mudar);if(!b)return;const atual=(AJ[b.id]&&AJ[b.id].conta)||b.conta;const nova=atual==="Negócio"?"Pessoal":"Negócio";
   await w(()=>db.doc("ajustes/"+b.id).set({conta:nova}),`Passou para ${nova}`);return}
  if(d.pede){aApagar=d.pede;render();return}
@@ -426,6 +492,12 @@ document.addEventListener("submit",async e=>{
  if(f.id==="movForm"){MES=v.data.slice(0,7);await addMov({data:v.data,tipo:v.tipo,desc:v.desc.trim(),cat:v.cat,valor:+v.valor,conta:v.conta||"Negócio"});const d=$("#fDesc"),val=$("#fValor");if(d)d.value="";if(val)val.value="";return}
  if(f.id==="recForm"){await w(()=>db.collection("receber").add({n:v.n.trim(),cat:v.cat,d:v.d,v:+v.v,pago:false}),"Adicionado");return}
  if(f.id==="fixForm"){await w(()=>db.collection("fixos").add({n:v.n.trim(),cat:v.cat,v:+v.v}),"Adicionado");return}
+ if(f.id==="cliForm"){
+  const docs=String(v.docs||"").split("\n").map(l=>l.trim()).filter(Boolean).map(l=>{const i=l.lastIndexOf("|");return i>0?{n:l.slice(0,i).trim(),u:l.slice(i+1).trim()}:{n:l,u:""}});
+  const o={nome:v.nome.trim(),marca:v.marca.trim(),servico:v.servico.trim(),estado:v.estado,valor:v.valor.trim(),inicio:v.inicio,fim:v.fim,nif:v.nif.trim(),contacto:v.contacto.trim(),prox:v.prox.trim(),nota:v.nota.trim(),docs,chave:v.chave.trim()};
+  const id=f.dataset.id;
+  await w(()=>id?db.doc("clientes/"+id).update(o):db.collection("clientes").add({...o,ordem:CLI.length+1}),"Ficha guardada");
+  aEditar=null;NOVA=null;render();return}
  if(f.id==="mapaForm"){CFG.mapa.push({n:v.n.trim(),p:+v.p,q:0});render();saveCfg();return}
 });
 
@@ -451,6 +523,7 @@ fetch("banco.json").then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{BANCO=A
  const err=()=>{clearTimeout(timer);sync("Não consegui ler os dados. Abre a página outra vez.")};
  const ok=()=>{if(!pronto){pronto=true;clearTimeout(timer)}sync("Dados guardados na tua conta · atualiza sozinho")};
  db.collection("movs").onSnapshot(s=>{DBMOVS=lista(s);rebuild();ok();render()},err);
+ db.collection("clientes").onSnapshot(s=>{CLI=lista(s);render()},err);
  db.collection("ajustes").onSnapshot(s=>{AJ={};for(const d of s.docs)AJ[d.id]=d.data();rebuild();render()},err);
  db.collection("receber").onSnapshot(s=>{REC=lista(s);render()},err);
  db.collection("fixos").onSnapshot(s=>{FIX=lista(s);render()},err);
