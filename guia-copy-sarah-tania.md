@@ -6,6 +6,7 @@ Fonte: o Trello "Plano de Escalada" completo (abril a novembro 2026). São 307 c
 
 ## 0. Linha de 2027 (manda sobre o resto deste guia)
 
+- Público: empresários, homens e mulheres (marcas de moda que já vendem, confeções e fábricas com marca própria). Acabou a comunicação para "Mulheres de Fibra" (Tânia, 26 de novembro): nunca "Mulher de Fibra", "mulheres", "donas de marca", "juntas", "sozinha". Usa "empresários", "quem tem uma marca", "a tua marca", "o teu negócio", "a tua empresa", "os meus clientes" (masculino genérico) ou formas neutras. Fala também para as empresas (confeções e fábricas), não só para as marcas.
 - A estrategista que lê a peça. 10 anos de chão de fábrica. Planeamento e produção, com a IA como ferramenta.
 - Público: marcas que já vendem, confeções e fábricas com marca própria. Não falar para quem ainda não começou.
 - Lê a peça e a ficha como alguém da fábrica. Não mede nem cose: lê, decide e planeia.
@@ -25,7 +26,7 @@ Fonte: o Trello "Plano de Escalada" completo (abril a novembro 2026). São 307 c
 - O que NÃO é gancho: abrir com um número sozinho ("568 peças paradas"), com a história ("No outro dia vi uma marca…") ou com uma frase de fábrica entre aspas. Isso vem logo a seguir, não no primeiro segundo.
 - Ensinar a decidir, não listar erros (Sarah, 27 de novembro): cada ponto é uma decisão com a ação e o como fazer. As consequências e os erros servem só para a quebra, uma vez, nunca em todos os pontos.
 - Estrutura do Reels que ensina (modelo da Sarah, Reels de 25 de novembro):
-  1. Gancho com os 4 pontos, falado para a dona da marca.
+  1. Gancho com os 4 pontos, falado para o empresário dono da marca.
   2. História real em frases curtas, uma ideia por linha.
   3. A quebra: "E não foi por X. Foi porque Y."
   4. Uma pergunta que a cliente faria ("Mas onde estava…?").
@@ -45,7 +46,7 @@ Fonte: o Trello "Plano de Escalada" completo (abril a novembro 2026). São 307 c
 ## 0.2 Legendas (estilo da Sarah)
 
 - A legenda não repete o post. O post já ensina; a legenda é uma frase.
-- Modelo curto (o normal): uma linha, quase sempre uma pergunta à dona da marca ou uma frase de estado, e um emoji no fim (o da Tânia é 🧵). Ex. da Sarah: "E você, o que te chama atenção em uma marca pessoal?", "Sua marca já exala sua essência em todos os detalhes?", "Aceita um chá?", "Como parar de complicar a vida do seu cliente na prática."
+- Modelo curto (o normal): uma linha, quase sempre uma pergunta ao empresário ou uma frase de estado, e um emoji no fim (o da Tânia é 🧵). Ex. da Sarah: "E você, o que te chama atenção em uma marca pessoal?", "Sua marca já exala sua essência em todos os detalhes?", "Aceita um chá?", "Como parar de complicar a vida do seu cliente na prática."
 - O CTA, quando há, vai numa segunda linha que começa com travessão: "— Quero saber o que você ama.", "— E, claro, se você quer aplicar essas estratégias à sua marca, candidate-se à Mountain pelo link da bio."
 - Modelo longo (só em posts pessoais ou de posicionamento): frases curtas, uma por parágrafo, na primeira pessoa, a contar o que ela faz e porquê. Fecha com um CTA suave ("Se chegou até o final do post, já sabe onde eu quero te encontrar.").
 - Sem hashtags.
@@ -55,7 +56,7 @@ Fonte: o Trello "Plano de Escalada" completo (abril a novembro 2026). São 307 c
 ## 0.3 Funil num só conteúdo (aula Vinci)
 
 - Cada post começa aberto e afunila. Não é um papel por dia (segunda alcançar, quarta engajar, sexta vender): é o funil inteiro em cada post.
-- 1. ATENÇÃO, para quem ainda não segue a Tânia. Capa ou 3 primeiros segundos. Gancho largo, sem jargão e sem precisar de contexto: qualquer dona de marca de moda se revê. Promessa clara do que vai ganhar (ex. da Vinci: "Copie as estratégias das marcas que escalam receita a custo quase zero"). Cara da Tânia sempre que der. Usa os 4 pontos de gancho da Sarah.
+- 1. ATENÇÃO, para quem ainda não segue a Tânia. Capa ou 3 primeiros segundos. Gancho largo, sem jargão e sem precisar de contexto: qualquer empresário com uma marca de moda ou uma confeção se revê. Promessa clara do que vai ganhar (ex. da Vinci: "Copie as estratégias das marcas que escalam receita a custo quase zero"). Cara da Tânia sempre que der. Usa os 4 pontos de gancho da Sarah.
 - 2. INTERESSE, para aprofundar quem já segue. Prova concreta, um ponto de cada vez: caso real da Tânia, número, comparação lado a lado, frase de fábrica (ex. da Vinci: "Tamanho não é documento" com a tabela micro vs macro). É aqui que entra o chão de fábrica. Nunca inventar casos nem números.
 - 3. DESEJO. Mostra, não vendas: como fica a marca quando decide bem, o princípio que muda tudo, ilustrado com um exemplo (ex. da Vinci: "Don't sell, show!").
 - 4. AÇÃO. O resultado numa frase e um só CTA ligado ao que a Tânia faz (ex. da Vinci: "Resultado? … Se você quer ter a Vinci te ajudando a implementar o método…, clique no link da bio"). Na Tânia: "Se queres que eu…, [ação]". O CTA varia na semana (DIAGNÓSTICO no máximo 1 a 2 vezes, link na bio, guardar, pergunta).
@@ -87,7 +88,7 @@ Pausa no feed = só stories nesse dia.
 ## 2. O que a Sarah corrige (regras, por ordem de frequência)
 
 1. **"Sai do ChatGPT. Deixa o conteúdo mais leve e espontâneo."**
-   Evitar frases de efeito em cadeia ("Uma vende. A outra avisa."), aforismos, "E se…?" repetido, tom solene ou poético. Escrever como se estivesse a falar com uma dona de marca ao café.
+   Evitar frases de efeito em cadeia ("Uma vende. A outra avisa."), aforismos, "E se…?" repetido, tom solene ou poético. Escrever como se estivesse a falar com um empresário ao café.
 2. **Gancho firme, sem rodeios. "Nada de voz morna."**
    - ✗ "Todas as semanas vejo marcas a tomar decisões…"
    - ✓ "Andas a copiar a concorrência?"
@@ -97,7 +98,7 @@ Pausa no feed = só stories nesse dia.
 4. **Ensinar, não só refletir.** Quando o tema promete "como", entrega passos, perguntas concretas e checklists. "Chega de blá-blá, falta de estrutura. Mostra a prática." "Nada de clareza e estrutura, sai da caixa."
 5. **Cumprir o tema à letra.** "Estratégias que deram certo às mentoradas" = o que ELAS fizeram (abriu conta, registou a marca), não o que a Tânia direciona.
 6. **Nichar o título.** "Arruma a montra" serve a qualquer um. Tem de ser óbvio que é para uma marca ou loja de moda.
-7. **Falar com a dona da marca, não com a marca.** Crítica no plural ("vejo-vos a produzir duzentas peças…"), elogio no singular.
+7. **Falar com o empresário, não com a marca.** Crítica no plural ("vejo-vos a produzir duzentas peças…"), elogio no singular.
 8. **Tamanho.**
    - Reels: até 1:30, cerca de 200 palavras.
    - Venda direta: curto.
@@ -196,7 +197,7 @@ Detalhes que fazem a tua cliente comprar e a que quase ninguém dá atenção. M
 ## 6. O Trello ganha ao plano inicial
 
 O Plano de Posicionamento é de abril. Muita coisa foi ajustada desde então. **Quando não batem certo, ganha o Trello.** O que mudou:
-- O público inclui donas de lojas de roupa (montra, atendimento, experiência de compra), e não só marcas que produzem.
+- O público inclui lojas de roupa (montra, atendimento, experiência de compra), e não só marcas que produzem.
 - Os nomes das personas não aparecem nos conteúdos. Fala-se do momento da pessoa.
 - Os Reels falados são formato regular.
 - 4 posts por semana, com pausas no feed. Sábado é conteúdo pessoal ou leve.

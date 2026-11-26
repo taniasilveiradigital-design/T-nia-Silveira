@@ -1,5 +1,7 @@
 # Ganchos e Reels que ensinam — regras da Sarah Moreira
 
+- Público: empresários, homens e mulheres (marcas de moda que já vendem, confeções e fábricas com marca própria). Acabou a comunicação para "Mulheres de Fibra" (Tânia, 26 de novembro): nunca "Mulher de Fibra", "mulheres", "donas de marca", "juntas", "sozinha". Usa "empresários", "quem tem uma marca", "a tua marca", "o teu negócio", "a tua empresa", "os meus clientes" (masculino genérico) ou formas neutras. Fala também para as empresas (confeções e fábricas), não só para as marcas.
+
 Fonte: feedback da Sarah ao Reels de 23 de novembro de 2026 e o Reels de 25 reescrito por ela. Substitui o bloco 1 (Gancho) do modelo de 7 blocos do SKILL.md: o gancho já não é "Se fazes X, estás a perder Y" seco, tem os 4 pontos abaixo.
 
 - Um bom gancho tem 4 coisas ao mesmo tempo:
@@ -11,7 +13,7 @@ Fonte: feedback da Sarah ao Reels de 23 de novembro de 2026 e o Reels de 25 rees
 - O que NÃO é gancho: abrir com um número sozinho ("568 peças paradas"), com a história ("No outro dia vi uma marca…") ou com uma frase de fábrica entre aspas. Isso vem logo a seguir, não no primeiro segundo.
 - Ensinar a decidir, não listar erros (Sarah, 27 de novembro): cada ponto é uma decisão com a ação e o como fazer. As consequências e os erros servem só para a quebra, uma vez, nunca em todos os pontos.
 - Estrutura do Reels que ensina (modelo da Sarah, Reels de 25 de novembro):
-  1. Gancho com os 4 pontos, falado para a dona da marca.
+  1. Gancho com os 4 pontos, falado para o empresário dono da marca.
   2. História real em frases curtas, uma ideia por linha.
   3. A quebra: "E não foi por X. Foi porque Y."
   4. Uma pergunta que a cliente faria ("Mas onde estava…?").
@@ -29,7 +31,7 @@ Fonte: feedback da Sarah ao Reels de 23 de novembro de 2026 e o Reels de 25 rees
 ## Legendas
 
 - A legenda não repete o post. O post já ensina; a legenda é uma frase.
-- Modelo curto (o normal): uma linha, quase sempre uma pergunta à dona da marca ou uma frase de estado, e um emoji no fim (o da Tânia é 🧵). Ex. da Sarah: "E você, o que te chama atenção em uma marca pessoal?", "Sua marca já exala sua essência em todos os detalhes?", "Aceita um chá?", "Como parar de complicar a vida do seu cliente na prática."
+- Modelo curto (o normal): uma linha, quase sempre uma pergunta ao empresário ou uma frase de estado, e um emoji no fim (o da Tânia é 🧵). Ex. da Sarah: "E você, o que te chama atenção em uma marca pessoal?", "Sua marca já exala sua essência em todos os detalhes?", "Aceita um chá?", "Como parar de complicar a vida do seu cliente na prática."
 - O CTA, quando há, vai numa segunda linha que começa com travessão: "— Quero saber o que você ama.", "— E, claro, se você quer aplicar essas estratégias à sua marca, candidate-se à Mountain pelo link da bio."
 - Modelo longo (só em posts pessoais ou de posicionamento): frases curtas, uma por parágrafo, na primeira pessoa, a contar o que ela faz e porquê. Fecha com um CTA suave ("Se chegou até o final do post, já sabe onde eu quero te encontrar.").
 - Sem hashtags.
@@ -38,7 +40,7 @@ Fonte: feedback da Sarah ao Reels de 23 de novembro de 2026 e o Reels de 25 rees
 ## Funil num só conteúdo (aula Vinci)
 
 - Cada post começa aberto e afunila. Não é um papel por dia (segunda alcançar, quarta engajar, sexta vender): é o funil inteiro em cada post.
-- 1. ATENÇÃO, para quem ainda não segue a Tânia. Capa ou 3 primeiros segundos. Gancho largo, sem jargão e sem precisar de contexto: qualquer dona de marca de moda se revê. Promessa clara do que vai ganhar (ex. da Vinci: "Copie as estratégias das marcas que escalam receita a custo quase zero"). Cara da Tânia sempre que der. Usa os 4 pontos de gancho da Sarah.
+- 1. ATENÇÃO, para quem ainda não segue a Tânia. Capa ou 3 primeiros segundos. Gancho largo, sem jargão e sem precisar de contexto: qualquer empresário com uma marca de moda ou uma confeção se revê. Promessa clara do que vai ganhar (ex. da Vinci: "Copie as estratégias das marcas que escalam receita a custo quase zero"). Cara da Tânia sempre que der. Usa os 4 pontos de gancho da Sarah.
 - 2. INTERESSE, para aprofundar quem já segue. Prova concreta, um ponto de cada vez: caso real da Tânia, número, comparação lado a lado, frase de fábrica (ex. da Vinci: "Tamanho não é documento" com a tabela micro vs macro). É aqui que entra o chão de fábrica. Nunca inventar casos nem números.
 - 3. DESEJO. Mostra, não vendas: como fica a marca quando decide bem, o princípio que muda tudo, ilustrado com um exemplo (ex. da Vinci: "Don't sell, show!").
 - 4. AÇÃO. O resultado numa frase e um só CTA ligado ao que a Tânia faz (ex. da Vinci: "Resultado? … Se você quer ter a Vinci te ajudando a implementar o método…, clique no link da bio"). Na Tânia: "Se queres que eu…, [ação]". O CTA varia na semana (DIAGNÓSTICO no máximo 1 a 2 vezes, link na bio, guardar, pergunta).
