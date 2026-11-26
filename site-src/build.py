@@ -611,10 +611,10 @@ f_h, f_s = faq_block(lista_faq)
 prod = lambda n, d, pr, link: {"@type": "Product", "name": n, "description": d, "brand": {"@type": "Brand", "name": "Tânia Silveira"},
                                 "offers": {"@type": "Offer", "price": pr, "priceCurrency": "EUR", "url": link, "availability": "https://schema.org/InStock"}}
 p = head("/lista-estrategica-de-fornecedores/", "Lista de Fornecedores Têxteis em Portugal · Revenda e Marca Própria",
-         "Contactos de fornecedores têxteis em Portugal para revenda de roupa e para criar marca própria: tecidos, malhas, confeções, estampados, bordados e etiquetas. Desde 37 €.",
-         [c_s, f_s, prod("Lista de Fornecedores de Revenda", "Contactos de fornecedores de roupa pronta, organizados por categoria. 6 meses de acesso.", "37.00", LINKS["lista_revenda"]),
-          prod("Lista de Fornecedores Marca do Zero", "Tecidos, malhas, confeções, estampados, bordados e etiquetas para criar produto próprio. 6 meses de acesso.", "37.00", LINKS["lista_zero"]),
-          prod("Combo Experiência", "Lista de Revenda + Marca do Zero e 1 hora com Tânia Silveira. 6 meses de acesso.", "57.00", LINKS["lista_combo"])])
+         "Contactos de fornecedores têxteis em Portugal para revenda de roupa e para criar marca própria: tecidos, malhas, confeções, estampados, bordados e etiquetas. Desde 49 €.",
+         [c_s, f_s, prod("Lista de Fornecedores de Revenda", "Contactos de fornecedores de roupa pronta, organizados por categoria. 6 meses de acesso.", "49.00", LINKS["lista_revenda"]),
+          prod("Lista de Fornecedores Marca do Zero", "Tecidos, malhas, confeções, estampados, bordados e etiquetas para criar produto próprio. 6 meses de acesso.", "49.00", LINKS["lista_zero"]),
+          prod("Combo Experiência", "Lista de Revenda + Marca do Zero e 1 hora com Tânia Silveira. 6 meses de acesso.", "69.00", LINKS["lista_combo"])])
 p += f"""<section class="page-head"><div class="wrap">{c_h}
 <span class="eyebrow">Ferramenta estratégica</span><h1>Já tens a ideia. <em>Agora encontra com quem avançar.</em></h1>
 <p class="lead">Contactos do setor têxtil para escolheres fornecedores de revenda ou parceiros para criares produto próprio. Organizados por critério de decisão.</p>
@@ -625,15 +625,15 @@ p += f"""<section class="page-head"><div class="wrap">{c_h}
 <div><h3>Esta lista não é</h3><ul><li>Um substituto de diagnóstico</li><li>Um plano de crescimento</li><li>Uma garantia de condições ou prazos</li></ul></div>
 </div></div></section>
 <section class="alt" id="precos"><div class="wrap">
-<div class="head"><span class="eyebrow">O teu investimento · Black Week</span><h2>Três opções. <em>A mesma intenção.</em></h2></div>
+<div class="head"><span class="eyebrow">O teu investimento</span><h2>Três opções. <em>A mesma intenção.</em></h2></div>
 <div class="prices">
-<div class="price"><span class="eyebrow">01 · Roupa pronta</span><h3>Revenda</h3><div class="v">37 €<s>49 €</s></div><p class="small" style="font-size:13px;color:var(--muted)">IVA incluído · pagamento único</p>
+<div class="price"><span class="eyebrow">01 · Roupa pronta</span><h3>Revenda</h3><div class="v">49 €</div><p class="small" style="font-size:13px;color:var(--muted)">IVA incluído · pagamento único</p>
 <ul><li>Fornecedores de revenda</li><li>Contactos organizados por categoria</li><li>6 meses de acesso</li></ul>
 <a class="btn ghost" href="{LINKS['lista_revenda']}" target="_blank" rel="noopener">Comprar a lista de revenda</a></div>
-<div class="price"><span class="eyebrow">02 · Produção própria</span><h3>Marca do Zero</h3><div class="v">37 €<s>49 €</s></div><p style="font-size:13px;color:var(--muted)">IVA incluído · pagamento único</p>
+<div class="price"><span class="eyebrow">02 · Produção própria</span><h3>Marca do Zero</h3><div class="v">49 €</div><p style="font-size:13px;color:var(--muted)">IVA incluído · pagamento único</p>
 <ul><li>Tecidos, malhas e confeções</li><li>Estampados, bordados e etiquetas</li><li>6 meses de acesso</li></ul>
 <a class="btn ghost" href="{LINKS['lista_zero']}" target="_blank" rel="noopener">Comprar a Marca do Zero</a></div>
-<div class="price main"><span class="eyebrow">03 · Duas listas + direção</span><h3>Combo Experiência</h3><div class="v">57 €<s>69 €</s></div><p style="font-size:13px;color:var(--muted)">IVA incluído · pagamento único</p>
+<div class="price main"><span class="eyebrow">03 · Duas listas + direção</span><h3>Combo Experiência</h3><div class="v">69 €</div><p style="font-size:13px;color:var(--muted)">IVA incluído · pagamento único</p>
 <ul><li>Revenda + Marca do Zero</li><li>1 hora comigo para alinhar o negócio</li><li>6 meses de acesso às duas listas</li></ul>
 <a class="btn" href="{LINKS['lista_combo']}" target="_blank" rel="noopener">Quero o Combo</a></div>
 </div>

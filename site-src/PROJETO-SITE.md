@@ -59,6 +59,8 @@ Uma só base: **o Site A (este repositório)**, porque já tem o SEO, os guias, 
 
 Já decidido:
 - [x] Anos de experiência: **10 anos** de chão de fábrica.
+- [x] Preços da Lista de Fornecedores: Revenda 49 €, Marca do Zero 49 €, Combo Experiência 69 €.
+- [x] Empresas: começa sempre por uma consultoria, depois plano à medida. Página /empresas/ feita.
 - [x] Instagram: instagram.com/taniasilveira.pt · LinkedIn: linkedin.com/in/tânia-silveira-229848295
 
 Por decidir:
@@ -67,7 +69,7 @@ Por decidir:
 - [ ] 4 áreas de IA: coleção e vendas, custo e preço, mercado têxtil, processos.
 - [ ] Nome do diagnóstico: Alinhavar ou Estratégico, e se continua à venda.
 - [ ] Autorização das marcas clientes: Nicau Couture, ROMEO, DOMPURE, Hosmos.co, Little Leflot, Traços D'Amor.
-- [ ] Preços da Lista de Fornecedores depois da Black Week (agora 37 € / 57 €; normal 49 € / 69 €).
+
 - [ ] Sessão fotográfica profissional (fábrica ou atelier, tecidos, mesa de corte).
 - [ ] Migrar a página Imersão FIBRA IA do WordPress.
 - [ ] Publicar: Netlify, apontar o domínio, registar no Google Search Console.
