@@ -106,6 +106,12 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:now
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 .confirm{display:inline-flex;gap:6px;align-items:center}
+.contas{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.contas button{background:transparent;border:1px solid var(--side-muted);color:var(--side-fg);border-radius:99px;padding:4px 14px;font-weight:600;font-size:.85rem;cursor:pointer}
+.contas button[aria-pressed="true"]{background:var(--side-fg);color:var(--side);border-color:var(--side-fg)}
+.ano td.mes-off{color:var(--faint)}
+.cli-grid td,.cli-grid th{font-size:.82rem;padding:8px 9px}
+.pill.mini{cursor:pointer;border:0;font:inherit;font-size:.72rem;font-weight:700}
 .sync{font-size:.75rem;color:var(--side-muted)}
 </style>
 <header class="top">
@@ -114,6 +120,7 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:now
       <div><div class="lbl">Universo FIBRA</div><h1>Central Financeira</h1><div class="sig">Tânia Silveira</div></div>
       <div class="mes" aria-label="Mês"><button type="button" id="mPrev" aria-label="Mês anterior">‹</button><b id="mNome"></b><button type="button" id="mNext" aria-label="Mês seguinte">›</button></div>
     </div>
+    <div class="contas" role="group" aria-label="Conta" id="contas"></div>
     <div class="sync" id="sync" role="status">A abrir os teus dados…</div>
     <nav class="tabs" role="tablist" id="tabs"></nav>
   </div>
@@ -129,7 +136,7 @@ const CAT_OUT=["Anúncios","Ferramentas","Formação","Contabilidade","Impostos 
 const CFG_DEF={meta:3000,reserva:25,mapa:[{n:"Método FIBRA",p:265,q:2},{n:"Tafetá 360",p:250,q:0},{n:"Lista de Fornecedores",p:49,q:0},{n:"Imersão",p:37,q:0}]};
 
 /* ===== Estado (vem da base de dados) ===== */
-let MOVS=[], REC=[], FIX=[], CFG=JSON.parse(JSON.stringify(CFG_DEF));
+let ALL=[], MOVS=[], DBMOVS=[], BANCO=[], AJ={}, CONTA="Negócio", REC=[], FIX=[], CFG=JSON.parse(JSON.stringify(CFG_DEF));
 let db=null, pronto=false, podeEscrever=true;
 const sync=t=>{const e=document.getElementById("sync");if(e)e.textContent=t};
 
@@ -148,6 +155,11 @@ const mesNome=ym=>MESES[+ym.slice(5)-1];
 function toast(t){const e=document.createElement("div");e.className="toast";e.setAttribute("role","status");e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),2200)}
 
 const movs=()=>MOVS;
+function rebuild(){
+ ALL=[...BANCO.map(b=>({...b,...(AJ[b.id]||{}),banco:true})),...DBMOVS.map(m=>({conta:"Negócio",...m}))];
+ MOVS=CONTA==="Tudo"?ALL:ALL.filter(m=>m.conta===CONTA);
+}
+const clienteDe=m=>m.cliente||(m.conta==="Negócio"&&m.tipo==="Entrada"&&!m.banco?String(m.desc||"").split("·")[0].trim():"");
 function tot(ym){let e=0,s=0;for(const m of MOVS){if(ym&&!String(m.data).startsWith(ym))continue;const v=+m.valor||0;if(m.tipo==="Entrada")e+=v;else s+=v}return{e,s,l:e-s}}
 const fixosMes=()=>FIX.reduce((a,f)=>a+(+f.v||0),0);
 const porReceber=()=>REC.filter(r=>!r.pago);
@@ -163,8 +175,8 @@ let cfgTimer=null;
 function saveCfg(){clearTimeout(cfgTimer);cfgTimer=setTimeout(()=>w(()=>db.doc("config/geral").set(CFG)),500)}
 
 /* ===== Navegação ===== */
-const TABS=[["resumo","Resumo"],["movimentos","Movimentos"],["receber","A receber"],["fixos","Despesas fixas"],["meta","Meta"],["impostos","Impostos"]];
-let tab=(location.hash||"").slice(1); if(!TABS.some(t=>t[0]===tab))tab="resumo";
+const TABS=[["resumo","Resumo"],["ano","Ano"],["clientes","Clientes"],["movimentos","Movimentos"],["receber","A receber"],["fixos","Despesas fixas"],["meta","Meta"],["impostos","Impostos"]];
+let tab=(location.hash||"").slice(1); if(!TABS.some(t=>t[0]===tab))tab="ano";
 let MES=hoje().slice(0,7), filtro="Tudo", busca="", aApagar=null;
 
 const V={};
@@ -194,7 +206,8 @@ V.resumo=()=>{
  const t=tot(MES), pct=Math.min(100,Math.round(t.e/CFG.meta*100)), fx=fixosMes();
  const res=t.e*CFG.reserva/100, livre=t.l-res, pr=porReceber(), prT=pr.reduce((a,r)=>a+(+r.v||0),0);
  const atras=pr.filter(r=>r.d&&r.d<hoje());
- const leitura = t.e===0
+ const leitura = CONTA!=="Negócio" ? `${CONTA==="Pessoal"?"Na conta pessoal":"No total"}, entraram ${eur(t.e)} e saíram ${eur(t.s)} em ${mesNome(MES)}. ${t.l<0?`Saiu mais ${eur(-t.l)} do que entrou.`:`Sobraram ${eur(t.l)}.`}`
+  : t.e===0
   ? `Ainda não há nenhuma entrada lançada em ${mesNome(MES)}. Sem entradas, a sobra é sempre negativa e nenhuma decisão fecha. Lança o que recebeste.`
   : livre<0 ? `Este mês gastaste mais do que fica depois de guardar para impostos. Faltam ${eur(-livre)} para empatar.`
   : `Depois de guardar ${eur(res)} para impostos, ficam-te ${eur(livre)} livres. Estás a ${pct}% da meta.`;
@@ -227,6 +240,7 @@ V.movimentos=()=>{
  return `
  <form class="add" id="movForm">
   <label>Data<input type="date" id="fData" name="data" required value="${MES===hoje().slice(0,7)?hoje():MES+"-01"}"></label>
+  <label>Conta<select name="conta" id="movConta"><option${CONTA!=="Pessoal"?" selected":""}>Negócio</option><option${CONTA==="Pessoal"?" selected":""}>Pessoal</option></select></label>
   <label>Tipo<select name="tipo" id="movTipo"><option>Entrada</option><option>Saída</option></select></label>
   <label class="wide">Descrição<input id="fDesc" name="desc" required placeholder="Ex: FIBRA Susana · novembro"></label>
   <label>Área<select name="cat" id="movCat">${CAT_IN.map(c=>`<option>${c}</option>`).join("")}</select></label>
@@ -237,9 +251,62 @@ V.movimentos=()=>{
   <div class="filters" role="group" aria-label="Filtrar">${FL.map(f=>`<button type="button" data-f="${f}" aria-pressed="${f===filtro}">${f==="Tudo"?"Tudo":f==="Entrada"?"Entradas":"Saídas"}</button>`).join("")}</div>
   <input type="search" id="busca" placeholder="Procurar" value="${esc(busca)}" style="max-width:240px">
  </div>
- ${rows.length?`<div class="tablewrap"><table><thead><tr><th>Data</th><th>Descrição</th><th>Área</th><th>Tipo</th><th class="num">Valor</th><th></th></tr></thead><tbody>${rows.map(m=>`<tr><td>${fdata(m.data)}</td><td>${esc(m.desc)}${m.fonte?`<br><span class="small muted">${esc(m.fonte)}</span>`:""}</td><td>${esc(m.cat)}</td><td><span class="pill ${m.tipo==="Entrada"?"ok":"bad"}">${esc(m.tipo)}</span></td><td class="num">${eur2(m.valor)}</td><td style="white-space:nowrap">${btnDel("movs",m.id)}</td></tr>`).join("")}</tbody></table></div>`
+ ${rows.length?`<div class="tablewrap"><table><thead><tr><th>Data</th><th>Descrição</th><th>Área</th><th>Conta</th><th>Tipo</th><th class="num">Valor</th><th></th></tr></thead><tbody>${rows.map(m=>`<tr><td>${fdata(m.data)}</td><td>${esc(m.desc)}${m.fonte?`<br><span class="small muted">${esc(m.fonte)}</span>`:""}</td><td>${esc(m.cat)}</td><td>${m.banco?`<button class="pill mini ${m.conta==="Negócio"?"ok":""}" data-mudar="${esc(m.id)}" title="Mudar de conta">${esc(m.conta)} ⇄</button>`:`<span class="pill ${m.conta==="Negócio"?"ok":""}">${esc(m.conta)}</span>`}</td><td><span class="pill ${m.tipo==="Entrada"?"ok":"bad"}">${esc(m.tipo)}</span></td><td class="num">${eur2(m.valor)}</td><td style="white-space:nowrap">${m.banco?"":btnDel("movs",m.id)}</td></tr>`).join("")}</tbody></table></div>`
  :`<div class="empty">Nada lançado em ${nomeMes(MES)}${filtro!=="Tudo"||busca?" com este filtro":""}.</div>`}
- <p class="small muted">${nomeMes(MES)}: ${eur2(t.e)} de entradas, ${eur2(t.s)} de saídas.</p>`;
+ <p class="small muted">${nomeMes(MES)}: ${eur2(t.e)} de entradas, ${eur2(t.s)} de saídas. Os movimentos do banco não se apagam: se um estiver na conta errada, carrega em Negócio ou Pessoal para o mudar.</p>`;
+};
+
+V.ano=()=>{
+ const ano=MES.slice(0,4), ms=Array.from({length:12},(_,i)=>`${ano}-${String(i+1).padStart(2,"0")}`);
+ const linhas=ms.map(m=>({m,...tot(m),n:MOVS.filter(x=>String(x.data).startsWith(m)).length}));
+ const T=linhas.reduce((a,x)=>({e:a.e+x.e,s:a.s+x.s}),{e:0,s:0});
+ const com=linhas.filter(x=>x.n), med=com.length?T.e/com.length:0;
+ const max=Math.max(100,...linhas.flatMap(x=>[x.e,x.s]));
+ const W=640,H=220,pad=30,gw=(W-pad)/12,bw=Math.min(18,gw/3), y=v=>H-pad-(v/max)*(H-pad-14);
+ let svg=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Entradas e saídas por mês em ${ano}"><line x1="${pad}" x2="${W}" y1="${H-pad}" y2="${H-pad}" stroke="var(--line)"/>`;
+ if(CONTA==="Negócio")svg+=`<line x1="${pad}" x2="${W}" y1="${y(Math.min(CFG.meta,max))}" y2="${y(Math.min(CFG.meta,max))}" stroke="var(--acc)" stroke-dasharray="4 4"/><text x="${W-4}" y="${y(Math.min(CFG.meta,max))-5}" text-anchor="end">meta ${eur(CFG.meta)}</text>`;
+ linhas.forEach((x,i)=>{const cx=pad+gw*i+gw/2;
+  svg+=`<rect x="${cx-bw-1}" y="${y(x.e)}" width="${bw}" height="${H-pad-y(x.e)}" rx="2" fill="var(--bar-in)"><title>${nomeMes(x.m)}: ${eur2(x.e)} de entradas</title></rect><rect x="${cx+1}" y="${y(x.s)}" width="${bw}" height="${H-pad-y(x.s)}" rx="2" fill="var(--bar-out)"><title>${nomeMes(x.m)}: ${eur2(x.s)} de saídas</title></rect><text x="${cx}" y="${H-10}" text-anchor="middle">${MC[i]}</text>`});
+ svg+=`</svg>`;
+ return `
+ <div class="kpis">
+  <div class="kpi ok"><b>${eur(T.e)}</b><span>entradas em ${ano}</span></div>
+  <div class="kpi"><b>${eur(T.s)}</b><span>saídas em ${ano}</span></div>
+  <div class="kpi ${T.e-T.s<0?"bad":""}"><b>${eur(T.e-T.s)}</b><span>sobra em ${ano}</span></div>
+  <div class="kpi"><b>${eur(med)}</b><span>média de entradas por mês com dados</span></div>
+ </div>
+ <div class="card chart"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><div class="lbl">${ano} · ${esc(CONTA==="Tudo"?"as duas contas":CONTA)}</div><div class="legend"><span><i style="background:var(--bar-in)"></i>Entradas</span><span><i style="background:var(--bar-out)"></i>Saídas</span></div></div>${svg}</div>
+ <div class="tablewrap ano"><table><thead><tr><th>Mês</th><th class="num">Entradas</th><th class="num">Saídas</th><th class="num">Sobra</th><th class="num">Movimentos</th></tr></thead><tbody>${linhas.map(x=>`<tr><td${x.n?"":' class="mes-off"'}><button class="filters-link" data-vermes="${x.m}" style="background:none;border:0;padding:0;color:var(--acc);font-weight:600;cursor:pointer">${MESES[+x.m.slice(5)-1]}</button></td><td class="num">${x.n?eur2(x.e):"—"}</td><td class="num">${x.n?eur2(x.s):"—"}</td><td class="num" style="color:${x.e-x.s<0?"var(--bad)":"inherit"}">${x.n?eur2(x.e-x.s):"—"}</td><td class="num">${x.n||"sem dados"}</td></tr>`).join("")}<tr><td><b>Total</b></td><td class="num"><b>${eur2(T.e)}</b></td><td class="num"><b>${eur2(T.s)}</b></td><td class="num"><b>${eur2(T.e-T.s)}</b></td><td></td></tr></tbody></table></div>
+ <div class="grid"><div class="card"><div class="lbl">Por área em ${ano} · entradas</div>${porCat(ano,"Entrada")}</div><div class="card"><div class="lbl">Por área em ${ano} · saídas</div>${porCat(ano,"Saída")}</div></div>
+ <p class="small muted">Meses sem dados: ${linhas.filter(x=>!x.n).map(x=>MESES[+x.m.slice(5)-1]).join(", ")||"nenhum"}. Carrega no nome do mês para ver os movimentos.</p>`;
+};
+function porCat(pref,tipo){
+ const m={};for(const x of MOVS)if(String(x.data).startsWith(pref)&&x.tipo===tipo)m[x.cat||"Outro"]=(m[x.cat||"Outro"]||0)+(+x.valor||0);
+ const arr=Object.entries(m).sort((a,b)=>b[1]-a[1]),tt=arr.reduce((a,b)=>a+b[1],0);
+ if(!arr.length)return `<p class="small muted">Nada.</p>`;
+ return arr.map(([c,v])=>`<div class="cat-row"><span>${esc(c)} <span class="muted small">${Math.round(v/tt*100)}%</span></span><b class="num">${eur2(v)}</b><div class="bar"><i style="width:${Math.round(v/tt*100)}%;background:${tipo==="Entrada"?"var(--bar-in)":"var(--bar-out)"}"></i></div></div>`).join("");
+}
+
+V.clientes=()=>{
+ const ano=MES.slice(0,4), C={};
+ for(const m of ALL){const c=clienteDe(m);if(!c||m.tipo!=="Entrada"||!String(m.data).startsWith(ano))continue;
+  const o=C[c]=C[c]||{n:c,t:0,k:0,cat:m.cat,pr:m.data,ul:m.data,mes:{}};o.t+=+m.valor||0;o.k++;if(m.data<o.pr)o.pr=m.data;if(m.data>o.ul)o.ul=m.data;const mm=+String(m.data).slice(5,7);o.mes[mm]=(o.mes[mm]||0)+(+m.valor||0)}
+ const L=Object.values(C).sort((a,b)=>b.t-a.t), tt=L.reduce((a,x)=>a+x.t,0);
+ const REF=ALL.reduce((a,m)=>String(m.data)>a?String(m.data):a,"")||hoje(); const dias=d=>Math.round((new Date(REF)-new Date(d))/864e5);
+ const estado=o=>dias(o.ul)<=40?`<span class="pill ok">A pagar</span>`:`<span class="pill warn">Último há ${dias(o.ul)} dias</span>`;
+ if(!L.length)return `<div class="empty">Ainda não há pagamentos de clientes em ${ano}.</div>`;
+ const top=L[0];
+ return `
+ <div class="kpis">
+  <div class="kpi ok"><b>${eur(tt)}</b><span>pagos por clientes em ${ano}</span></div>
+  <div class="kpi"><b>${L.length}</b><span>clientes que pagaram</span></div>
+  <div class="kpi"><b>${L.filter(o=>dias(o.ul)<=40).length}</b><span>pagaram nos 40 dias antes de ${fdata(REF)}, o último dia com dados</span></div>
+  <div class="kpi"><b>${Math.round(top.t/tt*100)}%</b><span>vem de ${esc(top.n)}</span></div>
+ </div>
+ <div class="card dark"><div class="lbl">A leitura</div><p style="font-family:var(--display);font-size:1.35rem;line-height:1.25">${Math.round(top.t/tt*100)>=40?`${esc(top.n)} pesa ${Math.round(top.t/tt*100)}% de tudo o que recebeste. Se sai, o ano cai.`:`O dinheiro está espalhado: nenhuma cliente passa dos ${Math.round(top.t/tt*100)}%.`} ${L.filter(o=>Object.keys(o.mes).length>=3).length} pagam todos os meses; ${L.filter(o=>Object.keys(o.mes).length<3).map(o=>esc(o.n)).join(", ")||"nenhuma"} foram pontuais.</p></div>
+ <div class="tablewrap"><table><thead><tr><th>Cliente</th><th>Serviço</th><th class="num">Total ${ano}</th><th class="num">Peso</th><th class="num">Pagamentos</th><th class="num">Média</th><th>Primeiro</th><th>Último</th><th>Estado</th></tr></thead><tbody>${L.map(o=>`<tr><td><b>${esc(o.n)}</b></td><td>${esc(o.cat)}</td><td class="num">${eur2(o.t)}</td><td class="num">${Math.round(o.t/tt*100)}%</td><td class="num">${o.k}</td><td class="num">${eur2(o.t/o.k)}</td><td>${fdata(o.pr)}</td><td>${fdata(o.ul)}</td><td>${estado(o)}</td></tr>`).join("")}</tbody></table></div>
+ <div class="tablewrap cli-grid"><table><thead><tr><th>Cliente</th>${MC.map(m=>`<th class="num">${m}</th>`).join("")}</tr></thead><tbody>${L.map(o=>`<tr><td><b>${esc(o.n)}</b></td>${MC.map((_,i)=>`<td class="num">${o.mes[i+1]?eur(o.mes[i+1]):'<span class="muted">·</span>'}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
+ <p class="small muted">Conta como cliente cada pagamento identificado no banco, mais as entradas do negócio que lanças à mão (o nome antes do «·» na descrição). Os clientes aparecem sempre, seja qual for a conta escolhida em cima.</p>`;
 };
 
 V.receber=()=>{
@@ -315,6 +382,7 @@ V.impostos=()=>{
 
 function render(){
  $("#mNome").textContent=nomeMes(MES);
+ $("#contas").innerHTML=["Negócio","Pessoal","Tudo"].map(c=>`<button type="button" data-conta="${c}" aria-pressed="${c===CONTA}">${c==="Tudo"?"As duas contas":c}</button>`).join("");
  $("#tabs").innerHTML=TABS.map(([id,n])=>`<button role="tab" type="button" data-tab="${id}" aria-selected="${id===tab}">${n}</button>`).join("");
  const a=document.activeElement, aid=a&&a.id, pos=a&&a.selectionStart;
  $("#view").innerHTML=V[tab]();
@@ -332,6 +400,10 @@ document.addEventListener("click",async e=>{
  if(el.id==="mPrev"){MES=mesShift(MES,-1);render();return}
  if(el.id==="mNext"){MES=mesShift(MES,1);render();return}
  if(d.f){filtro=d.f;render();return}
+ if(d.conta){CONTA=d.conta;rebuild();render();return}
+ if(d.vermes){MES=d.vermes;go("movimentos");return}
+ if(d.mudar){const b=BANCO.find(x=>x.id===d.mudar);if(!b)return;const atual=(AJ[b.id]&&AJ[b.id].conta)||b.conta;const nova=atual==="Negócio"?"Pessoal":"Negócio";
+  await w(()=>db.doc("ajustes/"+b.id).set({conta:nova}),`Passou para ${nova}`);return}
  if(d.pede){aApagar=d.pede;render();return}
  if(d.nao!==undefined){aApagar=null;render();return}
  if(d.sim){const[c,id]=d.sim.split("/");aApagar=null;await delDoc(c,id);return}
@@ -351,7 +423,7 @@ document.addEventListener("click",async e=>{
 
 document.addEventListener("submit",async e=>{
  e.preventDefault();const f=e.target,v=Object.fromEntries(new FormData(f));
- if(f.id==="movForm"){MES=v.data.slice(0,7);await addMov({data:v.data,tipo:v.tipo,desc:v.desc.trim(),cat:v.cat,valor:+v.valor});const d=$("#fDesc"),val=$("#fValor");if(d)d.value="";if(val)val.value="";return}
+ if(f.id==="movForm"){MES=v.data.slice(0,7);await addMov({data:v.data,tipo:v.tipo,desc:v.desc.trim(),cat:v.cat,valor:+v.valor,conta:v.conta||"Negócio"});const d=$("#fDesc"),val=$("#fValor");if(d)d.value="";if(val)val.value="";return}
  if(f.id==="recForm"){await w(()=>db.collection("receber").add({n:v.n.trim(),cat:v.cat,d:v.d,v:+v.v,pago:false}),"Adicionado");return}
  if(f.id==="fixForm"){await w(()=>db.collection("fixos").add({n:v.n.trim(),cat:v.cat,v:+v.v}),"Adicionado");return}
  if(f.id==="mapaForm"){CFG.mapa.push({n:v.n.trim(),p:+v.p,q:0});render();saveCfg();return}
@@ -367,6 +439,8 @@ document.addEventListener("change",e=>{
 
 render();
 
+fetch("banco.json").then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{BANCO=Array.isArray(d)?d:[];rebuild();render()}).catch(()=>toast("Não consegui abrir os movimentos do banco."));
+
 /* ===== Ligação à base de dados ===== */
 (async()=>{
  const timer=setTimeout(()=>{if(!pronto)sync("Os dados estão a demorar. Verifica a ligação.")},10000);
@@ -376,7 +450,8 @@ render();
  const lista=snap=>snap.docs.map(d=>({...d.data(),id:d.id}));
  const err=()=>{clearTimeout(timer);sync("Não consegui ler os dados. Abre a página outra vez.")};
  const ok=()=>{if(!pronto){pronto=true;clearTimeout(timer)}sync("Dados guardados na tua conta · atualiza sozinho")};
- db.collection("movs").onSnapshot(s=>{MOVS=lista(s);ok();render()},err);
+ db.collection("movs").onSnapshot(s=>{DBMOVS=lista(s);rebuild();ok();render()},err);
+ db.collection("ajustes").onSnapshot(s=>{AJ={};for(const d of s.docs)AJ[d.id]=d.data();rebuild();render()},err);
  db.collection("receber").onSnapshot(s=>{REC=lista(s);render()},err);
  db.collection("fixos").onSnapshot(s=>{FIX=lista(s);render()},err);
  db.doc("config/geral").onSnapshot(s=>{if(s.exists){const c=s.data();CFG={meta:+c.meta||CFG_DEF.meta,reserva:c.reserva!=null?+c.reserva:CFG_DEF.reserva,mapa:Array.isArray(c.mapa)?JSON.parse(JSON.stringify(c.mapa)):JSON.parse(JSON.stringify(CFG_DEF.mapa))}}render()},err);
