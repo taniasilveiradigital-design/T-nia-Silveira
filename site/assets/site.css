@@ -221,3 +221,8 @@ section{padding:clamp(64px,9vw,120px) 0}
   .rise{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
   .rise.in{opacity:1;transform:none}
 }
+
+/* Fotografias da sessão */
+.photo{margin:32px 0 0;max-width:440px}
+.photo img{width:100%;aspect-ratio:4/5;object-fit:cover}
+.dark .photo img{outline:1px solid rgba(255,255,255,.12)}

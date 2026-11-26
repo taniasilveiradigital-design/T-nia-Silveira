@@ -20,9 +20,13 @@ LINKS = {
 }
 CLIENTES = ["Nicau Couture", "ROMEO", "DOMPURE", "Hosmos.co", "Little Leflot", "Traços D'Amor"]
 OG = SITE + "/assets/img/og.jpg"
-FOTO = SITE + "/assets/img/tania-silveira-estrategista.jpg"
+FOTO = SITE + "/assets/img/tania-silveira-fita-metrica.jpg"
 
 e = html.escape
+
+def pic(name, alt, h=1650, lazy=True, sizes="(max-width:860px) 90vw, 40vw"):
+    return (f'<picture><source type="image/webp" srcset="/assets/img/{name}-600.webp 600w, /assets/img/{name}-1100.webp 1100w" sizes="{sizes}">'
+            f'<img src="/assets/img/{name}.jpg" width="1100" height="{h}" alt="{alt}"' + (' loading="lazy"' if lazy else ' fetchpriority="high"') + '></picture>')
 PAGES = []  # (path, prioridade)
 
 PERSON = {
@@ -197,8 +201,7 @@ home += f"""
 <div class="proof"><span>{ANOS} anos na indústria têxtil</span><span>Produção, produto e planeamento</span><span>Guimarães · Portugal</span></div>
 </div>
 <figure class="portrait">
-<picture><source type="image/webp" srcset="/assets/img/tania-silveira-estrategista-480.webp 480w, /assets/img/tania-silveira-estrategista-864.webp 864w" sizes="(max-width:860px) 90vw, 40vw">
-<img src="/assets/img/tania-silveira-estrategista.jpg" width="864" height="1095" alt="Tânia Silveira, estrategista de marcas de moda, de braços cruzados" fetchpriority="high"></picture>
+{pic("tania-silveira-fita-metrica", "Tânia Silveira, estrategista têxtil, com uma fita métrica ao pescoço em frente a um cabide de roupa", lazy=False)}
 <figcaption><b>Tânia Silveira</b>Estrategista têxtil</figcaption>
 </figure>
 </div></section>
@@ -245,7 +248,7 @@ home += f"""
 <p style="margin-top:28px;color:var(--muted)">Precisas só da informação certa? A <a class="link" href="/lista-estrategica-de-fornecedores/">Lista Estratégica de Fornecedores</a> reúne contactos do setor têxtil para revenda e produção própria.</p>
 </div></section>
 
-<section class="alt"><div class="wrap split">
+<section style="padding-top:0"><div class="wrap split" style="border-top:1.5px dashed var(--beige);padding-top:clamp(48px,6vw,80px)">
 <div><span class="eyebrow">Para empresas</span><h2>Fábricas, confeções e marcas com equipa. <em>Começa por uma consultoria.</em></h2></div>
 <div><p class="lead">Olho para a empresa por dentro, com a experiência de quem trabalhou do lado da produção. A partir daí, apresento um plano à medida.</p>
 <a class="btn" href="/empresas/">Ver o trabalho com empresas</a></div>
@@ -253,8 +256,7 @@ home += f"""
 
 <section class="alt"><div class="wrap split">
 <figure class="portrait" style="max-width:440px">
-<picture><source type="image/webp" srcset="/assets/img/tania-silveira-retrato-480.webp 480w, /assets/img/tania-silveira-retrato-864.webp 864w" sizes="(max-width:860px) 90vw, 36vw">
-<img src="/assets/img/tania-silveira-retrato.jpg" width="864" height="1103" alt="Retrato de Tânia Silveira" loading="lazy"></picture>
+{pic("tania-silveira-amostras-tecido", "Tânia Silveira a analisar amostras de tecido e esboços de coleção", sizes="(max-width:860px) 90vw, 36vw")}
 </figure>
 <div><span class="eyebrow">Quem está do outro lado</span>
 <h2>Do chão de fábrica <em>à tua marca.</em></h2>
@@ -302,7 +304,7 @@ def guia(slug, titulo, h1, desc, tag, resumo, corpo, faqs, tempo):
 {c_h}
 <span class="eyebrow">{e(tag)}</span>
 <h1 style="font-size:clamp(40px,5.4vw,68px)">{h1}</h1>
-<div class="byline"><img src="/assets/img/tania-silveira-estrategista-480.webp" alt="" width="46" height="46"><span>Por <a href="/sobre/">Tânia Silveira</a>, estrategista têxtil · {tempo} min de leitura · Atualizado a 20 nov 2026</span></div>
+<div class="byline"><img src="/assets/img/tania-silveira-avatar.webp" alt="" width="46" height="46"><span>Por <a href="/sobre/">Tânia Silveira</a>, estrategista têxtil · {tempo} min de leitura · Atualizado a 20 nov 2026</span></div>
 </div></header>
 <div class="wrap prose" style="padding-bottom:80px">
 <div class="tldr"><strong>Resposta curta</strong>{resumo}</div>
@@ -537,7 +539,8 @@ service_page("/metodo-fibra/", "Método FIBRA",
 </div></div></section>
 <section><div class="wrap split top">
 <div><span class="eyebrow">O que trabalhamos</span><h2>Seis meses. <em>A marca inteira.</em></h2>
-<p class="lead">Cada marca tem o seu ritmo. Esta é a lógica do percurso.</p></div>
+<p class="lead">Cada marca tem o seu ritmo. Esta é a lógica do percurso.</p>
+<figure class="photo">{pic("moodboard-colecao-moda", "Moodboards e esboços de coleção em cima da mesa de trabalho")}</figure></div>
 <div><ol class="steps">
 <li><div><b>Diagnóstico profundo</b><p>Números, coleção, cliente, operação. Onde está o dinheiro e onde se perde.</p></div></li>
 <li><div><b>Organização de coleção</b><p>Que peças ficam, que peças saem, que peças faltam. Lógica de produto.</p></div></li>
@@ -689,7 +692,8 @@ p += f"""<section class="page-head"><div class="wrap">{c_h}
 <div><b>Processos e IA</b><p>Rotinas, ferramentas e uso de IA onde poupa tempo. A IA acelera. O critério vem da fábrica.</p></div>
 </div></div></section>
 <section><div class="wrap split">
-<div><span class="eyebrow">Porquê comigo</span><h2>Falo a língua <em>da fábrica e da marca.</em></h2></div>
+<div><span class="eyebrow">Porquê comigo</span><h2>Falo a língua <em>da fábrica e da marca.</em></h2>
+<figure class="photo">{pic("mostruario-tecidos-ficha-tecnica", "Mãos a escolher tecidos num mostruário, ao lado de esboços técnicos")}</figure></div>
 <div><p>São {ANOS} anos dentro da indústria têxtil: produção, planeamento, produto, fornecedores e gestão comercial. Sei o que acontece entre o tecido e a cliente, e onde as empresas perdem margem sem dar por isso.</p>
 <p>Não trago modelos de consultora grande aplicados a frio. Trago critério de quem já esteve no chão de fábrica.</p></div>
 </div></section>
@@ -723,7 +727,7 @@ p = head("/sobre/", "Sobre Tânia Silveira · Estrategista têxtil e de marcas d
 p += f"""<section class="page-head"><div class="wrap split">
 <div>{c_h}<span class="eyebrow">Sobre</span><h1>Transmontana de raiz. <em>Têxtil de profissão.</em></h1>
 <p class="lead">Sou a Tânia Silveira, estrategista de marcas de moda e negócios têxteis. Nasci em Chaves, cresci em Carrazedo de Montenegro e vivo em Guimarães, no coração da indústria têxtil portuguesa.</p></div>
-<figure class="portrait" style="max-width:420px"><picture><source type="image/webp" srcset="/assets/img/tania-silveira-retrato-480.webp 480w, /assets/img/tania-silveira-retrato-864.webp 864w" sizes="(max-width:860px) 90vw, 36vw"><img src="/assets/img/tania-silveira-retrato.jpg" width="864" height="1103" alt="Tânia Silveira, estrategista têxtil"></picture></figure>
+<figure class="portrait" style="max-width:420px">{pic("tania-silveira-estrategista-moda", "Tânia Silveira, estrategista de marcas de moda, sentada com o portátil", h=1521, lazy=False, sizes="(max-width:860px) 90vw, 36vw")}</figure>
 </div></section>
 <section style="padding-top:0"><div class="wrap prose">
 <div class="tldr"><strong>Em resumo</strong><p>Tânia Silveira é estrategista de produto e estrutura para marcas de moda, baseada em Guimarães, Portugal. Tem {ANOS} anos de experiência na indústria têxtil, em chão de fábrica, produção, planeamento, desenvolvimento de produto e gestão comercial. Criou o Método FIBRA, um acompanhamento de 6 meses para marcas de moda, e a Consultoria Tafetá 360.</p></div>
