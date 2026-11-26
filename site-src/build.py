@@ -34,8 +34,8 @@ CASOS = [
     ("Rebranding", "ROMEO: rebranding em cinco dias",
      "A fundadora entrou para mudar a imagem. Em cinco dias o posicionamento ficou ajustado, a identidade clara e uma peça foi pensada de raiz.",
      "Não foi velocidade. Foi clareza."),
-    ("Marca do zero", "Da ideia à primeira coleção",
-     "Uma marca que não sabia por onde começar. Acompanhei o pensamento inicial, a estrutura e as decisões até à primeira coleção. Hoje caminha sozinha.",
+    ("Marca do zero", "LEFKOT: da ideia à primeira coleção",
+     "A LEFKOT queria criar uma marca e não sabia por onde começar. Acompanhei o pensamento inicial, a estrutura e as decisões até à primeira coleção. Hoje caminha sozinha.",
      "Não dei ideias soltas. Dei método."),
     ("Revenda", "Do medo à revenda",
      "Chegou insegura, sem saber se o negócio tinha pernas. Com estrutura e direção, organizou o processo e hoje revende com confiança.",
@@ -45,7 +45,7 @@ CASOS = [
      "Alcance nunca substitui estrutura."),
 ]
 
-CLIENTES = ["Nicau Couture", "ROMEO", "DOMPURE", "Hosmos.co", "Little Leflot", "Traços D'Amor"]
+CLIENTES = ["Nicau Couture", "ROMEO", "DOMPURE", "Hosmos.co", "LEFKOT", "Traços D'Amor"]
 OG = SITE + "/assets/img/og.jpg"
 FOTO = SITE + "/assets/img/tania-silveira-fita-metrica.jpg"
 

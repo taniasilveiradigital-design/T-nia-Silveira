@@ -68,7 +68,7 @@ Por decidir:
 - [ ] Serviço para empresas: o que se vende, formato e preço.
 - [ ] 4 áreas de IA: coleção e vendas, custo e preço, mercado têxtil, processos.
 - [ ] Nome do diagnóstico: Alinhavar ou Estratégico, e se continua à venda.
-- [ ] Autorização das marcas clientes: Nicau Couture, ROMEO, DOMPURE, Hosmos.co, Little Leflot, Traços D'Amor.
+- [ ] Autorização das marcas clientes: Nicau Couture, ROMEO, DOMPURE, Hosmos.co, LEFKOT, Traços D'Amor.
 
 - [ ] Sessão fotográfica profissional (fábrica ou atelier, tecidos, mesa de corte).
 - [ ] Migrar a página Imersão FIBRA IA do WordPress.
