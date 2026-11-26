@@ -415,3 +415,35 @@ section{padding:clamp(64px,9vw,120px) 0}
 [hidden]{display:none!important}
 .hp{position:absolute!important;left:-9999px!important}
 .gform .chk{display:flex;font-weight:400;gap:10px}
+
+/* ---------- Dois caminhos ---------- */
+.forks{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.fk{display:grid;grid-template-rows:auto 1fr;text-decoration:none;background:var(--white);border:1px solid var(--line);overflow:hidden;transition:transform .25s,box-shadow .25s}
+.fk:hover{transform:translateY(-4px);box-shadow:0 24px 40px -28px rgba(43,28,22,.55)}
+.fk-img{aspect-ratio:16/9;overflow:hidden}
+.fk-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+.fk:hover .fk-img img{transform:scale(1.04)}
+.fk-body{padding:clamp(24px,3vw,38px);display:flex;flex-direction:column}
+.fk .tag{font:600 11px/1 var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--terra);margin-bottom:12px}
+.fk h3{font-size:clamp(30px,3.2vw,42px)}
+.fk .who{font-size:16px;color:var(--ink);font-weight:500;padding-bottom:14px;border-bottom:1.5px dashed var(--line)}
+.fk ul{list-style:none;padding:0;margin:6px 0 14px}
+.fk li{padding:7px 0 7px 22px;position:relative;color:var(--muted)}
+.fk li::before{content:"";position:absolute;left:0;top:50%;width:12px;border-top:1.5px dashed var(--soft)}
+.fk .svcs{font-size:13px;color:var(--muted);flex:1}
+.fk .btn{align-self:flex-start;margin-top:8px}
+.fk.dark{background:#2b1c16;border-color:#2b1c16;color:#f4e9df}
+.fk.dark h3{color:#fff}.fk.dark h3 em{color:#d9a17e}
+.fk.dark .who{color:#f4e9df;border-color:rgba(244,233,223,.2)}
+.fk.dark li,.fk.dark .svcs{color:#cdb8a8}
+.fk.dark .tag{color:var(--beige)}
+@media (max-width:860px){.forks{grid-template-columns:1fr}}
+.switch-note{font-size:15px;color:var(--muted);margin:0 0 18px}
+.phases{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.ph{background:var(--white);border:1px solid var(--line);padding:30px 28px}
+.ph .n{font:500 48px/1 var(--serif);color:var(--beige)}
+.ph h3{margin-top:10px}
+.ph p{color:var(--muted)}
+.ph .rec{font-size:14px;border-top:1.5px dashed var(--line);padding-top:14px;margin:0;color:var(--ink)}
+.ph .rec a{color:var(--terra);font-weight:600}
+@media (max-width:860px){.phases{grid-template-columns:1fr}}
