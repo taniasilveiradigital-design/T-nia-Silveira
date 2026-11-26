@@ -191,7 +191,8 @@ function saveCfg(){clearTimeout(cfgTimer);cfgTimer=setTimeout(()=>w(()=>db.doc("
 
 /* ===== Navegação ===== */
 const TABS=[["resumo","Resumo"],["ano","Ano"],["gastos","Para onde vai"],["clientes","Clientes"],["movimentos","Movimentos"],["receber","A receber"],["fixos","Despesas fixas"],["meta","Meta"],["impostos","Impostos"]];
-let tab=(location.hash||"").slice(1); if(!TABS.some(t=>t[0]===tab))tab="ano";
+let tab=(location.hash||"").slice(1); if(!TABS.some(t=>t[0]===tab))tab="resumo";
+let mesTocado=false;
 let MES=hoje().slice(0,7), filtro="Tudo", busca="", aApagar=null;
 
 const V={};
@@ -217,58 +218,64 @@ const btnDel=(c,id)=>aApagar===c+"/"+id
  ?`<span class="confirm"><button class="btn sm" data-sim="${c}/${esc(id)}">Apagar</button><button class="btn ghost sm" data-nao>Não</button></span>`
  :`<button class="x" data-pede="${c}/${esc(id)}" aria-label="Apagar">×</button>`;
 
+const meio=m=>{const d=String(m.desc||"").toLowerCase();if(/tpa-|comiss/.test(d))return"Cartão";if(/^dd\.|dd\./.test(d))return"Débito direto";if(/p\.serv|pag\.|pagamento de serv/.test(d))return"Pagamento de serviço";if(/atm-/.test(d))return"Levantamento";if(/amort|cart.o de cr/.test(d))return"Débito do banco";if(/dep.sito/.test(d))return"Depósito";if(/salario/.test(d))return"Ordenado";if(/transf|mb-/.test(d)||m.banco)return"Transferência";return m.banco?"Banco":"Lançado à mão"};
 V.resumo=()=>{
- const t=tot(MES), pct=Math.min(100,Math.round(t.e/CFG.meta*100)), fx=fixosMes();
- const res=t.e*CFG.reserva/100, livre=t.l-res, pr=porReceber(), prT=pr.reduce((a,r)=>a+(+r.v||0),0);
- const atras=pr.filter(r=>r.d&&r.d<hoje());
- const leitura = CONTA!=="Negócio" ? `${CONTA==="Pessoal"?"Na conta pessoal":"No total"}, entraram ${eur(t.e)} e saíram ${eur(t.s)} em ${mesNome(MES)}. ${t.l<0?`Saiu mais ${eur(-t.l)} do que entrou.`:`Sobraram ${eur(t.l)}.`}`
-  : t.e===0
-  ? `Ainda não há nenhuma entrada lançada em ${mesNome(MES)}. Sem entradas, a sobra é sempre negativa e nenhuma decisão fecha. Lança o que recebeste.`
-  : livre<0 ? `Este mês gastaste mais do que fica depois de guardar para impostos. Faltam ${eur(-livre)} para empatar.`
-  : `Depois de guardar ${eur(res)} para impostos, ficam-te ${eur(livre)} livres. Estás a ${pct}% da meta.`;
+ const t=tot(MES), mn=mesNome(MES);
+ const doMes=MOVS.filter(m=>String(m.data).startsWith(MES)).sort((a,b)=>String(b.data).localeCompare(String(a.data))||(+b.valor)-(+a.valor));
+ const allMes=ALL.filter(m=>String(m.data).startsWith(MES));
+ const neg=allMes.filter(m=>m.conta==="Negócio"), ne=neg.filter(m=>m.tipo==="Entrada").reduce((a,m)=>a+(+m.valor||0),0), ns=neg.filter(m=>m.tipo==="Saída").reduce((a,m)=>a+(+m.valor||0),0);
+ const grp=(arr,f)=>{const g={};for(const m of arr){const k=f(m)||"—";const o=g[k]=g[k]||{k,t:0,n:0,rows:[]};o.t+=+m.valor||0;o.n++;o.rows.push(m)}return Object.values(g).sort((a,b)=>b.t-a.t)};
+ const ent=doMes.filter(m=>m.tipo==="Entrada"), sai=doMes.filter(m=>m.tipo==="Saída");
+ const orig=grp(ent,m=>m.quem||m.desc), dest=grp(sai,m=>m.quem||m.desc), cats=grp(sai,m=>m.cat);
+ const pct=(v,T)=>T?Math.round(v/T*100):0;
+ const barras=(L,T,cor,max=8)=>L.slice(0,max).map(q=>`<div class="cat-row"><span>${esc(q.k)} <span class="muted small">${q.n}× · ${pct(q.t,T)}%</span></span><b class="num">${eur2(q.t)}</b><div class="bar"><i style="width:${pct(q.t,T)}%;background:${cor}"></i></div></div>`).join("")||`<p class="small muted">Nada em ${mn}.</p>`;
+ /* clientes */
+ const fichas=[...CLI].filter(c=>c.chave).sort((a,b)=>(+a.ordem||99)-(+b.ordem||99));
+ const pagos=k=>ALL.filter(m=>m.tipo==="Entrada"&&clienteDe(m)===k);
+ const linhaCli=c=>{const ps=pagos(c.chave), pm=ps.filter(m=>String(m.data).startsWith(MES)), ult=ps.sort((a,b)=>String(b.data).localeCompare(String(a.data)))[0];
+  const tAno=ps.filter(m=>String(m.data).startsWith(MES.slice(0,4))).reduce((a,m)=>a+(+m.valor||0),0);
+  return `<tr><td><b>${esc(c.nome)}</b><br><span class="small muted">${esc(c.servico||"")}</span></td>
+   <td>${pm.length?pm.map(m=>`<span class="pill ok">Pagou</span> <b>${eur2(m.valor)}</b> a ${fdata(m.data)}<br><span class="small muted">${meio(m)}</span>`).join("<br>"):(ult?`<span class="pill warn">Não pagou em ${mn}</span><br><span class="small muted">último: ${eur2(ult.valor)} a ${fdata(ult.data)} ${String(ult.data).slice(0,4)}</span>`:`<span class="pill">Sem pagamentos</span>`)}</td>
+   <td class="small">${esc(c.valor||"—")}</td><td class="num">${eur2(tAno)}</td><td class="small">${esc(c.prox||"—")}</td></tr>`};
+ const cliMes=fichas.reduce((a,c)=>a+pagos(c.chave).filter(m=>String(m.data).startsWith(MES)).reduce((x,m)=>x+(+m.valor||0),0),0);
+ const leitura=[];
+ if(orig[0])leitura.push(`O maior bolo veio de ${orig[0].k}: ${eur(orig[0].t)} (${pct(orig[0].t,t.e)}% do que entrou).`);
+ if(cats[0])leitura.push(`Onde gastaste mais: ${cats[0].k}, ${eur(cats[0].t)} (${pct(cats[0].t,t.s)}%)${grp(cats[0].rows,m=>m.quem)[0]?`, sobretudo ${grp(cats[0].rows,m=>m.quem)[0].k}`:""}.`);
+ leitura.push(t.l<0?`Saiu mais ${eur(-t.l)} do que entrou.`:`Sobraram ${eur(t.l)}.`);
+ leitura.push(`O negócio faturou ${eur(ne)}${ne<CFG.meta?`, ${pct(ne,CFG.meta)}% da meta de ${eur(CFG.meta)}`:", acima da meta"}.`);
+ const al=(MES==="2026-11"||MES==="2026-12")?DIN.alertas:[];
+ const pr=porReceber();
  return `
- ${MES==="2026-11"||MES==="2026-12"?`<div class="card alert"><div class="lbl">Alertas de dinheiro</div><div class="list">${DIN.alertas.map(a=>`<div class="row"><span class="t">${esc(a.t)}</span><span class="pill ${a.p==="alta"?"bad":"warn"}">${a.p==="alta"?"Urgente":"A ver"}</span><span class="s">${esc(a.s)}</span></div>`).join("")}</div></div>`:""}
+ ${al.length?`<div class="card alert"><div class="lbl">Alertas</div><div class="list">${al.map(a=>`<div class="row"><span class="t">${esc(a.t)}</span><span class="pill ${a.p==="alta"?"bad":"warn"}">${a.p==="alta"?"Urgente":"A ver"}</span><span class="s">${esc(a.s)}</span></div>`).join("")}</div></div>`:""}
  <div class="kpis">
-  <div class="kpi ok"><b>${eur(t.e)}</b><span>entradas</span></div>
-  <div class="kpi"><b>${eur(t.s)}</b><span>saídas</span></div>
-  <div class="kpi ${t.l<0?"bad":""}"><b>${eur(t.l)}</b><span>sobra antes de impostos</span></div>
-  <div class="kpi ${livre<0?"bad":""}"><b>${eur(livre)}</b><span>livre depois de guardar ${CFG.reserva}%</span></div>
+  <div class="kpi ok"><b>${eur(t.e)}</b><span>entrou em ${mn}</span></div>
+  <div class="kpi"><b>${eur(t.s)}</b><span>saiu em ${mn}</span></div>
+  <div class="kpi ${t.l<0?"bad":"ok"}"><b>${eur(t.l)}</b><span>${t.l<0?"faltou":"sobrou"}</span></div>
+  <div class="kpi"><b>${eur(ne)}</b><span>faturou o negócio · ${pct(ne,CFG.meta)}% da meta</span></div>
  </div>
- <div class="card dark"><div class="lbl">A leitura de ${mesNome(MES)}</div><p style="font-family:var(--display);font-size:1.4rem;line-height:1.25">${esc(leitura)}</p>${t.e===0?`<div><button class="btn" data-go="movimentos">Lançar entradas</button></div>`:""}</div>
- <div class="grid">
-  <div class="card"><div class="lbl">Meta mensal</div><h2>${pct}% de ${eur(CFG.meta)}</h2><div class="bar"><i style="width:${pct}%"></i></div><p class="small muted">Faltam ${eur(Math.max(0,CFG.meta-t.e))} em entradas este mês.</p></div>
-  <div class="card"><div class="lbl">A receber</div><h2>${eur(prT)}</h2><p class="small muted">${pr.length} por receber${atras.length?` · <b style="color:var(--bad)">${atras.length} em atraso</b>`:""}.</p><div><button class="btn ghost sm" data-go="receber">Ver o que falta receber</button></div></div>
-  <div class="card"><div class="lbl">Custos fixos</div><h2>${eur(fx)}/mês</h2><p class="small muted">O mínimo que tens de faturar para não perder dinheiro, antes de impostos.</p></div>
- </div>
- <div class="card chart"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><div class="lbl">Últimos 6 meses</div><div class="legend"><span><i style="background:var(--bar-in)"></i>Entradas</span><span><i style="background:var(--bar-out)"></i>Saídas</span></div></div>${grafico()}</div>
- <div class="grid">
-  <div class="card"><div class="lbl">De onde veio o dinheiro</div>${porCategoria("Entrada")}</div>
-  <div class="card"><div class="lbl">Para onde foi</div>${porCategoria("Saída")}</div>
- </div>
- ${MES==="2026-11"?`<div class="card"><div class="lbl">O que encontrei no email</div><p class="small">${esc(DIN.nota)}</p><p class="small muted">Lido a 20/11/2026.</p></div>`:""}`;
-};
+ <div class="card dark"><div class="lbl">${mn} numa frase</div><p style="font-family:var(--display);font-size:1.35rem;line-height:1.3">${esc(leitura.join(" "))}</p></div>
 
-V.movimentos=()=>{
- const FL=["Tudo","Entrada","Saída"];
- const rows=MOVS.filter(m=>String(m.data).startsWith(MES)&&(filtro==="Tudo"||m.tipo===filtro)&&(!busca||(m.desc+" "+m.cat).toLowerCase().includes(busca.toLowerCase()))).sort((a,b)=>String(b.data).localeCompare(String(a.data)));
- const t=tot(MES);
- return `
- <form class="add" id="movForm">
-  <label>Data<input type="date" id="fData" name="data" required value="${MES===hoje().slice(0,7)?hoje():MES+"-01"}"></label>
-  <label>Conta<select name="conta" id="movConta"><option${CONTA!=="Pessoal"?" selected":""}>Negócio</option><option${CONTA==="Pessoal"?" selected":""}>Pessoal</option></select></label>
-  <label>Tipo<select name="tipo" id="movTipo"><option>Entrada</option><option>Saída</option></select></label>
-  <label class="wide">Descrição<input id="fDesc" name="desc" required placeholder="Ex: FIBRA Susana · novembro"></label>
-  <label>Área<select name="cat" id="movCat">${CAT_IN.map(c=>`<option>${c}</option>`).join("")}</select></label>
-  <label>Valor (€)<input id="fValor" type="number" name="valor" min="0" step="0.01" required inputmode="decimal"></label>
-  <button class="btn" type="submit">Lançar</button>
- </form>
- <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between">
-  <div class="filters" role="group" aria-label="Filtrar">${FL.map(f=>`<button type="button" data-f="${f}" aria-pressed="${f===filtro}">${f==="Tudo"?"Tudo":f==="Entrada"?"Entradas":"Saídas"}</button>`).join("")}</div>
-  <input type="search" id="busca" placeholder="Procurar" value="${esc(busca)}" style="max-width:240px">
+ <section class="card"><div class="lbl">Clientes em ${mn}</div><h2>${eur(cliMes)} recebidos de clientes</h2>
+  <div class="tablewrap" style="border:0"><table><thead><tr><th>Cliente</th><th>Este mês</th><th>Combinado</th><th class="num">No ano</th><th>Próximo passo</th></tr></thead><tbody>${fichas.map(linhaCli).join("")}</tbody></table></div>
+  <div><button class="btn ghost sm" data-go="clientes">Ver as fichas completas</button></div></section>
+
+ <div class="grid">
+  <section class="card"><div class="lbl">De quem recebeste</div>${barras(orig,t.e,"var(--bar-in)")}</section>
+  <section class="card"><div class="lbl">Para onde foi o dinheiro</div>${barras(dest,t.s,"var(--bar-out)")}</section>
  </div>
- ${rows.length?`<div class="tablewrap"><table><thead><tr><th>Data</th><th>Descrição</th><th>Área</th><th>Conta</th><th>Tipo</th><th class="num">Valor</th><th></th></tr></thead><tbody>${rows.map(m=>`<tr><td>${fdata(m.data)}</td><td>${m.quem?`<b>${esc(m.quem)}</b><br>`:""}<span class="small muted">${esc(m.desc)}</span></td><td>${esc(m.cat)}</td><td>${m.banco?`<button class="pill mini ${m.conta==="Negócio"?"ok":""}" data-mudar="${esc(m.id)}" title="Mudar de conta">${esc(m.conta)} ⇄</button>`:`<span class="pill ${m.conta==="Negócio"?"ok":""}">${esc(m.conta)}</span>`}</td><td><span class="pill ${m.tipo==="Entrada"?"ok":"bad"}">${esc(m.tipo)}</span></td><td class="num">${eur2(m.valor)}</td><td style="white-space:nowrap">${m.banco?"":btnDel("movs",m.id)}</td></tr>`).join("")}</tbody></table></div>`
- :`<div class="empty">Nada lançado em ${nomeMes(MES)}${filtro!=="Tudo"||busca?" com este filtro":""}.</div>`}
- <p class="small muted">${nomeMes(MES)}: ${eur2(t.e)} de entradas, ${eur2(t.s)} de saídas. Os movimentos do banco não se apagam: se um estiver na conta errada, carrega em Negócio ou Pessoal para o mudar.</p>`;
+ <section class="card"><div class="lbl">Saídas por área · e quem levou mais em cada uma</div>
+  ${cats.map(c=>{const q=grp(c.rows,m=>m.quem||m.desc);return `<div class="cat-row"><span><b>${esc(c.k)}</b> <span class="muted small">${pct(c.t,t.s)}% · ${q.slice(0,3).map(x=>esc(x.k)+" "+eur(x.t)).join(" · ")}</span></span><b class="num">${eur2(c.t)}</b><div class="bar"><i style="width:${pct(c.t,t.s)}%;background:var(--bar-out)"></i></div></div>`}).join("")||`<p class="small muted">Nada em ${mn}.</p>`}
+ </section>
+
+ <div class="grid">
+  <div class="card"><div class="lbl">Negócio vs pessoal em ${mn}</div><p>Negócio: <b>${eur2(ne)}</b> entrou, <b>${eur2(ns)}</b> saiu.<br>Pessoal: <b>${eur2(allMes.filter(m=>m.conta==="Pessoal"&&m.tipo==="Entrada").reduce((a,m)=>a+(+m.valor||0),0))}</b> entrou, <b>${eur2(allMes.filter(m=>m.conta==="Pessoal"&&m.tipo==="Saída").reduce((a,m)=>a+(+m.valor||0),0))}</b> saiu.</p></div>
+  <div class="card"><div class="lbl">A receber</div><h2>${eur(pr.reduce((a,r)=>a+(+r.v||0),0))}</h2><p class="small muted">${pr.length} por receber.</p><div><button class="btn ghost sm" data-go="receber">Ver</button></div></div>
+  <div class="card chart"><div class="lbl">Últimos 6 meses</div>${grafico()}<div class="legend"><span><i style="background:var(--bar-in)"></i>Entradas</span><span><i style="background:var(--bar-out)"></i>Saídas</span></div></div>
+ </div>
+
+ <section class="card"><div class="lbl">Todos os movimentos de ${mn} · ${doMes.length}</div>
+  ${doMes.length?`<div class="tablewrap" style="border:0"><table><thead><tr><th>Data</th><th>Quem</th><th>Como</th><th>Área</th><th>Conta</th><th class="num">Valor</th></tr></thead><tbody>${doMes.map(m=>`<tr><td>${fdata(m.data)}</td><td><b>${esc(m.quem||m.desc)}</b>${m.quem?`<br><span class="small muted">${esc(m.desc)}</span>`:""}</td><td class="small">${meio(m)}</td><td class="small">${esc(m.cat)}</td><td><span class="pill ${m.conta==="Negócio"?"ok":""}">${esc(m.conta)}</span></td><td class="num" style="color:${m.tipo==="Entrada"?"var(--ok)":"inherit"}">${m.tipo==="Entrada"?"+":"−"}${eur2(m.valor)}</td></tr>`).join("")}</tbody></table></div>`:`<div class="empty">Não há movimentos em ${mn}. ${MES>="2026-10"?"O extrato do banco só vai até 13 de outubro: manda o resto e eu carrego.":"Este mês não veio nos extratos que me deste."}</div>`}
+ </section>`;
 };
 
 V.ano=()=>{
@@ -490,6 +497,7 @@ document.addEventListener("click",async e=>{
  const el=e.target.closest("button");if(!el)return;const d=el.dataset;
  if(d.tab){go(d.tab);return}
  if(d.go){go(d.go);return}
+ if(el.id==="mPrev"||el.id==="mNext")mesTocado=true;
  if(el.id==="mPrev"){MES=mesShift(MES,-1);render();return}
  if(el.id==="mNext"){MES=mesShift(MES,1);render();return}
  if(d.f){filtro=d.f;render();return}
@@ -545,7 +553,7 @@ document.addEventListener("change",e=>{
 
 render();
 
-fetch("banco.json").then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{BANCO=Array.isArray(d)?d:[];rebuild();render()}).catch(()=>toast("Não consegui abrir os movimentos do banco."));
+fetch("banco.json").then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{BANCO=Array.isArray(d)?d:[];rebuild();if(!mesTocado){const u=ALL.reduce((a,m)=>String(m.data)>a?String(m.data):a,"");if(u)MES=u.slice(0,7)}render()}).catch(()=>toast("Não consegui abrir os movimentos do banco."));
 
 /* ===== Ligação à base de dados ===== */
 (async()=>{
