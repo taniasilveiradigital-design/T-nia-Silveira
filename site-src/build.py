@@ -56,7 +56,7 @@ BUSINESS = {
 THREAD = '<svg class="thread" viewBox="0 0 1200 24" preserveAspectRatio="none" aria-hidden="true"><path d="M0 12 C 150 2, 300 22, 450 12 S 750 2, 900 12 S 1100 22, 1200 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="7 6"/></svg>'
 
 NAV = [("/metodo-fibra/", "Método FIBRA"), ("/servicos/", "Serviços"), ("/lista-estrategica-de-fornecedores/", "Fornecedores"),
-       ("/guias/", "Guias"), ("/sobre/", "Sobre")]
+       ("/empresas/", "Empresas"), ("/guias/", "Guias"), ("/sobre/", "Sobre")]
 
 def head(path, title, desc, schema, kind="website", noindex=False):
     url = SITE + path
@@ -109,7 +109,8 @@ FOOT = f"""</main>
 <li><a href="/diagnostico-alinhavar/">Diagnóstico Alinhavar</a></li>
 <li><a href="/metodo-fibra/">Método FIBRA</a></li>
 <li><a href="/consultoria-tafeta-360/">Consultoria Tafetá 360</a></li>
-<li><a href="/lista-estrategica-de-fornecedores/">Lista de Fornecedores</a></li></ul></div>
+<li><a href="/lista-estrategica-de-fornecedores/">Lista de Fornecedores</a></li>
+<li><a href="/empresas/">Para empresas</a></li></ul></div>
 <div><h4>Conhecer</h4><ul>
 <li><a href="/sobre/">Sobre a Tânia</a></li>
 <li><a href="/guias/">Guias</a></li>
@@ -242,6 +243,12 @@ home += f"""
 <a class="btn ghost" href="/consultoria-tafeta-360/">Saber mais</a></div>
 </div>
 <p style="margin-top:28px;color:var(--muted)">Precisas só da informação certa? A <a class="link" href="/lista-estrategica-de-fornecedores/">Lista Estratégica de Fornecedores</a> reúne contactos do setor têxtil para revenda e produção própria.</p>
+</div></section>
+
+<section class="alt"><div class="wrap split">
+<div><span class="eyebrow">Para empresas</span><h2>Fábricas, confeções e marcas com equipa. <em>Começa por uma consultoria.</em></h2></div>
+<div><p class="lead">Olho para a empresa por dentro, com a experiência de quem trabalhou do lado da produção. A partir daí, apresento um plano à medida.</p>
+<a class="btn" href="/empresas/">Ver o trabalho com empresas</a></div>
 </div></section>
 
 <section class="alt"><div class="wrap split">
@@ -578,7 +585,7 @@ p = head("/servicos/", "Serviços · Estratégia para marcas de moda · Tânia S
          "Diagnóstico Alinhavar, Método FIBRA, Consultoria Tafetá 360 e Lista Estratégica de Fornecedores. Escolhe o ponto de entrada certo para a fase da tua marca de moda.",
          [c_s, {"@type": "ItemList", "itemListElement": [
              {"@type": "ListItem", "position": i + 1, "url": SITE + u} for i, u in enumerate(
-                 ["/diagnostico-alinhavar/", "/metodo-fibra/", "/consultoria-tafeta-360/", "/lista-estrategica-de-fornecedores/"])]}])
+                 ["/diagnostico-alinhavar/", "/metodo-fibra/", "/consultoria-tafeta-360/", "/lista-estrategica-de-fornecedores/", "/empresas/"])]}])
 p += f"""<section class="page-head"><div class="wrap">{c_h}
 <span class="eyebrow">Serviços</span><h1>Um ponto de entrada <em>para cada fase.</em></h1>
 <p class="lead">Não são serviços soltos. É um caminho: da clareza à estrutura.</p></div></section>
@@ -589,6 +596,7 @@ p += f"""<section class="page-head"><div class="wrap">{c_h}
 <tr><td style="padding:14px;border:1px solid var(--line)"><a class="link" href="/diagnostico-alinhavar/">Diagnóstico Alinhavar</a></td><td style="padding:14px;border:1px solid var(--line)">Marcas a operar que não sabem o que as trava</td><td style="padding:14px;border:1px solid var(--line)">30 minutos, por candidatura</td></tr>
 <tr><td style="padding:14px;border:1px solid var(--line)"><a class="link" href="/consultoria-tafeta-360/">Consultoria Tafetá 360</a></td><td style="padding:14px;border:1px solid var(--line)">Marcas que já vendem e precisam de afinar</td><td style="padding:14px;border:1px solid var(--line)">2 horas + 1 hora ao fim de um mês</td></tr>
 <tr><td style="padding:14px;border:1px solid var(--line)"><a class="link" href="/metodo-fibra/">Método FIBRA</a></td><td style="padding:14px;border:1px solid var(--line)">Marcas que precisam de estrutura para crescer</td><td style="padding:14px;border:1px solid var(--line)">6 meses, 1:1, por candidatura</td></tr>
+<tr><td style="padding:14px;border:1px solid var(--line)"><a class="link" href="/empresas/">Consultoria para empresas</a></td><td style="padding:14px;border:1px solid var(--line)">Fábricas, confeções e marcas com equipa</td><td style="padding:14px;border:1px solid var(--line)">Consultoria inicial + plano à medida</td></tr>
 </table>
 </div></section>
 {final_cta("Não sabes qual é o teu? <em>Começa pelo diagnóstico.</em>", "Em 30 minutos digo-te onde está o problema e qual o caminho certo para a tua marca.")}""" + FOOT
@@ -639,6 +647,71 @@ p += f"""<section class="page-head"><div class="wrap">{c_h}
 <section class="alt"><div class="wrap narrow"><div class="head"><span class="eyebrow">Perguntas frequentes</span><h2>Antes de <em>comprares.</em></h2></div>{f_h}</div></section>
 """ + FOOT
 write("/lista-estrategica-de-fornecedores/", p, "0.9")
+
+
+# =====================================================================
+# EMPRESAS
+# =====================================================================
+emp_faq = [
+    ("Como começa o trabalho com uma empresa?", "Sempre por uma consultoria. Conheço a empresa, a equipa, o produto e os números. Só depois apresento um plano, à medida do que encontrei."),
+    ("Quanto custa?", "O valor da consultoria é indicado no primeiro contacto. Os planos são construídos para cada empresa, por isso o investimento é apresentado com o plano."),
+    ("Trabalhas presencialmente?", "Sim. Estou em Guimarães, no centro da indústria têxtil, e vou às empresas sempre que o trabalho o pede. Também trabalho online."),
+    ("Que tipo de empresas acompanhas?", "Fábricas, confeções, empresas têxteis e marcas de moda com equipa e operação montada."),
+]
+c_h, c_s = crumbs([("Empresas", "/empresas/")])
+f_h, f_s = faq_block(emp_faq)
+p = head("/empresas/", "Consultoria para empresas têxteis e de moda · Tânia Silveira",
+         f"Consultoria estratégica para fábricas, confeções, empresas têxteis e marcas de moda com equipa. Começa por uma consultoria e segue com um plano à medida. {ANOS} anos de chão de fábrica.",
+         [service_schema("/empresas/", "Consultoria para empresas têxteis e de moda",
+                         "Consultoria estratégica para empresas têxteis e de moda: começa por uma consultoria à empresa e segue com um plano à medida.",
+                         {"audience": {"@type": "BusinessAudience", "name": "Fábricas, confeções, empresas têxteis e marcas de moda com equipa"}}),
+          c_s, f_s, PERSON])
+p += f"""<section class="page-head"><div class="wrap">{c_h}
+<span class="eyebrow">Para empresas</span><h1>Antes de um plano, <em>uma consultoria.</em></h1>
+<p class="lead">Para fábricas, confeções, empresas têxteis e marcas de moda com equipa. Entro na empresa, olho para o que está a travar o crescimento e só depois proponho o caminho.</p>
+<div class="btns" style="margin-top:30px"><a class="btn" href="#pedido">Pedir uma consultoria</a></div></div></section>
+<div class="wrap narrow"><div class="tldr"><strong>Em resumo</strong><p>O trabalho de Tânia Silveira com empresas começa sempre por uma consultoria: conhecer a empresa, a equipa, o produto e os números. A partir dessa consultoria é apresentado um plano à medida de cada empresa. Atende presencialmente a partir de Guimarães e online.</p></div></div>
+<section><div class="wrap split top">
+<div><span class="eyebrow">Como funciona</span><h2>Primeiro percebo. <em>Depois proponho.</em></h2>
+<p class="lead">Nenhuma empresa recebe um plano feito antes de eu a conhecer.</p></div>
+<div><ol class="steps">
+<li><div><b>Primeiro contacto</b><p>Contas-me o que se passa na empresa. Vemos se faz sentido avançar.</p></div></li>
+<li><div><b>Consultoria</b><p>Conheço a empresa por dentro: produto, operação, equipa, números e decisões.</p></div></li>
+<li><div><b>Plano à medida</b><p>Apresento o que encontrei e um plano com prioridades, formato e investimento.</p></div></li>
+<li><div><b>Execução</b><p>Se o plano avançar, acompanho a implementação nos termos definidos.</p></div></li>
+</ol></div></div></section>
+<section class="dark"><div class="wrap">
+<div class="head"><span class="eyebrow">Onde intervenho</span><h2>Do produto <em>à decisão.</em></h2></div>
+<div class="pillars">
+<div><b>Coleção e vendas</b><p>Que produto faz sentido, o que vende, o que fica parado.</p></div>
+<div><b>Custo e preço</b><p>Custos reais, preços com critério, margem que aguenta a estrutura.</p></div>
+<div><b>Mercado têxtil</b><p>Posicionamento, clientes e parceiros certos para a fase da empresa.</p></div>
+<div><b>Processos e IA</b><p>Rotinas, ferramentas e uso de IA onde poupa tempo. A IA acelera. O critério vem da fábrica.</p></div>
+</div></div></section>
+<section><div class="wrap split">
+<div><span class="eyebrow">Porquê comigo</span><h2>Falo a língua <em>da fábrica e da marca.</em></h2></div>
+<div><p>São {ANOS} anos dentro da indústria têxtil: produção, planeamento, produto, fornecedores e gestão comercial. Sei o que acontece entre o tecido e a cliente, e onde as empresas perdem margem sem dar por isso.</p>
+<p>Não trago modelos de consultora grande aplicados a frio. Trago critério de quem já esteve no chão de fábrica.</p></div>
+</div></section>
+<section class="alt" id="pedido"><div class="wrap split top">
+<div><span class="eyebrow">Pedir uma consultoria</span><h2>Bora fazer <em>acontecer?</em></h2>
+<p class="lead">Conta-me um pouco sobre a empresa. Respondo pessoalmente.</p></div>
+<form class="form" name="empresas" method="POST" action="/obrigada/" data-netlify="true" netlify-honeypot="website">
+<input type="hidden" name="form-name" value="empresas">
+<p class="hp"><label>Não preencher <input name="website"></label></p>
+<div><label for="e-nome">Nome</label><input id="e-nome" name="nome" required autocomplete="name"></div>
+<div><label for="e-empresa">Empresa</label><input id="e-empresa" name="empresa" required autocomplete="organization"></div>
+<div><label for="e-cargo">Cargo</label><input id="e-cargo" name="cargo" autocomplete="organization-title"></div>
+<div><label for="e-email">Email</label><input id="e-email" name="email" type="email" required autocomplete="email"></div>
+<div><label for="e-tel">Telefone</label><input id="e-tel" name="telefone" type="tel" autocomplete="tel"></div>
+<div><label for="e-tipo">Tipo de empresa</label><select id="e-tipo" name="tipo"><option>Fábrica ou confeção</option><option>Empresa têxtil</option><option>Marca de moda com equipa</option><option>Retalho</option><option>Outra</option></select></div>
+<div><label for="e-msg">O que se passa na empresa?</label><textarea id="e-msg" name="mensagem" required></textarea></div>
+<p style="font-size:13px;color:var(--muted);margin:0">Ao enviar, aceitas a <a href="/politica-de-privacidade/">política de privacidade</a>.</p>
+<div><button class="btn" type="submit">Pedir consultoria</button></div>
+</form></div></section>
+<section><div class="wrap narrow"><div class="head"><span class="eyebrow">Perguntas frequentes</span><h2>O que as empresas <em>me perguntam.</em></h2></div>{f_h}</div></section>
+""" + FOOT
+write("/empresas/", p, "0.9")
 
 # =====================================================================
 # SOBRE
@@ -706,7 +779,7 @@ p += f"""<section class="page-head"><div class="wrap split top">
 <div><label for="nome">Nome</label><input id="nome" name="nome" required autocomplete="name"></div>
 <div><label for="email">Email</label><input id="email" name="email" type="email" required autocomplete="email"></div>
 <div><label for="marca">Marca (se já existe)</label><input id="marca" name="marca"></div>
-<div><label for="fase">Em que fase estás?</label><select id="fase" name="fase"><option>Tenho a ideia, falta o caminho</option><option>Já vendo, mas fica pouco</option><option>Cresci e virei o gargalo</option><option>Outra</option></select></div>
+<div><label for="fase">Em que fase estás?</label><select id="fase" name="fase"><option>Tenho a ideia, falta o caminho</option><option>Já vendo, mas fica pouco</option><option>Cresci e virei o gargalo</option><option>Sou uma empresa</option><option>Outra</option></select></div>
 <div><label for="msg">Mensagem</label><textarea id="msg" name="mensagem" required></textarea></div>
 <p style="font-size:13px;color:var(--muted);margin:0">Ao enviar, aceitas a <a href="/politica-de-privacidade/">política de privacidade</a>.</p>
 <div><button class="btn" type="submit">Enviar mensagem</button></div>
@@ -782,6 +855,7 @@ Língua: português de Portugal. Atende marcas de todo o país, online e presenc
 - [Diagnóstico Alinhavar]({SITE}/diagnostico-alinhavar/): sessão estratégica de 30 minutos, por candidatura, para identificar o gargalo de uma marca de moda (produto, margem, posicionamento ou decisão).
 - [Método FIBRA]({SITE}/metodo-fibra/): acompanhamento estratégico 1:1 de 6 meses para marcas de moda. Pilares: Mentalidade, Produto, Digital. Inclui coleção, lógica de produto, margem, posicionamento e mentalidade de decisão.
 - [Consultoria Tafetá 360]({SITE}/consultoria-tafeta-360/): sessão estratégica de 2 horas + seguimento de 1 hora ao fim de um mês, para marcas que já vendem e precisam de afinar produto, margem e estratégia comercial.
+- [Consultoria para empresas]({SITE}/empresas/): para fábricas, confeções, empresas têxteis e marcas de moda com equipa. Começa sempre por uma consultoria; a partir dela é apresentado um plano à medida.
 - [Lista Estratégica de Fornecedores]({SITE}/lista-estrategica-de-fornecedores/): contactos de fornecedores têxteis em Portugal para revenda e para marca própria. Acesso digital de 6 meses.
 
 ## Guias
