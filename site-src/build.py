@@ -21,10 +21,11 @@ LINKS = {
 # Mensagens reais de clientes (WhatsApp), com nomes ocultados.
 # Formato: ("frase da cliente", "quem", "contexto"). Lista vazia = secção escondida.
 FEEDBACKS = [
+    ("Tânia, o teu Método FIBRA ficou-me na cabeça: estrutura, margem e estratégia.", "Cliente", "Depois de conhecer o método"),
+    ("Quero ter o compromisso de, de 15 em 15 dias, reunir contigo.", "Cliente", "A decisão de entrar em acompanhamento"),
     ("Já temos data para gravação na RTP.", "Cliente em acompanhamento", "Marca a caminho da televisão"),
     ("Já recebi o email da inscrição. Fomos selecionados. Aquela feira que supostamente tinha as inscrições fechadas: afinal fomos aceites.", "Cliente do Método FIBRA", "Seleção para uma feira"),
     ("Ontem também me candidatei ao mercado e recebi o email agora. Fomos aceites. Para dia 30 e 31 de maio.", "Cliente em acompanhamento", "Candidatura aceite"),
-    ("O conteúdo está a ser produzido a todo o vapor. Tanto vídeos como fotografias.", "Cliente em acompanhamento", "Do plano à execução"),
     ("Adorei todos, mas o primeiro está espetacular. Encheu o coração.", "Cliente", "Revisão do logótipo da marca"),
 ]
 
