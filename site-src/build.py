@@ -45,6 +45,9 @@ CASOS = [
      "Alcance nunca substitui estrutura."),
 ]
 
+WHATSAPP = "351936582165"
+GUIA_PDF = "/assets/guia-10-perguntas-antes-de-produzir.pdf"
+
 CLIENTES = ["Nicau Couture", "ROMEO", "DOMPURE", "Hosmos.co", "LEFKOT", "Traços D'Amor"]
 OG = SITE + "/assets/img/og.jpg"
 FOTO = SITE + "/assets/img/tania-silveira-fita-metrica.jpg"
@@ -61,6 +64,17 @@ def feedbacks_html():
         return ""
     cards = "".join(f'<figure class="fb rise"><blockquote>“{e(q)}”</blockquote><figcaption><b>{e(n)}</b>{e(m)}</figcaption></figure>' for q, n, m in FEEDBACKS)
     return f'''<section class="alt"><div class="wrap"><div class="head"><span class="eyebrow">Mensagens reais de clientes</span><h2>O que chega <em>ao meu WhatsApp.</em></h2><p class="lead">Feiras, mercados, televisão. Resultados contados pelas próprias clientes. Os nomes ficam de fora, por respeito.</p></div><div class="fbs">{cards}</div></div></section>'''
+
+def guia_form(fid):
+    return f'''<form class="gform" name="guia" method="POST" data-netlify="true" netlify-honeypot="bot-field" data-guia>
+<input type="hidden" name="form-name" value="guia"><input type="hidden" name="origem" value="{fid}">
+<p class="hp"><label>Não preencher <input name="bot-field"></label></p>
+<div class="grow"><label for="g-nome-{fid}">Nome<input id="g-nome-{fid}" name="nome" required autocomplete="name"></label>
+<label for="g-email-{fid}">Email<input id="g-email-{fid}" name="email" type="email" required autocomplete="email"></label></div>
+<label class="chk"><input type="checkbox" name="consentimento" value="sim" required><span>Aceito receber o guia e emails da Tânia Silveira. Posso sair quando quiser. <a href="/politica-de-privacidade/">Privacidade</a>.</span></label>
+<button class="btn" type="submit">Quero o guia</button>
+<p class="gok" hidden>Pronto. <a class="link" href="{GUIA_PDF}" target="_blank" rel="noopener">Descarregar o guia (PDF)</a></p>
+</form>'''
 
 def pic(name, alt, h=1650, lazy=True, sizes="(max-width:860px) 90vw, 40vw"):
     return (f'<picture><source type="image/webp" srcset="/assets/img/{name}-600.webp 600w, /assets/img/{name}-1100.webp 1100w" sizes="{sizes}">'
@@ -173,6 +187,7 @@ FOOT = f"""</main>
 </div>
 <div class="base"><span>© 2026 Tânia Silveira · Estratégia Têxtil</span><span><a href="/politica-de-privacidade/">Política de privacidade</a></span></div>
 </div></footer>
+<a class="wa" href="https://wa.me/{WHATSAPP}?text=Ol%C3%A1%20T%C3%A2nia%2C%20vim%20pelo%20site." target="_blank" rel="noopener" aria-label="Falar com a Tânia no WhatsApp"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 3C9 3 3.3 8.6 3.3 15.6c0 2.4.7 4.7 1.9 6.7L3 29l6.9-2.1c1.9 1 4 1.6 6.1 1.6 7 0 12.7-5.7 12.7-12.7S23 3 16 3zm0 23.2c-1.9 0-3.8-.5-5.4-1.5l-.4-.2-4.1 1.2 1.2-4-.3-.4a10.4 10.4 0 1 1 9 4.9zm5.7-7.8c-.3-.2-1.9-.9-2.2-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7.1a8.5 8.5 0 0 1-4.2-3.7c-.3-.5.3-.5.9-1.6.1-.2 0-.4 0-.5l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4s-1.2 1.1-1.2 2.7 1.2 3.2 1.4 3.4 2.4 3.6 5.7 5c2.1.9 2.9 1 4 .8.6-.1 1.9-.8 2.2-1.5s.3-1.4.2-1.5-.3-.2-.6-.3z"/></svg><span>WhatsApp</span></a>
 <script src="/assets/site.js" defer></script>
 <script src="/assets/ferramentas.js" defer></script>
 </body></html>
@@ -241,19 +256,27 @@ home = head("/", "Tânia Silveira · Estratégia para marcas de moda e negócios
             [BUSINESS, PERSON, {"@type": "WebSite", "@id": SITE + "/#site", "url": SITE + "/", "name": "Tânia Silveira",
                                 "inLanguage": "pt-PT", "publisher": {"@id": SITE + "/#tania"}}, faq_s])
 home += f"""
-<section class="hero"><div class="wrap">
-<div>
-<span class="eyebrow">Estratégia para marcas de moda &amp; negócios têxteis</span>
+<section class="hero2"><div class="wrap h2grid">
+<div class="h2text">
+<span class="ref">Ref. TS-2027 &nbsp;·&nbsp; Estratégia para marcas de moda &amp; negócios têxteis</span>
 <h1>Não és ignorada por falta de qualidade. <em>És ignorada por falta de posicionamento.</em></h1>
-<p class="lead">Sou a Tânia Silveira. Há {ANOS} anos no têxtil, do chão de fábrica ao produto. Ponho estrutura, margem e direção em marcas de moda que trabalham muito e crescem pouco.</p>
-<div class="btns"><a class="btn" href="/diagnostico-alinhavar/">Pedir o diagnóstico</a><a class="btn ghost" href="/autodiagnostico/">Fazer o autodiagnóstico</a></div>
-<div class="proof"><span>{ANOS} anos na indústria têxtil</span><span>Produção, produto e planeamento</span><span>Guimarães · Portugal</span></div>
+<p class="lead">Sou a Tânia Silveira. {ANOS} anos no têxtil, do chão de fábrica ao produto. Ponho estrutura, margem e direção em marcas de moda que trabalham muito e crescem pouco.</p>
+<div class="btns"><a class="btn light" href="/diagnostico-alinhavar/">Pedir o diagnóstico</a><a class="btn outline-light" href="/autodiagnostico/">Fazer o autodiagnóstico</a></div>
 </div>
-<figure class="portrait">
-{pic("tania-silveira-fita-metrica", "Tânia Silveira, estrategista têxtil, com uma fita métrica ao pescoço em frente a um cabide de roupa", lazy=False)}
-<figcaption><b>Tânia Silveira</b>Estrategista têxtil</figcaption>
+<figure class="h2media">
+<div class="ruler" aria-hidden="true"><span>0</span><span>10</span><span>20</span><span>30</span><span>40</span><span>cm</span></div>
+<video class="h2video" autoplay muted loop playsinline preload="metadata" poster="/assets/video/resumo-poster.jpg" aria-label="Bastidores: máquina de costura, tesoura, amostras de tecido e cabide de roupa">
+<source src="/assets/video/resumo.webm" type="video/webm"><source src="/assets/video/resumo.mp4" type="video/mp4"></video>
+<figcaption class="care" aria-label="Etiqueta de composição">
+<b>Composição</b>
+<span>50% chão de fábrica</span><span>30% estratégia</span><span>20% fibra</span>
+<small>Feito em Guimarães · Portugal</small>
+<small class="wash">Lavar com critério. Não usar atalhos.</small>
+</figcaption>
 </figure>
-</div></section>
+</div>
+<div class="wrap h2proof"><div><b>{ANOS} anos</b><span>de chão de fábrica</span></div><div><b>Guimarães</b><span>no centro do têxtil português</span></div><div><b>6 meses</b><span>de Método FIBRA, lado a lado</span></div></div>
+</section>
 {THREAD}
 <section><div class="wrap">
 <div class="head"><span class="eyebrow">Em que fase está a tua marca?</span>
@@ -285,10 +308,17 @@ home += f"""
 </form>
 </div></section>
 
-<section class="dark"><div class="wrap">
-<div class="head"><span class="eyebrow">Como penso</span>
-<h2>Eu não dou dicas. <em>Desenho a estrutura.</em></h2>
-<p class="lead">Enquanto estás presa no operacional, as decisões estratégicas ficam sempre para depois. É aí que as marcas param.</p></div>
+<section class="dark manif"><div class="wrap">
+<div class="mgrid">
+<figure class="mvideo"><video autoplay muted loop playsinline preload="none" poster="/assets/video/v2-poster.jpg" aria-label="Tânia Silveira a escrever no caderno, à secretária">
+<source src="/assets/video/v2.webm" type="video/webm"><source src="/assets/video/v2.mp4" type="video/mp4"></video></figure>
+<div class="mtext"><span class="eyebrow">Ref. 02 · Manifesto</span>
+<h2>Não trabalho com toda a gente. <em>Trabalho com quem quer decidir.</em></h2>
+<p>Não vendo atalhos. Não faço o teu Instagram. Não te digo o que queres ouvir.</p>
+<p>Entro no teu negócio como entrava numa fábrica: a olhar para o que se faz, quanto custa e porquê. Depois decidimos. Com critério.</p>
+<p>Se procuras uma fórmula rápida, não sou eu. Se queres uma marca com estrutura, margem e direção, bora fazer acontecer.</p>
+<p class="sig">Tânia Silveira</p></div>
+</div>
 <div class="pillars">
 <div><b>Estrutura antes do crescimento</b><p>Crescer em cima de improviso é só multiplicar o problema.</p></div>
 <div><b>Produto antes da comunicação</b><p>Nenhum post salva uma coleção mal pensada.</p></div>
@@ -343,6 +373,13 @@ home += f"""
 <div class="clients" style="margin-top:20px">{''.join(f'<span>{e(c)}</span>' for c in CLIENTES)}</div></div>
 </div></section>
 {feedbacks_html()}
+<section class="alt" id="guia"><div class="wrap split">
+<div class="gcover" aria-hidden="true"><div class="gpaper"><span>Guia grátis · Tânia Silveira</span><b>As 10 perguntas</b><i>antes de produzires uma coleção</i><em>Do chão de fábrica, para a tua marca.</em></div></div>
+<div><span class="eyebrow">Guia grátis</span>
+<h2>Antes de produzir, <em>responde a isto.</em></h2>
+<p class="lead">10 perguntas que separam uma coleção com margem de uma coleção parada no armazém. Cada uma vem de um erro real que vi acontecer.</p>
+{guia_form("home")}
+</div></div></section>
 {THREAD}
 <section><div class="wrap">
 <div class="head"><span class="eyebrow">Guias</span><h2>Respostas de quem <em>já esteve na fábrica.</em></h2></div>
@@ -909,6 +946,21 @@ p += f"""<section class="page-head"><div class="wrap narrow">{c_h}
 """ + FOOT
 write("/autodiagnostico/", p, "0.9")
 
+
+# Guia grátis (lead magnet)
+c_h, c_s = crumbs([("Ferramentas", "/ferramentas/"), ("Guia grátis", "/guia-10-perguntas/")])
+p = head("/guia-10-perguntas/", "As 10 perguntas antes de produzires uma coleção · Guia grátis",
+         "Guia grátis em PDF: as 10 perguntas que uma marca de moda tem de responder antes de produzir uma coleção. Produto, custo, margem, fornecedor e prazos.",
+         [c_s, {"@type": "DigitalDocument", "name": "As 10 perguntas antes de produzires uma coleção", "url": SITE + "/guia-10-perguntas/", "author": {"@id": SITE + "/#tania"}, "inLanguage": "pt-PT", "isAccessibleForFree": True}])
+p += f"""<section class="page-head"><div class="wrap split">
+<div>{c_h}<span class="eyebrow">Guia grátis · PDF</span><h1>As 10 perguntas <em>antes de produzires uma coleção.</em></h1>
+<p class="lead">Cada pergunta vem de um erro real: produções perdidas, stock parado, margens que não existiam. Responde a todas antes de pagares a primeira amostra.</p>
+<ul class="glist"><li>Produto e cliente: 4 perguntas</li><li>Custo, preço e margem: 3 perguntas</li><li>Fornecedor e produção: 3 perguntas</li></ul>
+{guia_form("pagina")}</div>
+<div class="gcover" aria-hidden="true"><div class="gpaper"><span>Guia grátis · Tânia Silveira</span><b>As 10 perguntas</b><i>antes de produzires uma coleção</i><em>Do chão de fábrica, para a tua marca.</em></div></div>
+</div></section>""" + FOOT
+write("/guia-10-perguntas/", p, "0.8")
+
 # Ferramentas hub
 c_h, c_s = crumbs([("Ferramentas", "/ferramentas/")])
 p = head("/ferramentas/", "Ferramentas para marcas de moda · Tânia Silveira",
@@ -916,10 +968,11 @@ p = head("/ferramentas/", "Ferramentas para marcas de moda · Tânia Silveira",
          [c_s, {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": SITE + u} for i, u in enumerate(["/calculadora-de-margem/", "/autodiagnostico/", "/lista-estrategica-de-fornecedores/"])]}])
 p += f"""<section class="page-head"><div class="wrap">{c_h}
 <span class="eyebrow">Ferramentas</span><h1>Decide com <em>números,</em> não com palpites.</h1>
-<p class="lead">Duas ferramentas grátis e uma lista paga. Para usares sozinha, quando quiseres.</p></div></section>
-<section style="padding-top:0"><div class="wrap"><div class="cards">
+<p class="lead">Três ferramentas grátis e uma lista paga. Para usares sozinha, quando quiseres.</p></div></section>
+<section style="padding-top:0"><div class="wrap"><div class="cards two">
 <a class="card" href="/calculadora-de-margem/"><span class="tag">Grátis · 2 minutos</span><h3>Calculadora de margem real</h3><p>Produção, aviamentos, portes, taxas, devoluções, descontos e IVA. Vês quanto ganhas de facto por peça e o preço certo para 60% de margem.</p><span class="go">Fazer a conta →</span></a>
 <a class="card" href="/autodiagnostico/"><span class="tag">Grátis · 9 perguntas</span><h3>Autodiagnóstico da marca</h3><p>Produto, margem, posicionamento ou decisão: descobre o que está a travar a tua marca e os primeiros 3 passos.</p><span class="go">Começar →</span></a>
+<a class="card" href="/guia-10-perguntas/"><span class="tag">Grátis · PDF</span><h3>As 10 perguntas antes de produzir</h3><p>O guia para responder antes de pagares a primeira amostra. Produto, custo, margem, fornecedor e prazos.</p><span class="go">Receber o guia →</span></a>
 <a class="card" href="/lista-estrategica-de-fornecedores/"><span class="tag">Desde 49 €</span><h3>Lista Estratégica de Fornecedores</h3><p>Contactos do setor têxtil para revenda e para criar produto próprio, organizados por categoria.</p><span class="go">Ver a lista →</span></a>
 </div></div></section>
 {final_cta()}""" + FOOT
@@ -1070,6 +1123,7 @@ Língua: português de Portugal. Atende marcas de todo o país, online e presenc
 - [Consultoria para empresas]({SITE}/empresas/): para fábricas, confeções, empresas têxteis e marcas de moda com equipa. Começa sempre por uma consultoria; a partir dela é apresentado um plano à medida.
 - [Calculadora de margem]({SITE}/calculadora-de-margem/): ferramenta gratuita que calcula a margem real de uma peça de roupa, com IVA, descontos, portes, taxas e devoluções.
 - [Autodiagnóstico]({SITE}/autodiagnostico/): 9 perguntas que identificam o gargalo de uma marca de moda (produto, margem, posicionamento ou decisão) e o serviço indicado.
+- [Guia grátis: as 10 perguntas antes de produzires uma coleção]({SITE}/guia-10-perguntas/)
 - [Lista Estratégica de Fornecedores]({SITE}/lista-estrategica-de-fornecedores/): contactos de fornecedores têxteis em Portugal para revenda e para marca própria. Acesso digital de 6 meses.
 
 ## Guias

@@ -185,3 +185,20 @@
     tick();
   }
 })();
+
+/* ---------- Guia grátis + vídeos ---------- */
+(function () {
+  document.querySelectorAll('form[data-guia]').forEach(function (f) {
+    f.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      var ok = f.querySelector('.gok'), btn = f.querySelector('button');
+      btn.disabled = true;
+      fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(new FormData(f)).toString() })
+        .catch(function () {})
+        .then(function () { ok.hidden = false; btn.hidden = true; });
+    });
+  });
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll('video[autoplay]').forEach(function (v) { v.removeAttribute('autoplay'); v.pause(); v.controls = true; });
+  }
+})();
