@@ -18,11 +18,42 @@ LINKS = {
     "instagram": "https://www.instagram.com/taniasilveira.pt/",
     "linkedin": "https://www.linkedin.com/in/t%C3%A2nia-silveira-229848295",
 }
+# Testemunhos reais (só com autorização). Formato: ("frase da cliente", "Nome", "Marca")
+# Enquanto a lista estiver vazia, a secção não aparece no site.
+FEEDBACKS = []
+
+# Casos reais, do arquivo "Histórias de Clientes" da Tânia
+CASOS = [
+    ("Rebranding", "ROMEO: rebranding em cinco dias",
+     "A fundadora entrou para mudar a imagem. Em cinco dias o posicionamento ficou ajustado, a identidade clara e uma peça foi pensada de raiz.",
+     "Não foi velocidade. Foi clareza."),
+    ("Marca do zero", "Da ideia à primeira coleção",
+     "Uma marca que não sabia por onde começar. Acompanhei o pensamento inicial, a estrutura e as decisões até à primeira coleção. Hoje caminha sozinha.",
+     "Não dei ideias soltas. Dei método."),
+    ("Revenda", "Do medo à revenda",
+     "Chegou insegura, sem saber se o negócio tinha pernas. Com estrutura e direção, organizou o processo e hoje revende com confiança.",
+     "O crescimento foi interno antes de ser externo."),
+    ("Viabilidade", "O pedido certo atrás do pedido errado",
+     "Muitos seguidores e investimento forte em comunicação. Parecia um problema de vendas. A pergunta real era se as peças podiam ser produzidas em Portugal.",
+     "Alcance nunca substitui estrutura."),
+]
+
 CLIENTES = ["Nicau Couture", "ROMEO", "DOMPURE", "Hosmos.co", "Little Leflot", "Traços D'Amor"]
 OG = SITE + "/assets/img/og.jpg"
 FOTO = SITE + "/assets/img/tania-silveira-fita-metrica.jpg"
 
 e = html.escape
+
+def casos_html():
+    return '<div class="cases">' + "".join(
+        f'<article class="case rise"><span class="tag">{e(t)}</span><h3>{e(h)}</h3><p>{e(d)}</p><p class="lesson">{e(l)}</p></article>'
+        for t, h, d, l in CASOS) + '</div>'
+
+def feedbacks_html():
+    if not FEEDBACKS:
+        return ""
+    cards = "".join(f'<figure class="fb rise"><blockquote>“{e(q)}”</blockquote><figcaption><b>{e(n)}</b>{e(m)}</figcaption></figure>' for q, n, m in FEEDBACKS)
+    return f'''<section class="alt"><div class="wrap"><div class="head"><span class="eyebrow">O que dizem as clientes</span><h2>Palavra de quem <em>já passou por cá.</em></h2></div><div class="fbs">{cards}</div></div></section>'''
 
 def pic(name, alt, h=1650, lazy=True, sizes="(max-width:860px) 90vw, 40vw"):
     return (f'<picture><source type="image/webp" srcset="/assets/img/{name}-600.webp 600w, /assets/img/{name}-1100.webp 1100w" sizes="{sizes}">'
@@ -266,10 +297,14 @@ home += f"""
 <a class="link" href="/sobre/">Conhecer a minha história →</a></div>
 </div></section>
 
-<section><div class="wrap" style="text-align:center">
-<span class="eyebrow">Marcas com quem já trabalhei</span>
-<div class="clients" style="margin-top:20px">{''.join(f'<span>{e(c)}</span>' for c in CLIENTES)}</div>
+<section><div class="wrap">
+<div class="head"><span class="eyebrow">Casos reais</span><h2>Bastidores, <em>não promessas.</em></h2>
+<p class="lead">Histórias de marcas que acompanhei. O produto raramente é o problema. As decisões são.</p></div>
+{casos_html()}
+<div style="text-align:center;margin-top:clamp(48px,6vw,80px)"><span class="eyebrow">Marcas com quem já trabalhei</span>
+<div class="clients" style="margin-top:20px">{''.join(f'<span>{e(c)}</span>' for c in CLIENTES)}</div></div>
 </div></section>
+{feedbacks_html()}
 {THREAD}
 <section><div class="wrap">
 <div class="head"><span class="eyebrow">Guias</span><h2>Respostas de quem <em>já esteve na fábrica.</em></h2></div>
@@ -551,7 +586,9 @@ service_page("/metodo-fibra/", "Método FIBRA",
 <section class="alt"><div class="wrap"><div class="versus">
 <div><h3>É para ti se</h3><ul><li>A tua marca já existe e já vende</li><li>Sabes que o problema é de estrutura, não de esforço</li><li>Estás disposta a tomar decisões difíceis</li><li>Queres crescer com previsibilidade</li></ul></div>
 <div><h3>Não é para ti se</h3><ul><li>Procuras atalhos, hacks ou fórmulas rápidas</li><li>Queres alguém que faça o conteúdo por ti</li><li>Esperas resultados garantidos sem mudar nada</li></ul></div>
-</div></div></section>""",
+</div></div></section>
+<section><div class="wrap"><div class="head"><span class="eyebrow">Casos reais</span><h2>O que muda <em>com estrutura.</em></h2></div>{casos_html()}</div></section>
+{feedbacks_html()}""",
     [("Quanto tempo dura o Método FIBRA?", "6 meses de acompanhamento estratégico individual."),
      ("O Método FIBRA é online?", "Sim. As sessões são online, para marcas de todo o país. Quando faz sentido, podem ser presenciais."),
      ("Qual a diferença entre o Método FIBRA e uma mentoria de Instagram?", "O FIBRA trabalha o negócio: coleção, produto, preço, margem e decisão. A comunicação entra no fim, alinhada com o produto. Não é uma mentoria de conteúdo."),
