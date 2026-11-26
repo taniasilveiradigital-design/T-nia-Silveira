@@ -110,6 +110,11 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:now
 .contas button{background:transparent;border:1px solid var(--side-muted);color:var(--side-fg);border-radius:99px;padding:4px 14px;font-weight:600;font-size:.85rem;cursor:pointer}
 .contas button[aria-pressed="true"]{background:var(--side-fg);color:var(--side);border-color:var(--side-fg)}
 .ano td.mes-off{color:var(--faint)}
+.mat table{font-size:.8rem}.mat td,.mat th{padding:7px 8px}
+.mat .fix{position:sticky;left:0;background:var(--panel);z-index:1;min-width:150px;max-width:190px}
+.mat th.off{color:var(--faint)}
+tr.tot td{border-top:2px solid var(--line);background:var(--sunk)}
+tr.tot td.fix{background:var(--sunk)}
 .cli-grid td,.cli-grid th{font-size:.82rem;padding:8px 9px}
 .pill.mini{cursor:pointer;border:0;font:inherit;font-size:.72rem;font-weight:700}
 .ficha{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
@@ -280,27 +285,51 @@ V.resumo=()=>{
 
 V.ano=()=>{
  const ano=MES.slice(0,4), ms=Array.from({length:12},(_,i)=>`${ano}-${String(i+1).padStart(2,"0")}`);
- const linhas=ms.map(m=>({m,...tot(m),n:MOVS.filter(x=>String(x.data).startsWith(m)).length}));
- const T=linhas.reduce((a,x)=>({e:a.e+x.e,s:a.s+x.s}),{e:0,s:0});
- const com=linhas.filter(x=>x.n), med=com.length?T.e/com.length:0;
- const max=Math.max(100,...linhas.flatMap(x=>[x.e,x.s]));
- const W=640,H=220,pad=30,gw=(W-pad)/12,bw=Math.min(18,gw/3), y=v=>H-pad-(v/max)*(H-pad-14);
- let svg=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Entradas e saídas por mês em ${ano}"><line x1="${pad}" x2="${W}" y1="${H-pad}" y2="${H-pad}" stroke="var(--line)"/>`;
- if(CONTA==="Negócio")svg+=`<line x1="${pad}" x2="${W}" y1="${y(Math.min(CFG.meta,max))}" y2="${y(Math.min(CFG.meta,max))}" stroke="var(--acc)" stroke-dasharray="4 4"/><text x="${W-4}" y="${y(Math.min(CFG.meta,max))-5}" text-anchor="end">meta ${eur(CFG.meta)}</text>`;
- linhas.forEach((x,i)=>{const cx=pad+gw*i+gw/2;
-  svg+=`<rect x="${cx-bw-1}" y="${y(x.e)}" width="${bw}" height="${H-pad-y(x.e)}" rx="2" fill="var(--bar-in)"><title>${nomeMes(x.m)}: ${eur2(x.e)} de entradas</title></rect><rect x="${cx+1}" y="${y(x.s)}" width="${bw}" height="${H-pad-y(x.s)}" rx="2" fill="var(--bar-out)"><title>${nomeMes(x.m)}: ${eur2(x.s)} de saídas</title></rect><text x="${cx}" y="${H-10}" text-anchor="middle">${MC[i]}</text>`});
+ const doAno=ALL.filter(m=>String(m.data).startsWith(ano));
+ const soma=(arr,f)=>arr.filter(f).reduce((a,m)=>a+(+m.valor||0),0);
+ const temMes=m=>doAno.some(x=>String(x.data).startsWith(m));
+ const c=(v,fmt=eur)=>v?fmt(v):'<span class="muted">·</span>';
+ /* 1. as duas contas lado a lado */
+ const L=ms.map(m=>{const x=doAno.filter(r=>String(r.data).startsWith(m));return{m,ne:soma(x,r=>r.conta==="Negócio"&&r.tipo==="Entrada"),ns:soma(x,r=>r.conta==="Negócio"&&r.tipo==="Saída"),pe:soma(x,r=>r.conta==="Pessoal"&&r.tipo==="Entrada"),ps:soma(x,r=>r.conta==="Pessoal"&&r.tipo==="Saída"),n:x.length}});
+ const S=k=>L.reduce((a,x)=>a+x[k],0);
+ const TE=S("ne")+S("pe"), TS=S("ns")+S("ps");
+ /* matriz genérica: linhas agrupadas por f, colunas meses */
+ const matriz=(arr,f,titulo,cor,max=40)=>{
+  const g={};for(const m of arr){const k=f(m)||"—";const o=g[k]=g[k]||{k,t:0,n:0,mes:{}};const i=+String(m.data).slice(5,7);o.mes[i]=(o.mes[i]||0)+(+m.valor||0);o.t+=+m.valor||0;o.n++}
+  let rows=Object.values(g).sort((a,b)=>b.t-a.t);const T=rows.reduce((a,x)=>a+x.t,0);
+  if(rows.length>max){const rest=rows.slice(max),o={k:`Outros (${rest.length})`,t:0,n:0,mes:{}};for(const r of rest){o.t+=r.t;o.n+=r.n;for(const i in r.mes)o.mes[i]=(o.mes[i]||0)+r.mes[i]}rows=[...rows.slice(0,max),o]}
+  const tm=i=>rows.reduce((a,r)=>a+(r.mes[i]||0),0);
+  return `<div class="tablewrap mat"><table><thead><tr><th class="fix">${titulo}</th>${MC.map((n,i)=>`<th class="num${temMes(ms[i])?"":" off"}">${n}</th>`).join("")}<th class="num">Total</th><th class="num">%</th></tr></thead><tbody>${rows.map(r=>`<tr><td class="fix"><b>${esc(r.k)}</b><br><span class="small muted">${r.n}×</span></td>${MC.map((_,i)=>`<td class="num">${c(r.mes[i+1])}</td>`).join("")}<td class="num"><b>${eur(r.t)}</b></td><td class="num">${T?Math.round(r.t/T*100):0}%</td></tr>`).join("")}<tr class="tot"><td class="fix"><b>Total</b></td>${MC.map((_,i)=>`<td class="num"><b>${c(tm(i+1))}</b></td>`).join("")}<td class="num"><b>${eur(T)}</b></td><td class="num">100%</td></tr></tbody></table></div>`;
+ };
+ const sel=doAno.filter(m=>CONTA==="Tudo"||m.conta===CONTA);
+ const ent=sel.filter(m=>m.tipo==="Entrada"), sai=sel.filter(m=>m.tipo==="Saída");
+ const cli=doAno.filter(m=>m.tipo==="Entrada"&&clienteDe(m));
+ const semDados=ms.filter(m=>!temMes(m)).map(m=>MESES[+m.slice(5)-1]);
+ const maxM=Math.max(100,...L.flatMap(x=>[x.ne+x.pe,x.ns+x.ps]));
+ const W=640,H=220,pad=30,gw=(W-pad)/12,bw=Math.min(18,gw/3), y=v=>H-pad-(v/maxM)*(H-pad-14);
+ let svg=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Entradas e saídas por mês em ${ano}, as duas contas"><line x1="${pad}" x2="${W}" y1="${H-pad}" y2="${H-pad}" stroke="var(--line)"/>`;
+ L.forEach((x,i)=>{const cx=pad+gw*i+gw/2,e=x.ne+x.pe,sv=x.ns+x.ps;
+  svg+=`<rect x="${cx-bw-1}" y="${y(e)}" width="${bw}" height="${H-pad-y(e)}" rx="2" fill="var(--bar-in)"><title>${nomeMes(x.m)}: ${eur2(e)} entrou</title></rect><rect x="${cx+1}" y="${y(sv)}" width="${bw}" height="${H-pad-y(sv)}" rx="2" fill="var(--bar-out)"><title>${nomeMes(x.m)}: ${eur2(sv)} saiu</title></rect><text x="${cx}" y="${H-10}" text-anchor="middle">${MC[i]}</text>`});
  svg+=`</svg>`;
  return `
  <div class="kpis">
-  <div class="kpi ok"><b>${eur(T.e)}</b><span>entradas em ${ano}</span></div>
-  <div class="kpi"><b>${eur(T.s)}</b><span>saídas em ${ano}</span></div>
-  <div class="kpi ${T.e-T.s<0?"bad":""}"><b>${eur(T.e-T.s)}</b><span>sobra em ${ano}</span></div>
-  <div class="kpi"><b>${eur(med)}</b><span>média de entradas por mês com dados</span></div>
+  <div class="kpi ok"><b>${eur(TE)}</b><span>entrou em ${ano} (as duas contas)</span></div>
+  <div class="kpi bad"><b>${eur(TS)}</b><span>saiu em ${ano}</span></div>
+  <div class="kpi ${TE-TS<0?"bad":"ok"}"><b>${eur(TE-TS)}</b><span>${TE-TS<0?"faltou":"sobrou"} no ano</span></div>
+  <div class="kpi"><b>${eur(S("ne"))}</b><span>faturou o negócio · ${eur(S("ne")/Math.max(1,L.filter(x=>x.n).length))}/mês</span></div>
  </div>
- <div class="card chart"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><div class="lbl">${ano} · ${esc(CONTA==="Tudo"?"as duas contas":CONTA)}</div><div class="legend"><span><i style="background:var(--bar-in)"></i>Entradas</span><span><i style="background:var(--bar-out)"></i>Saídas</span></div></div>${svg}</div>
- <div class="tablewrap ano"><table><thead><tr><th>Mês</th><th class="num">Entradas</th><th class="num">Saídas</th><th class="num">Sobra</th><th class="num">Movimentos</th></tr></thead><tbody>${linhas.map(x=>`<tr><td${x.n?"":' class="mes-off"'}><button class="filters-link" data-vermes="${x.m}" style="background:none;border:0;padding:0;color:var(--acc);font-weight:600;cursor:pointer">${MESES[+x.m.slice(5)-1]}</button></td><td class="num">${x.n?eur2(x.e):"—"}</td><td class="num">${x.n?eur2(x.s):"—"}</td><td class="num" style="color:${x.e-x.s<0?"var(--bad)":"inherit"}">${x.n?eur2(x.e-x.s):"—"}</td><td class="num">${x.n||"sem dados"}</td></tr>`).join("")}<tr><td><b>Total</b></td><td class="num"><b>${eur2(T.e)}</b></td><td class="num"><b>${eur2(T.s)}</b></td><td class="num"><b>${eur2(T.e-T.s)}</b></td><td></td></tr></tbody></table></div>
- <div class="grid"><div class="card"><div class="lbl">Por área em ${ano} · entradas</div>${porCat(ano,"Entrada")}</div><div class="card"><div class="lbl">Por área em ${ano} · saídas</div>${porCat(ano,"Saída")}</div></div>
- <p class="small muted">Meses sem dados: ${linhas.filter(x=>!x.n).map(x=>MESES[+x.m.slice(5)-1]).join(", ")||"nenhum"}. Carrega no nome do mês para ver os movimentos.</p>`;
+ <div class="card dark"><div class="lbl">${ano} numa frase</div><p style="font-family:var(--display);font-size:1.3rem;line-height:1.3">Entraram ${eur(TE)} e saíram ${eur(TS)}. O negócio trouxe ${eur(S("ne"))} (${TE?Math.round(S("ne")/TE*100):0}% do dinheiro que entrou) e pagou ${eur(S("ns"))} do negócio. O resto das saídas, ${eur(S("ps"))}, saiu como pessoal: casa, crédito, supermercado e transferências. ${semDados.length?`Faltam dados de ${semDados.join(", ")}.`:""}${ano==="2026"?" Fevereiro só tem os dias 2 e 3, e o banco vai só até 13 de outubro.":""}</p></div>
+ <div class="card chart"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><div class="lbl">${ano} · as duas contas</div><div class="legend"><span><i style="background:var(--bar-in)"></i>Entrou</span><span><i style="background:var(--bar-out)"></i>Saiu</span></div></div>${svg}</div>
+
+ <section class="card"><div class="lbl">Mês a mês · negócio e pessoal</div>
+ <div class="tablewrap" style="border:0"><table><thead><tr><th>Mês</th><th class="num">Negócio entrou</th><th class="num">Negócio saiu</th><th class="num">Pessoal entrou</th><th class="num">Pessoal saiu</th><th class="num">Total entrou</th><th class="num">Total saiu</th><th class="num">Sobra</th></tr></thead><tbody>${L.map(x=>`<tr><td>${x.n?`<button data-vermes="${x.m}" style="background:none;border:0;padding:0;color:var(--acc);font-weight:600;cursor:pointer">${MESES[+x.m.slice(5)-1]}</button>`:`<span class="muted">${MESES[+x.m.slice(5)-1]} · sem dados</span>`}</td><td class="num">${c(x.ne,eur2)}</td><td class="num">${c(x.ns,eur2)}</td><td class="num">${c(x.pe,eur2)}</td><td class="num">${c(x.ps,eur2)}</td><td class="num"><b>${c(x.ne+x.pe,eur2)}</b></td><td class="num"><b>${c(x.ns+x.ps,eur2)}</b></td><td class="num" style="color:${x.ne+x.pe-x.ns-x.ps<0?"var(--bad)":"inherit"}">${x.n?eur2(x.ne+x.pe-x.ns-x.ps):"—"}</td></tr>`).join("")}<tr class="tot"><td><b>Total</b></td><td class="num"><b>${eur2(S("ne"))}</b></td><td class="num"><b>${eur2(S("ns"))}</b></td><td class="num"><b>${eur2(S("pe"))}</b></td><td class="num"><b>${eur2(S("ps"))}</b></td><td class="num"><b>${eur2(TE)}</b></td><td class="num"><b>${eur2(TS)}</b></td><td class="num"><b>${eur2(TE-TS)}</b></td></tr></tbody></table></div></section>
+
+ <section class="card"><div class="lbl">Clientes · quanto entrou de cada uma, mês a mês</div>${matriz(cli,m=>clienteDe(m),"Cliente","var(--bar-in)")}</section>
+ <section class="card"><div class="lbl">Todas as entradas · de quem veio, mês a mês${CONTA!=="Tudo"?" · só "+esc(CONTA):""}</div>${matriz(ent,m=>m.quem||m.desc,"De quem","var(--bar-in)")}</section>
+ <section class="card"><div class="lbl">Saídas por área, mês a mês${CONTA!=="Tudo"?" · só "+esc(CONTA):""}</div>${matriz(sai,m=>m.cat,"Área","var(--bar-out)")}</section>
+ <section class="card"><div class="lbl">Saídas · para quem foi, mês a mês${CONTA!=="Tudo"?" · só "+esc(CONTA):""}</div>${matriz(sai,m=>m.quem||m.desc,"Para quem","var(--bar-out)",50)}
+  <p class="small muted">As transferências aparecem com o número da conta de destino até lhes dares nome em «Para onde vai» → «Dizer quem é».</p></section>
+ <p class="small muted">Carrega no nome do mês para ver o resumo desse mês. As tabelas largas deslizam para o lado.</p>`;
 };
 function porCat(pref,tipo){
  const m={};for(const x of MOVS)if(String(x.data).startsWith(pref)&&x.tipo===tipo)m[x.cat||"Outro"]=(m[x.cat||"Outro"]||0)+(+x.valor||0);
@@ -502,7 +531,7 @@ document.addEventListener("click",async e=>{
  if(el.id==="mNext"){MES=mesShift(MES,1);render();return}
  if(d.f){filtro=d.f;render();return}
  if(d.conta){CONTA=d.conta;rebuild();render();return}
- if(d.vermes){MES=d.vermes;go("movimentos");return}
+ if(d.vermes){MES=d.vermes;mesTocado=true;go("resumo");return}
  if(d.editar){aEditar=d.editar;render();return}
  if(d.per){anaPer=d.per;render();return}
  if(d.nomear){aNomear=d.nomear;render();return}
