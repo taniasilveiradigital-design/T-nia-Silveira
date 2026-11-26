@@ -51,6 +51,18 @@ Fonte: o Trello "Plano de Escalada" completo (abril a novembro 2026). São 307 c
 - Sem hashtags.
 - Não copiar a voz da Sarah: nada de "você", nem o 🏔️ dela. PT-PT e palavras da Tânia.
 
+
+## 0.3 Funil num só conteúdo (aula Vinci)
+
+- Cada post começa aberto e afunila. Não é um papel por dia (segunda alcançar, quarta engajar, sexta vender): é o funil inteiro em cada post.
+- 1. ATENÇÃO, para quem ainda não segue a Tânia. Capa ou 3 primeiros segundos. Gancho largo, sem jargão e sem precisar de contexto: qualquer dona de marca de moda se revê. Promessa clara do que vai ganhar (ex. da Vinci: "Copie as estratégias das marcas que escalam receita a custo quase zero"). Cara da Tânia sempre que der. Usa os 4 pontos de gancho da Sarah.
+- 2. INTERESSE, para aprofundar quem já segue. Prova concreta, um ponto de cada vez: caso real da Tânia, número, comparação lado a lado, frase de fábrica (ex. da Vinci: "Tamanho não é documento" com a tabela micro vs macro). É aqui que entra o chão de fábrica. Nunca inventar casos nem números.
+- 3. DESEJO. Mostra, não vendas: como fica a marca quando decide bem, o princípio que muda tudo, ilustrado com um exemplo (ex. da Vinci: "Don't sell, show!").
+- 4. AÇÃO. O resultado numa frase e um só CTA ligado ao que a Tânia faz (ex. da Vinci: "Resultado? … Se você quer ter a Vinci te ajudando a implementar o método…, clique no link da bio"). Na Tânia: "Se queres que eu…, [ação]". O CTA varia na semana (DIAGNÓSTICO no máximo 1 a 2 vezes, link na bio, guardar, pergunta).
+- Carrossel: capa = atenção; 2 a 3 slides de interesse; 1 a 2 de desejo; último = ação. Reels: 0 a 3 s atenção; meio interesse; antes do fim desejo; fim ação.
+- Formato não é forma: Reels e carrossel são forma. Quando uma sequência resulta, repete o começo e o fim e troca só o tema.
+- Para dissecar uma inspiração, responde a 4 perguntas: o que me prendeu nos 3 primeiros segundos? O que me fez ficar até ao fim? Era para clicar, comentar ou seguir? Em que momento quase saí?
+
 ---
 
 ## 1. Como a Sarah escreve os cartões (o que colas na app)
