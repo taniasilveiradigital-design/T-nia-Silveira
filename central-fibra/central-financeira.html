@@ -151,7 +151,7 @@ const CAT_OUT=["Anúncios","Ferramentas","Formação","Contabilidade","Impostos 
 const CFG_DEF={meta:3000,reserva:25,mapa:[{n:"Método FIBRA",p:265,q:2},{n:"Tafetá 360",p:250,q:0},{n:"Lista de Fornecedores",p:49,q:0},{n:"Imersão",p:37,q:0}]};
 
 /* ===== Estado (vem da base de dados) ===== */
-let NOVA=null; let ALL=[], MOVS=[], DBMOVS=[], BANCO=[], AJ={}, CONTA="Tudo", CLI=[], aEditar=null, REC=[], FIX=[], CFG=JSON.parse(JSON.stringify(CFG_DEF));
+let NOVA=null, NOMES={}, anaPer="ano", aNomear=null; let ALL=[], MOVS=[], DBMOVS=[], BANCO=[], AJ={}, CONTA="Tudo", CLI=[], aEditar=null, REC=[], FIX=[], CFG=JSON.parse(JSON.stringify(CFG_DEF));
 let db=null, pronto=false, podeEscrever=true;
 const sync=t=>{const e=document.getElementById("sync");if(e)e.textContent=t};
 
@@ -171,7 +171,7 @@ function toast(t){const e=document.createElement("div");e.className="toast";e.se
 
 const movs=()=>MOVS;
 function rebuild(){
- ALL=[...BANCO.map(b=>({...b,...(AJ[b.id]||{}),banco:true})),...DBMOVS.map(m=>({conta:"Negócio",...m}))];
+ ALL=[...BANCO.map(b=>{const n=NOMES[b.chave]||{};return {...b,...(n.nome?{quem:n.nome}:{}),...(n.conta?{conta:n.conta}:{}),...(n.cat?{cat:n.cat}:{}),...(AJ[b.id]||{}),banco:true}}),...DBMOVS.map(m=>({conta:"Negócio",...m}))];
  MOVS=CONTA==="Tudo"?ALL:ALL.filter(m=>m.conta===CONTA);
 }
 const clienteDe=m=>m.cliente||(m.conta==="Negócio"&&m.tipo==="Entrada"&&!m.banco?String(m.desc||"").split("·")[0].trim():"");
@@ -190,7 +190,7 @@ let cfgTimer=null;
 function saveCfg(){clearTimeout(cfgTimer);cfgTimer=setTimeout(()=>w(()=>db.doc("config/geral").set(CFG)),500)}
 
 /* ===== Navegação ===== */
-const TABS=[["resumo","Resumo"],["ano","Ano"],["clientes","Clientes"],["movimentos","Movimentos"],["receber","A receber"],["fixos","Despesas fixas"],["meta","Meta"],["impostos","Impostos"]];
+const TABS=[["resumo","Resumo"],["ano","Ano"],["gastos","Para onde vai"],["clientes","Clientes"],["movimentos","Movimentos"],["receber","A receber"],["fixos","Despesas fixas"],["meta","Meta"],["impostos","Impostos"]];
 let tab=(location.hash||"").slice(1); if(!TABS.some(t=>t[0]===tab))tab="ano";
 let MES=hoje().slice(0,7), filtro="Tudo", busca="", aApagar=null;
 
@@ -266,7 +266,7 @@ V.movimentos=()=>{
   <div class="filters" role="group" aria-label="Filtrar">${FL.map(f=>`<button type="button" data-f="${f}" aria-pressed="${f===filtro}">${f==="Tudo"?"Tudo":f==="Entrada"?"Entradas":"Saídas"}</button>`).join("")}</div>
   <input type="search" id="busca" placeholder="Procurar" value="${esc(busca)}" style="max-width:240px">
  </div>
- ${rows.length?`<div class="tablewrap"><table><thead><tr><th>Data</th><th>Descrição</th><th>Área</th><th>Conta</th><th>Tipo</th><th class="num">Valor</th><th></th></tr></thead><tbody>${rows.map(m=>`<tr><td>${fdata(m.data)}</td><td>${esc(m.desc)}${m.fonte?`<br><span class="small muted">${esc(m.fonte)}</span>`:""}</td><td>${esc(m.cat)}</td><td>${m.banco?`<button class="pill mini ${m.conta==="Negócio"?"ok":""}" data-mudar="${esc(m.id)}" title="Mudar de conta">${esc(m.conta)} ⇄</button>`:`<span class="pill ${m.conta==="Negócio"?"ok":""}">${esc(m.conta)}</span>`}</td><td><span class="pill ${m.tipo==="Entrada"?"ok":"bad"}">${esc(m.tipo)}</span></td><td class="num">${eur2(m.valor)}</td><td style="white-space:nowrap">${m.banco?"":btnDel("movs",m.id)}</td></tr>`).join("")}</tbody></table></div>`
+ ${rows.length?`<div class="tablewrap"><table><thead><tr><th>Data</th><th>Descrição</th><th>Área</th><th>Conta</th><th>Tipo</th><th class="num">Valor</th><th></th></tr></thead><tbody>${rows.map(m=>`<tr><td>${fdata(m.data)}</td><td>${m.quem?`<b>${esc(m.quem)}</b><br>`:""}<span class="small muted">${esc(m.desc)}</span></td><td>${esc(m.cat)}</td><td>${m.banco?`<button class="pill mini ${m.conta==="Negócio"?"ok":""}" data-mudar="${esc(m.id)}" title="Mudar de conta">${esc(m.conta)} ⇄</button>`:`<span class="pill ${m.conta==="Negócio"?"ok":""}">${esc(m.conta)}</span>`}</td><td><span class="pill ${m.tipo==="Entrada"?"ok":"bad"}">${esc(m.tipo)}</span></td><td class="num">${eur2(m.valor)}</td><td style="white-space:nowrap">${m.banco?"":btnDel("movs",m.id)}</td></tr>`).join("")}</tbody></table></div>`
  :`<div class="empty">Nada lançado em ${nomeMes(MES)}${filtro!=="Tudo"||busca?" com este filtro":""}.</div>`}
  <p class="small muted">${nomeMes(MES)}: ${eur2(t.e)} de entradas, ${eur2(t.s)} de saídas. Os movimentos do banco não se apagam: se um estiver na conta errada, carrega em Negócio ou Pessoal para o mudar.</p>`;
 };
@@ -371,6 +371,37 @@ V.clientes=()=>{
  <p class="small muted">Os pagamentos ligam-se à ficha pelo «Nome no banco». Os dados do banco vão de janeiro a ${fdata(REF)}.</p>`;
 };
 
+V.gastos=()=>{
+ const pref=anaPer==="ano"?MES.slice(0,4):MES, lbl=anaPer==="ano"?MES.slice(0,4):nomeMes(MES);
+ const sai=MOVS.filter(m=>m.tipo==="Saída"&&String(m.data).startsWith(pref)), ent=MOVS.filter(m=>m.tipo==="Entrada"&&String(m.data).startsWith(pref));
+ const T=sai.reduce((a,m)=>a+(+m.valor||0),0)||0, TE=ent.reduce((a,m)=>a+(+m.valor||0),0);
+ const grp=(arr,f)=>{const g={};for(const m of arr){const k=f(m)||"—";const o=g[k]=g[k]||{k,t:0,n:0,rows:[]};o.t+=+m.valor||0;o.n++;o.rows.push(m)}return Object.values(g).sort((a,b)=>b.t-a.t)};
+ const cats=grp(sai,m=>m.cat), quem=grp(sai,m=>m.quem||m.desc), orig=grp(ent,m=>m.quem||m.desc);
+ const pc=v=>T?Math.round(v/T*100):0;
+ const linhaQ=(q,tot)=>`<tr><td>${esc(q.k)}</td><td class="num">${q.n}</td><td class="num">${eur2(q.t/q.n)}</td><td class="num"><b>${eur2(q.t)}</b></td><td class="num">${tot?Math.round(q.t/tot*100):0}%</td></tr>`;
+ const trans=grp(sai.filter(m=>/^(nib|srv)-/.test(m.chave||"")||/^Tânia/.test(m.quem||"")),m=>m.chave||m.quem);
+ const tipoLbl=k=>/^nib-/.test(k)?"NIB "+k.slice(4):/^srv-/.test(k)?"Referência "+k.slice(4):k;
+ return `
+ <div class="filters" role="group" aria-label="Período"><button type="button" data-per="ano" aria-pressed="${anaPer==="ano"}">Ano ${MES.slice(0,4)}</button><button type="button" data-per="mes" aria-pressed="${anaPer==="mes"}">${nomeMes(MES)}</button></div>
+ <div class="kpis">
+  <div class="kpi bad"><b>${eur(T)}</b><span>saíram em ${esc(lbl)}</span></div>
+  <div class="kpi ok"><b>${eur(TE)}</b><span>entraram em ${esc(lbl)}</span></div>
+  <div class="kpi"><b>${cats[0]?pc(cats[0].t)+"%":"—"}</b><span>${cats[0]?"vai para "+esc(cats[0].k):"sem saídas"}</span></div>
+  <div class="kpi"><b>${quem[0]?eur(quem[0].t):"—"}</b><span>${quem[0]?"para "+esc(quem[0].k):""}</span></div>
+ </div>
+ ${cats.length?`<div class="card dark"><div class="lbl">A leitura de ${esc(lbl)}</div><p style="font-family:var(--display);font-size:1.3rem;line-height:1.3">${cats.slice(0,3).map(c=>`${esc(c.k)} ${pc(c.t)}%`).join(", ")}. Só estas três levam ${pc(cats.slice(0,3).reduce((a,c)=>a+c.t,0))}% do que sai.${TE<T?` Saiu mais ${eur(T-TE)} do que entrou.`:""}</p></div>`:""}
+ <section class="card"><div class="lbl">Saídas por área · carrega para ver onde</div>
+  <div class="list" style="gap:8px">${cats.map(c=>{const qs=grp(c.rows,m=>m.quem||m.desc);return `<details class="ficha"><summary><h3 style="font-size:1.15rem">${esc(c.k)}</h3><b class="num">${eur2(c.t)}</b><span class="nums"><span>${pc(c.t)}% das saídas</span><span>${c.n} movimentos</span><span>${qs.length} sítios ou pessoas</span></span><div class="bar" style="grid-column:1/-1"><i style="width:${pc(c.t)}%;background:var(--bar-out)"></i></div></summary><div class="corpo"><div class="tablewrap"><table><thead><tr><th>Onde / para quem</th><th class="num">Vezes</th><th class="num">Média</th><th class="num">Total</th><th class="num">Da área</th></tr></thead><tbody>${qs.map(q=>linhaQ(q,c.t)).join("")}</tbody></table></div></div></details>`}).join("")||'<p class="small muted">Nada.</p>'}</div></section>
+ <section class="card"><div class="lbl">Os 20 sítios e pessoas para onde vai mais dinheiro</div>
+  <div class="tablewrap" style="border:0"><table><thead><tr><th>Onde / para quem</th><th class="num">Vezes</th><th class="num">Média</th><th class="num">Total</th><th class="num">Das saídas</th></tr></thead><tbody>${quem.slice(0,20).map(q=>linhaQ(q,T)).join("")}</tbody></table></div></section>
+ <section class="card"><div class="lbl">Transferências e pagamentos que fazes</div>
+  <p class="small muted">O banco só mostra o número da conta de destino, não o nome. Escreve de quem é cada conta (por exemplo «Sara») e diz se é do negócio. Fica guardado e aplica-se a todas as transferências para essa conta.</p>
+  <div class="tablewrap" style="border:0"><table><thead><tr><th>Conta de destino</th><th>Quem é</th><th class="num">Vezes</th><th class="num">Total</th><th>Datas</th><th></th></tr></thead><tbody>${trans.map(q=>{const k=q.k,n=NOMES[k]||{};const ed=aNomear===k;return `<tr><td class="small">${esc(tipoLbl(k))}</td><td>${ed?`<form id="nomeForm" data-k="${esc(k)}" style="display:flex;gap:6px;flex-wrap:wrap"><input id="nmN" name="nome" value="${esc(n.nome||"")}" placeholder="Nome" style="max-width:160px"><select id="nmC" name="conta"><option${(n.conta||q.rows[0].conta)==="Pessoal"?" selected":""}>Pessoal</option><option${(n.conta||q.rows[0].conta)==="Negócio"?" selected":""}>Negócio</option></select><input id="nmA" name="cat" value="${esc(n.cat||"")}" placeholder="Área (ex: Consultoria e gestão de redes)" style="max-width:220px"><button class="btn sm" type="submit">Guardar</button></form>`:`<b>${esc(n.nome||"Por identificar")}</b>${n.conta?` <span class="pill ${n.conta==="Negócio"?"ok":""}">${esc(n.conta)}</span>`:""}`}</td><td class="num">${q.n}</td><td class="num"><b>${eur2(q.t)}</b></td><td class="small">${q.rows.map(m=>fdata(m.data)).join(", ")}</td><td>${ed?"":`<button class="btn ghost sm" data-nomear="${esc(k)}">Dizer quem é</button>`}</td></tr>`}).join("")||'<tr><td colspan="6" class="muted">Nenhuma.</td></tr>'}</tbody></table></div></section>
+ <section class="card"><div class="lbl">De onde vem o dinheiro</div>
+  <div class="tablewrap" style="border:0"><table><thead><tr><th>Quem pagou</th><th class="num">Vezes</th><th class="num">Média</th><th class="num">Total</th><th class="num">Das entradas</th></tr></thead><tbody>${orig.map(q=>linhaQ(q,TE)).join("")}</tbody></table></div></section>
+ <p class="small muted">Mostra ${CONTA==="Tudo"?"as duas contas":"só a conta "+esc(CONTA)}. Muda em cima. O detalhe do que pagas com o cartão de crédito não está no extrato: aparece só como «Cartão de crédito ABANCA».</p>`;
+};
+
 V.receber=()=>{
  const ord=[...REC].sort((a,b)=>(!!a.pago-!!b.pago)||String(a.d||"").localeCompare(String(b.d||"")));
  return `
@@ -465,6 +496,8 @@ document.addEventListener("click",async e=>{
  if(d.conta){CONTA=d.conta;rebuild();render();return}
  if(d.vermes){MES=d.vermes;go("movimentos");return}
  if(d.editar){aEditar=d.editar;render();return}
+ if(d.per){anaPer=d.per;render();return}
+ if(d.nomear){aNomear=d.nomear;render();return}
  if(d.cancelar!==undefined){aEditar=null;NOVA=null;render();return}
  if(d.nova!==undefined){aEditar="nova";NOVA={estado:"Ativa"};render();return}
  if(d.novaficha){aEditar="nova";NOVA={nome:d.novaficha,chave:d.novaficha,estado:"Ativa"};render();window.scrollTo(0,0);return}
@@ -492,6 +525,7 @@ document.addEventListener("submit",async e=>{
  if(f.id==="movForm"){MES=v.data.slice(0,7);await addMov({data:v.data,tipo:v.tipo,desc:v.desc.trim(),cat:v.cat,valor:+v.valor,conta:v.conta||"Negócio"});const d=$("#fDesc"),val=$("#fValor");if(d)d.value="";if(val)val.value="";return}
  if(f.id==="recForm"){await w(()=>db.collection("receber").add({n:v.n.trim(),cat:v.cat,d:v.d,v:+v.v,pago:false}),"Adicionado");return}
  if(f.id==="fixForm"){await w(()=>db.collection("fixos").add({n:v.n.trim(),cat:v.cat,v:+v.v}),"Adicionado");return}
+ if(f.id==="nomeForm"){const k=f.dataset.k;await w(()=>db.doc("nomes/"+k).set({nome:v.nome.trim(),conta:v.conta,cat:v.cat.trim()}),"Guardado");aNomear=null;render();return}
  if(f.id==="cliForm"){
   const docs=String(v.docs||"").split("\n").map(l=>l.trim()).filter(Boolean).map(l=>{const i=l.lastIndexOf("|");return i>0?{n:l.slice(0,i).trim(),u:l.slice(i+1).trim()}:{n:l,u:""}});
   const o={nome:v.nome.trim(),marca:v.marca.trim(),servico:v.servico.trim(),estado:v.estado,valor:v.valor.trim(),inicio:v.inicio,fim:v.fim,nif:v.nif.trim(),contacto:v.contacto.trim(),prox:v.prox.trim(),nota:v.nota.trim(),docs,chave:v.chave.trim()};
@@ -524,6 +558,7 @@ fetch("banco.json").then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{BANCO=A
  const ok=()=>{if(!pronto){pronto=true;clearTimeout(timer)}sync("Dados guardados na tua conta · atualiza sozinho")};
  db.collection("movs").onSnapshot(s=>{DBMOVS=lista(s);rebuild();ok();render()},err);
  db.collection("clientes").onSnapshot(s=>{CLI=lista(s);render()},err);
+ db.collection("nomes").onSnapshot(s=>{NOMES={};for(const d of s.docs)NOMES[d.id]=d.data();rebuild();render()},err);
  db.collection("ajustes").onSnapshot(s=>{AJ={};for(const d of s.docs)AJ[d.id]=d.data();rebuild();render()},err);
  db.collection("receber").onSnapshot(s=>{REC=lista(s);render()},err);
  db.collection("fixos").onSnapshot(s=>{FIX=lista(s);render()},err);
