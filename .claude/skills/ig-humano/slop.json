@@ -1,0 +1,663 @@
+{
+ "version": "1.0-pt",
+ "note": "Léxico em PT-PT para humanize.py e detect.py, afinado à voz da Tânia Silveira. Edita à vontade: se uma palavra tua estiver a ser cortada, tira-a daqui.",
+ "invisible": [
+  {
+   "cp": "U+200B",
+   "name": "ZERO WIDTH SPACE",
+   "action": "delete"
+  },
+  {
+   "cp": "U+200C",
+   "name": "ZERO WIDTH NON-JOINER",
+   "action": "delete"
+  },
+  {
+   "cp": "U+200D",
+   "name": "ZERO WIDTH JOINER",
+   "action": "delete"
+  },
+  {
+   "cp": "U+2060",
+   "name": "WORD JOINER",
+   "action": "delete"
+  },
+  {
+   "cp": "U+FEFF",
+   "name": "ZERO WIDTH NO-BREAK SPACE / BOM",
+   "action": "delete"
+  },
+  {
+   "cp": "U+00AD",
+   "name": "SOFT HYPHEN",
+   "action": "delete"
+  },
+  {
+   "cp": "U+180E",
+   "name": "MONGOLIAN VOWEL SEPARATOR",
+   "action": "delete"
+  },
+  {
+   "cp": "U+061C",
+   "name": "ARABIC LETTER MARK",
+   "action": "delete"
+  },
+  {
+   "cp": "U+200E",
+   "name": "LEFT-TO-RIGHT MARK",
+   "action": "delete"
+  },
+  {
+   "cp": "U+200F",
+   "name": "RIGHT-TO-LEFT MARK",
+   "action": "delete"
+  },
+  {
+   "cp": "U+E0000-U+E007F",
+   "name": "TAG CHARACTERS (invisible ASCII smuggling)",
+   "action": "delete"
+  },
+  {
+   "cp": "U+00A0",
+   "name": "NO-BREAK SPACE",
+   "action": "space"
+  },
+  {
+   "cp": "U+202F",
+   "name": "NARROW NO-BREAK SPACE",
+   "action": "space"
+  },
+  {
+   "cp": "U+2009",
+   "name": "THIN SPACE",
+   "action": "space"
+  },
+  {
+   "cp": "U+2007",
+   "name": "FIGURE SPACE",
+   "action": "space"
+  },
+  {
+   "cp": "U+2003",
+   "name": "EM SPACE",
+   "action": "space"
+  },
+  {
+   "cp": "U+2002",
+   "name": "EN SPACE",
+   "action": "space"
+  },
+  {
+   "cp": "U+2063",
+   "name": "INVISIBLE SEPARATOR",
+   "action": "delete"
+  }
+ ],
+ "typographic": [
+  {
+   "from": "—",
+   "name": "EM DASH",
+   "to": ", "
+  },
+  {
+   "from": "–",
+   "name": "EN DASH",
+   "to": "-"
+  },
+  {
+   "from": "‘",
+   "name": "LEFT SINGLE QUOTE",
+   "to": "'"
+  },
+  {
+   "from": "’",
+   "name": "RIGHT SINGLE QUOTE",
+   "to": "'"
+  },
+  {
+   "from": "“",
+   "name": "LEFT DOUBLE QUOTE",
+   "to": "\""
+  },
+  {
+   "from": "”",
+   "name": "RIGHT DOUBLE QUOTE",
+   "to": "\""
+  },
+  {
+   "from": "…",
+   "name": "HORIZONTAL ELLIPSIS",
+   "to": "..."
+  },
+  {
+   "from": "′",
+   "name": "PRIME",
+   "to": "'"
+  },
+  {
+   "from": "·",
+   "name": "MIDDLE DOT",
+   "to": "-"
+  },
+  {
+   "from": "•",
+   "name": "BULLET",
+   "to": "-"
+  },
+  {
+   "from": "→",
+   "name": "RIGHTWARDS ARROW",
+   "to": "->"
+  }
+ ],
+ "words": [
+  {
+   "find": "genuinamente",
+   "replace": "",
+   "family": "tânia"
+  },
+  {
+   "find": "honestamente",
+   "replace": "",
+   "family": "tânia"
+  },
+  {
+   "find": "de certa forma",
+   "replace": "",
+   "family": "tânia"
+  },
+  {
+   "find": "nesse sentido",
+   "replace": "",
+   "family": "tânia"
+  },
+  {
+   "find": "negociozinho",
+   "replace": "negócio",
+   "family": "tânia"
+  },
+  {
+   "find": "tadinha",
+   "replace": "",
+   "family": "tânia"
+  },
+  {
+   "find": "incrível",
+   "replace": "",
+   "family": "tânia"
+  },
+  {
+   "find": "incríveis",
+   "replace": "",
+   "family": "tânia"
+  },
+  {
+   "find": "mágico",
+   "replace": "",
+   "family": "tânia"
+  },
+  {
+   "find": "mágica",
+   "replace": "",
+   "family": "tânia"
+  },
+  {
+   "find": "atalho",
+   "replace": "",
+   "family": "tânia"
+  },
+  {
+   "find": "transformação instantânea",
+   "replace": "mudança",
+   "family": "tânia"
+  },
+  {
+   "find": "crucial",
+   "replace": "importante",
+   "family": "ia"
+  },
+  {
+   "find": "fundamental",
+   "replace": "importante",
+   "family": "ia"
+  },
+  {
+   "find": "essencial",
+   "replace": "importante",
+   "family": "ia"
+  },
+  {
+   "find": "potencializar",
+   "replace": "aumentar",
+   "family": "ia"
+  },
+  {
+   "find": "alavancar",
+   "replace": "usar",
+   "family": "ia"
+  },
+  {
+   "find": "otimizar",
+   "replace": "melhorar",
+   "family": "ia"
+  },
+  {
+   "find": "impulsionar",
+   "replace": "fazer crescer",
+   "family": "ia"
+  },
+  {
+   "find": "robusto",
+   "replace": "sólido",
+   "family": "ia"
+  },
+  {
+   "find": "robusta",
+   "replace": "sólida",
+   "family": "ia"
+  },
+  {
+   "find": "abrangente",
+   "replace": "completo",
+   "family": "ia"
+  },
+  {
+   "find": "inovador",
+   "replace": "novo",
+   "family": "ia"
+  },
+  {
+   "find": "inovadora",
+   "replace": "nova",
+   "family": "ia"
+  },
+  {
+   "find": "disruptivo",
+   "replace": "novo",
+   "family": "ia"
+  },
+  {
+   "find": "holístico",
+   "replace": "completo",
+   "family": "ia"
+  },
+  {
+   "find": "holística",
+   "replace": "completa",
+   "family": "ia"
+  },
+  {
+   "find": "sinergia",
+   "replace": "",
+   "family": "ia"
+  },
+  {
+   "find": "jornada",
+   "replace": "caminho",
+   "family": "ia"
+  },
+  {
+   "find": "mergulhar",
+   "replace": "entrar",
+   "family": "ia"
+  },
+  {
+   "find": "desbloquear",
+   "replace": "abrir",
+   "family": "ia"
+  },
+  {
+   "find": "explorar",
+   "replace": "ver",
+   "family": "ia"
+  },
+  {
+   "find": "navegar",
+   "replace": "lidar com",
+   "family": "ia"
+  },
+  {
+   "find": "panorama",
+   "replace": "mercado",
+   "family": "ia"
+  },
+  {
+   "find": "ecossistema",
+   "replace": "mercado",
+   "family": "ia"
+  },
+  {
+   "find": "paradigma",
+   "replace": "modelo",
+   "family": "ia"
+  },
+  {
+   "find": "empoderar",
+   "replace": "dar força a",
+   "family": "ia"
+  },
+  {
+   "find": "ressignificar",
+   "replace": "mudar",
+   "family": "ia"
+  },
+  {
+   "find": "sem dúvida",
+   "replace": "",
+   "family": "ia"
+  },
+  {
+   "find": "simplesmente",
+   "replace": "",
+   "family": "ia"
+  },
+  {
+   "find": "verdadeiramente",
+   "replace": "",
+   "family": "ia"
+  },
+  {
+   "find": "absolutamente",
+   "replace": "",
+   "family": "ia"
+  },
+  {
+   "find": "extremamente",
+   "replace": "muito",
+   "family": "ia"
+  },
+  {
+   "find": "de facto",
+   "replace": "",
+   "family": "ia"
+  },
+  {
+   "find": "efetivamente",
+   "replace": "",
+   "family": "ia"
+  },
+  {
+   "find": "arrasar",
+   "replace": "",
+   "family": "instagram"
+  },
+  {
+   "find": "conteúdo de valor",
+   "replace": "",
+   "family": "instagram"
+  },
+  {
+   "find": "dica de ouro",
+   "replace": "",
+   "family": "instagram"
+  },
+  {
+   "find": "dicas de ouro",
+   "replace": "",
+   "family": "instagram"
+  },
+  {
+   "find": "game changer",
+   "replace": "",
+   "family": "instagram"
+  },
+  {
+   "find": "mindset",
+   "replace": "mentalidade",
+   "family": "instagram"
+  }
+ ],
+ "phrases": [
+  {
+   "find": "no mundo atual",
+   "replace": "hoje",
+   "family": "abertura"
+  },
+  {
+   "find": "nos dias de hoje",
+   "replace": "hoje",
+   "family": "abertura"
+  },
+  {
+   "find": "no mundo acelerado de hoje",
+   "replace": "hoje",
+   "family": "abertura"
+  },
+  {
+   "find": "no cenário atual",
+   "replace": "hoje",
+   "family": "abertura"
+  },
+  {
+   "find": "vamos falar sobre",
+   "replace": "",
+   "family": "abertura"
+  },
+  {
+   "find": "hoje quero partilhar",
+   "replace": "",
+   "family": "abertura"
+  },
+  {
+   "find": "hoje vou falar sobre",
+   "replace": "",
+   "family": "abertura"
+  },
+  {
+   "find": "neste vídeo",
+   "replace": "",
+   "family": "abertura"
+  },
+  {
+   "find": "neste reel",
+   "replace": "",
+   "family": "abertura"
+  },
+  {
+   "find": "neste post",
+   "replace": "",
+   "family": "abertura"
+  },
+  {
+   "find": "é importante salientar que",
+   "replace": "",
+   "family": "enchimento"
+  },
+  {
+   "find": "é importante referir que",
+   "replace": "",
+   "family": "enchimento"
+  },
+  {
+   "find": "vale a pena referir que",
+   "replace": "",
+   "family": "enchimento"
+  },
+  {
+   "find": "convém lembrar que",
+   "replace": "",
+   "family": "enchimento"
+  },
+  {
+   "find": "é de notar que",
+   "replace": "",
+   "family": "enchimento"
+  },
+  {
+   "find": "posto isto",
+   "replace": "",
+   "family": "enchimento"
+  },
+  {
+   "find": "em suma",
+   "replace": "",
+   "family": "fecho"
+  },
+  {
+   "find": "em conclusão",
+   "replace": "",
+   "family": "fecho"
+  },
+  {
+   "find": "concluindo",
+   "replace": "",
+   "family": "fecho"
+  },
+  {
+   "find": "no fim do dia",
+   "replace": "no fim",
+   "family": "enchimento"
+  },
+  {
+   "find": "a verdade é que",
+   "replace": "",
+   "family": "enchimento"
+  },
+  {
+   "find": "a chave do sucesso",
+   "replace": "o que resulta",
+   "family": "enchimento"
+  },
+  {
+   "find": "leva a tua marca para o próximo nível",
+   "replace": "faz a tua marca crescer",
+   "family": "instagram"
+  },
+  {
+   "find": "para o próximo nível",
+   "replace": "",
+   "family": "instagram"
+  },
+  {
+   "find": "guarda este post",
+   "replace": "guarda",
+   "family": "instagram"
+  },
+  {
+   "find": "segue para mais",
+   "replace": "",
+   "family": "instagram"
+  },
+  {
+   "find": "segue-me para mais",
+   "replace": "",
+   "family": "instagram"
+  },
+  {
+   "find": "partilha com quem precisa",
+   "replace": "",
+   "family": "instagram"
+  },
+  {
+   "find": "marca alguém que",
+   "replace": "",
+   "family": "instagram"
+  },
+  {
+   "find": "não te esqueças de",
+   "replace": "",
+   "family": "instagram"
+  },
+  {
+   "find": "fica até ao fim",
+   "replace": "",
+   "family": "instagram"
+  },
+  {
+   "find": "para de fazer scroll",
+   "replace": "",
+   "family": "instagram"
+  },
+  {
+   "find": "pára de fazer scroll",
+   "replace": "",
+   "family": "instagram"
+  }
+ ],
+ "structures": [
+  {
+   "id": "gerundio",
+   "regex": "(?i)\\b(?!(?:quando|lindo|linda|bando|comando|mando|ando|entendo|vendo|aprendo|defendo|pretendo|estendo|fundo|mundo|segundo)\\b)\\w{2,}(?:ando|endo|indo)\\b",
+   "name": "Gerúndio (proibido em PT-PT)",
+   "fix": "Passa para 'estar a + infinitivo' ou reescreve. 'estou analisando' fica 'estou a analisar'."
+  },
+  {
+   "id": "nao-e-x-e-y",
+   "regex": "(?i)\\bnão (?:é|se trata de) (?:apenas|só|somente) [^.!?\\n]{2,60}[,.] (?:é|trata-se)\\b",
+   "name": "\"Não é só X, é Y\"",
+   "fix": "Diz a coisa que queres dizer. Corta a metade da preparação."
+  },
+  {
+   "id": "nao-so",
+   "regex": "(?i)\\bnão só\\b[^.!?\\n]{2,80}\\bmas também\\b",
+   "name": "\"Não só X, mas também Y\"",
+   "fix": "Parte em duas frases ou corta a parte mais fraca."
+  },
+  {
+   "id": "pergunta-encenada",
+   "regex": "(?im)^\\s*(?:o resultado|a melhor parte|o segredo|o problema|a solução)\\?\\s*$",
+   "name": "Pergunta retórica numa linha sozinha",
+   "fix": "Responde logo na frase. Não encenes a revelação."
+  },
+  {
+   "id": "triade",
+   "regex": "(?i)\\b\\w+, \\w+ e \\w+\\.",
+   "name": "Tríade (três coisas seguidas)",
+   "fix": "Duas ou quatro. Três é o ritmo que a máquina escolhe sempre."
+  },
+  {
+   "id": "emoji-ia",
+   "regex": "[\\U0001F680\\U0001F525\\U0001F4A1✨\\U0001F3AF\\U0001F4AA]",
+   "name": "Emoji de foguete, fogo, lâmpada, brilho, alvo ou bíceps",
+   "fix": "No máximo um emoji. O teu é 🧵."
+  },
+  {
+   "id": "hashtags",
+   "regex": "#[\\wÀ-ÿ]+",
+   "name": "Hashtag",
+   "fix": "A Tânia não usa hashtags. Corta."
+  },
+  {
+   "id": "como-ia",
+   "regex": "(?i)\\bcomo (?:uma )?(?:ia|inteligência artificial|modelo de linguagem)\\b",
+   "name": "A IA a falar de si",
+   "fix": "Apaga a frase."
+  },
+  {
+   "id": "saudacao",
+   "regex": "(?im)^\\s*(?:olá|olá a todos|oi|bom dia a todos|hey)\\b",
+   "name": "Saudação a abrir",
+   "fix": "Começa no gancho. Ninguém veio ao feed para ser cumprimentado."
+  },
+  {
+   "id": "voces",
+   "regex": "(?i)\\b(?:você|vocês|convosco)\\b",
+   "name": "\"Você\" ou \"vocês\"",
+   "fix": "Fala para uma pessoa só, por tu."
+  },
+  {
+   "id": "lista-emoji",
+   "regex": "(?m)^\\s*[\\U0001F300-\\U0001FAFF✅➡✔✨]\\s*\\S",
+   "name": "Lista com emojis",
+   "fix": "Usa hífen ou parágrafo."
+  },
+  {
+   "id": "maiusculas",
+   "regex": "\\b[A-ZÀ-Ý]{3,}\\b(?:\\s+\\b[A-ZÀ-Ý]{3,}\\b){2,}",
+   "name": "Três ou mais palavras em maiúsculas seguidas",
+   "fix": "Uma palavra no máximo."
+  },
+  {
+   "id": "exclamacao",
+   "regex": "!{2,}|(?:![^\\n!]*){3,}",
+   "name": "Exclamações a mais",
+   "fix": "A força vem do conteúdo, não da exclamação."
+  },
+  {
+   "id": "diminutivo",
+   "regex": "(?i)\\b\\w+(?:zinho|zinha|zinhos|zinhas)\\b",
+   "name": "Diminutivo",
+   "fix": "Proibido. Soa a condescendência."
+  }
+ ]
+}
