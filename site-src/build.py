@@ -76,6 +76,11 @@ def guia_form(fid):
 <p class="gok" hidden>Pronto. <a class="link" href="{GUIA_PDF}" target="_blank" rel="noopener">Descarregar o guia (PDF)</a></p>
 </form>'''
 
+def marquee_html():
+    row = "".join(f'<span>{e(c)}</span><i aria-hidden="true">🧵</i>' for c in CLIENTES)
+    return ('<section class="mq" aria-label="Marcas com quem já trabalhei"><p class="mq-t">Marcas com quem já trabalhei</p>'
+            f'<div class="mq-track"><div class="mq-row">{row}</div><div class="mq-row" aria-hidden="true">{row}</div></div></section>')
+
 def pic(name, alt, h=1650, lazy=True, sizes="(max-width:860px) 90vw, 40vw"):
     return (f'<picture><source type="image/webp" srcset="/assets/img/{name}-600.webp 600w, /assets/img/{name}-1100.webp 1100w" sizes="{sizes}">'
             f'<img src="/assets/img/{name}.jpg" width="1100" height="{h}" alt="{alt}"' + (' loading="lazy"' if lazy else ' fetchpriority="high"') + '></picture>')
@@ -279,6 +284,7 @@ home += f"""
 </div>
 <div class="wrap h2proof"><div><b>{ANOS} anos</b><span>de chão de fábrica</span></div><div><b>Guimarães</b><span>no centro do têxtil português</span></div><div><b>6 meses</b><span>de Método FIBRA, lado a lado</span></div></div>
 </section>
+{marquee_html()}
 {THREAD}
 <section class="fork" id="caminhos"><div class="wrap">
 <div class="head" style="text-align:center;margin-left:auto;margin-right:auto"><span class="eyebrow">Dois caminhos</span>
@@ -398,8 +404,6 @@ home += f"""
 <div class="head"><span class="eyebrow">Casos reais</span><h2>Bastidores, <em>não promessas.</em></h2>
 <p class="lead">Histórias de marcas que acompanhei. O produto raramente é o problema. As decisões são.</p></div>
 {casos_html()}
-<div style="text-align:center;margin-top:clamp(48px,6vw,80px)"><span class="eyebrow">Marcas com quem já trabalhei</span>
-<div class="clients" style="margin-top:20px">{''.join(f'<span>{e(c)}</span>' for c in CLIENTES)}</div></div>
 </div></section>
 {feedbacks_html()}
 <section class="alt" id="guia"><div class="wrap split">
@@ -669,14 +673,23 @@ service_page("/metodo-fibra/", "Método FIBRA",
     "Em 6 meses, a tua marca passa a ter direção, margem e decisões com critério. Trabalhamos lado a lado, da coleção à forma como pensas o negócio.",
     "<p>O Método FIBRA é um acompanhamento estratégico individual de 6 meses para marcas de moda que já perceberam o problema e precisam de o resolver com estrutura. Assenta em três pilares: Mentalidade, Produto e Digital. Inclui organização de coleção, lógica de produto, ajuste de margem, direção de posicionamento e desenvolvimento de mentalidade de decisão. A entrada é por candidatura.</p>",
     "Candidatar-me ao Método FIBRA", LINKS["fibra"],
-    f"""<section class="dark"><div class="wrap">
-<div class="head"><span class="eyebrow">Os três pilares</span><h2>Mentalidade. Produto. <em>Digital.</em></h2>
-<p class="lead">Por esta ordem. Porque sem decisão não há produto, e sem produto não há comunicação que resulte.</p></div>
-<div class="pillars three">
-<div><b>Mentalidade</b><p>Sais do operacional e passas a gerir como CEO. Decides com critério, não por impulso nem por pressão do mês.</p></div>
-<div><b>Produto</b><p>Coleção organizada, lógica de produto, preço e margem. Cada peça tem um papel e paga o seu lugar.</p></div>
-<div><b>Digital</b><p>Posicionamento e comunicação alinhados com o produto. Falas para a cliente certa, com a mensagem certa.</p></div>
-</div></div></section>
+    f"""<section class="dark venn-sec"><div class="wrap">
+<div class="head" style="text-align:center;margin:0 auto clamp(36px,5vw,60px)"><span class="eyebrow">Os três pilares</span><h2>A fibra por trás das <em>marcas que crescem.</em></h2>
+<p class="lead" style="margin:0 auto">Três peças que funcionam como um só sistema. Quando uma falta, a marca trava ali. Toca em cada uma para ver onde.</p></div>
+<div class="venn">
+<svg viewBox="0 0 420 400" class="venn-svg" role="img" aria-label="Diagrama dos três pilares do Método FIBRA: Mentalidade, Produto e Digital">
+<circle class="ring" cx="210" cy="205" r="188"/>
+<line class="guide" x1="210" y1="10" x2="210" y2="395"/><line class="guide" x1="20" y1="205" x2="400" y2="205"/>
+<g class="vc" data-k="mentalidade"><circle cx="210" cy="140" r="105"/><text x="210" y="92" class="vt">Mentalidade</text><text x="210" y="110" class="vs">decisão de CEO</text></g>
+<g class="vc" data-k="produto"><circle cx="150" cy="245" r="105"/><text x="105" y="290" class="vt">Produto</text><text x="105" y="308" class="vs">coleção e margem</text></g>
+<g class="vc" data-k="digital"><circle cx="270" cy="245" r="105"/><text x="315" y="290" class="vt">Digital</text><text x="315" y="308" class="vs">posicionamento</text></g>
+<circle class="core" cx="210" cy="210" r="34"/><text x="210" y="207" class="ct">MÉTODO</text><text x="210" y="222" class="ct big">FIBRA</text>
+</svg>
+<div class="venn-list">
+<button type="button" class="vi on" data-k="mentalidade"><span class="tag">Mentalidade</span><b>A decisão vem antes de tudo.</b><span class="vd">Sem ela, mudas de direção a cada venda fraca. Sais do operacional e passas a gerir como CEO.</span></button>
+<button type="button" class="vi" data-k="produto"><span class="tag">Produto</span><b>O produto é onde a margem nasce ou morre.</b><span class="vd">Sem lógica de coleção, cada peça é uma aposta. Organizamos coleção, preço e margem.</span></button>
+<button type="button" class="vi" data-k="digital"><span class="tag">Digital</span><b>A comunicação só resulta em cima de produto certo.</b><span class="vd">Sem posicionamento, a cliente compara-te pelo preço. Alinhamos o que dizes com o que vendes.</span></button>
+</div></div></div></section>
 <section class="offer-wrap"><div class="wrap">
 <div class="head"><span class="eyebrow">O que está incluído</span><h2>Tudo o que o FIBRA <em>põe na tua mesa.</em></h2></div>
 <div class="offer">
@@ -689,6 +702,7 @@ service_page("/metodo-fibra/", "Método FIBRA",
 <a class="btn" href="{LINKS['fibra']}" target="_blank" rel="noopener">Candidatar-me ao Método FIBRA</a>
 <p class="offer-note">Somos uma parceria. Mas a liderança do teu negócio é tua.</p>
 </div></div></div></section>
+<div class="stickybar" id="stickybar" hidden><div><b>Método FIBRA · candidaturas abertas</b><span>6 meses · 12 sessões 1:1 · entrada por candidatura</span></div><a class="btn" href="{LINKS['fibra']}" target="_blank" rel="noopener">Candidatar-me</a></div>
 <section><div class="wrap split top">
 <div><span class="eyebrow">O que trabalhamos</span><h2>Seis meses. <em>A marca inteira.</em></h2>
 <p class="lead">Cada marca tem o seu ritmo. Esta é a lógica do percurso.</p>

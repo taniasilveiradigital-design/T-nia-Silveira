@@ -202,3 +202,22 @@
     document.querySelectorAll('video[autoplay]').forEach(function (v) { v.removeAttribute('autoplay'); v.pause(); v.controls = true; });
   }
 })();
+
+/* ---------- Diagrama FIBRA + barra fixa ---------- */
+(function () {
+  var items = document.querySelectorAll('.vi'), rings = document.querySelectorAll('.vc');
+  function set(k) {
+    items.forEach(function (i) { i.classList.toggle('on', i.dataset.k === k); i.setAttribute('aria-pressed', i.dataset.k === k); });
+    rings.forEach(function (r) { r.classList.toggle('on', r.dataset.k === k); });
+  }
+  if (items.length) {
+    items.forEach(function (i) { i.addEventListener('click', function () { set(i.dataset.k); }); i.addEventListener('mouseenter', function () { set(i.dataset.k); }); });
+    rings.forEach(function (r) { r.addEventListener('click', function () { set(r.dataset.k); }); });
+    set('mentalidade');
+  }
+  var bar = document.getElementById('stickybar');
+  if (bar) {
+    var show = function () { var on = scrollY > innerHeight * 0.9; bar.hidden = !on; document.body.classList.toggle('has-bar', on); };
+    addEventListener('scroll', show, { passive: true }); show();
+  }
+})();

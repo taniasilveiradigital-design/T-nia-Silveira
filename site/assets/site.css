@@ -471,3 +471,48 @@ section{padding:clamp(64px,9vw,120px) 0}
 .offer-side .btn:hover{background:var(--brown);border-color:var(--brown)}
 .offer-note{margin:0;font-family:var(--serif);font-style:italic;font-size:19px;color:var(--brown)}
 @media (max-width:900px){.offer{grid-template-columns:1fr}.offer-list li{grid-template-columns:34px 1fr}.offer-list em{grid-column:2;justify-self:start;margin-top:6px}}
+
+/* ---------- Faixa de marcas ---------- */
+.mq{padding:26px 0 30px;background:var(--paper2);border-bottom:1px solid var(--line);overflow:hidden}
+.mq-t{text-align:center;font:600 11px/1 var(--sans);letter-spacing:.24em;text-transform:uppercase;color:var(--brown);margin:0 0 18px}
+.mq-track{display:flex;width:max-content;animation:mq 32s linear infinite}
+.mq:hover .mq-track{animation-play-state:paused}
+.mq-row{display:flex;align-items:center;gap:56px;padding-right:56px}
+.mq-row span{font:500 clamp(26px,3vw,38px)/1 var(--serif);color:var(--brown);white-space:nowrap;opacity:.85}
+.mq-row span:nth-child(4n+1){font-style:italic}
+.mq-row span:nth-child(4n+3){font:600 clamp(18px,2vw,24px)/1 var(--sans);letter-spacing:.22em;text-transform:uppercase}
+.mq-row i{font-style:normal;font-size:16px;opacity:.6}
+@keyframes mq{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.mq-track{animation:none;flex-wrap:wrap;width:auto;justify-content:center}.mq-row[aria-hidden]{display:none}.mq-row{flex-wrap:wrap;justify-content:center;row-gap:14px}}
+
+/* ---------- Diagrama FIBRA ---------- */
+.venn-sec{background:#2b1c16}
+.venn{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,70px);align-items:center}
+.venn-svg{width:100%;max-width:520px;justify-self:center}
+.venn-svg .ring{fill:none;stroke:rgba(244,233,223,.22);stroke-width:1}
+.venn-svg .guide{stroke:rgba(244,233,223,.14);stroke-dasharray:3 5}
+.vc circle{fill:transparent;stroke:rgba(244,233,223,.6);stroke-width:1.3;transition:fill .35s,stroke .35s;cursor:pointer}
+.vc.on circle{fill:rgba(178,109,71,.28);stroke:#d9a17e;stroke-width:2}
+.vt{fill:#fff;font:500 22px var(--serif);text-anchor:middle;pointer-events:none}
+.vs{fill:#d9a17e;font:600 8.5px var(--sans);letter-spacing:.18em;text-transform:uppercase;text-anchor:middle;pointer-events:none}
+.core{fill:#2b1c16;stroke:#d9a17e;stroke-width:1.3}
+.ct{fill:#f4e9df;font:600 7px var(--sans);letter-spacing:.2em;text-anchor:middle}
+.ct.big{font:500 15px var(--serif);letter-spacing:.06em}
+.venn-list{display:grid;gap:12px}
+.vi{all:unset;cursor:pointer;display:block;padding:20px 22px;border-left:2px solid rgba(244,233,223,.15);transition:background .25s,border-color .25s}
+.vi:focus-visible{outline:3px solid var(--terra);outline-offset:3px}
+.vi .tag{display:block;font:600 11px/1 var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--beige);margin-bottom:8px}
+.vi b{display:block;font:500 clamp(22px,2.2vw,28px)/1.15 var(--serif);color:#fff}
+.vi .vd{display:block;margin-top:6px;font-size:15px;color:#cdb8a8}
+.vi.on{background:rgba(178,109,71,.16);border-color:#d9a17e}
+.vi.on .tag{color:#d9a17e}
+@media (max-width:860px){.venn{grid-template-columns:1fr}}
+
+/* ---------- Barra fixa de candidatura ---------- */
+.stickybar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:39;display:flex;align-items:center;gap:18px;background:#f6efe6;border:1px solid var(--line);box-shadow:0 18px 40px -16px rgba(43,28,22,.5);padding:12px 12px 12px 22px;width:min(640px,calc(100% - 32px))}
+.stickybar div{flex:1;min-width:0}
+.stickybar b{display:block;font-size:14px;color:var(--brown)}
+.stickybar span{font-size:12.5px;color:var(--muted)}
+.stickybar .btn{background:var(--terra);border-color:var(--terra);padding:14px 18px}
+body.has-bar .wa{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+@media (max-width:520px){.stickybar span{display:none}.stickybar{padding-left:16px}}
