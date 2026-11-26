@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Gera o site taniasilveira.pt em ../site. Correr: python3 site-src/build.py"""
-import json, os, html, datetime
+import json, os, html, datetime, re
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "site")
 SITE = "https://taniasilveira.pt"
@@ -21,12 +21,15 @@ LINKS = {
 # Mensagens reais de clientes (WhatsApp), com nomes ocultados.
 # Formato: ("frase da cliente", "quem", "contexto"). Lista vazia = secção escondida.
 FEEDBACKS = [
-    ("Tânia, o teu Método FIBRA ficou-me na cabeça: estrutura, margem e estratégia.", "Cliente", "Depois de conhecer o método"),
-    ("Quero ter o compromisso de, de 15 em 15 dias, reunir contigo.", "Cliente", "A decisão de entrar em acompanhamento"),
-    ("Já temos data para gravação na RTP.", "Cliente em acompanhamento", "Marca a caminho da televisão"),
-    ("Já recebi o email da inscrição. Fomos selecionados. Aquela feira que supostamente tinha as inscrições fechadas: afinal fomos aceites.", "Cliente do Método FIBRA", "Seleção para uma feira"),
-    ("Ontem também me candidatei ao mercado e recebi o email agora. Fomos aceites. Para dia 30 e 31 de maio.", "Cliente em acompanhamento", "Candidatura aceite"),
-    ("Adorei todos, mas o primeiro está espetacular. Encheu o coração.", "Cliente", "Revisão do logótipo da marca"),
+    # [[...]] = frase sublinhada no cartão
+    ("Tânia, o teu Método FIBRA ficou-me na cabeça: [[estrutura, margem e estratégia]].", "Cliente", "WhatsApp"),
+    ("Quero ter o compromisso de, [[de 15 em 15 dias, reunir contigo]].", "Cliente", "WhatsApp"),
+    ("[[Já temos data para gravação na RTP.]]", "Cliente em acompanhamento", "WhatsApp"),
+    ("Aquela feira que supostamente tinha as inscrições fechadas: [[afinal fomos aceites]].", "Cliente do Método FIBRA", "WhatsApp"),
+    ("Ontem candidatei-me ao mercado e recebi o email agora. [[Fomos aceites.]] Para dia 30 e 31 de maio.", "Cliente em acompanhamento", "WhatsApp"),
+    ("Adorei todos, mas o primeiro está espetacular. [[Encheu o coração.]]", "Cliente", "Logótipo da marca"),
+    ("O conteúdo está a ser produzido [[a todo o vapor]]. Tanto vídeos como fotografias.", "Cliente em acompanhamento", "WhatsApp"),
+    ("Hoje já adiantei e [[cortei tudo]]. No domingo coso.", "Cliente em acompanhamento", "WhatsApp"),
 ]
 
 # Casos reais, do arquivo "Histórias de Clientes" da Tânia
@@ -62,8 +65,16 @@ def casos_html():
 def feedbacks_html():
     if not FEEDBACKS:
         return ""
-    cards = "".join(f'<figure class="fb rise"><blockquote>“{e(q)}”</blockquote><figcaption><b>{e(n)}</b>{e(m)}</figcaption></figure>' for q, n, m in FEEDBACKS)
-    return f'''<section class="alt"><div class="wrap"><div class="head"><span class="eyebrow">Mensagens reais de clientes</span><h2>O que chega <em>ao meu WhatsApp.</em></h2><p class="lead">Feiras, mercados, televisão. Resultados contados pelas próprias clientes. Os nomes ficam de fora, por respeito.</p></div><div class="fbs">{cards}</div></div></section>'''
+    def card(q, n, m):
+        q = re.sub(r"\[\[(.+?)\]\]", r"<mark>\1</mark>", e(q))
+        ini = "".join(w[0] for w in n.split()[:2]).upper()
+        return f'<figure class="cmt"><figcaption><span class="av">{ini}</span><b>{e(n)}</b><em>{e(m)}</em></figcaption><blockquote>{q}</blockquote></figure>'
+    half = (len(FEEDBACKS) + 1) // 2
+    rows = []
+    for k, part in enumerate([FEEDBACKS[:half], FEEDBACKS[half:]]):
+        cs = "".join(card(*f) for f in part)
+        rows.append(f'<div class="cmt-row{" rev" if k else ""}"><div class="cmt-track">{cs}<span class="cmt-dup" aria-hidden="true">{cs}</span></div></div>')
+    return f'''<section class="alt cmts"><div class="wrap"><div class="head" style="text-align:center;margin:0 auto clamp(30px,4vw,50px)"><span class="eyebrow">Mensagens reais de clientes</span><h2>Quem aplicou, <em>avançou.</em></h2><p class="lead" style="margin:0 auto">Feiras, mercados, televisão. Contado pelas próprias clientes, no WhatsApp. Os nomes ficam de fora, por respeito.</p></div></div>{"".join(rows)}</section>'''
 
 def guia_form(fid):
     return f'''<form class="gform" name="guia" method="POST" data-netlify="true" netlify-honeypot="bot-field" data-guia>
@@ -355,26 +366,26 @@ home += f"""
 <div><b>Decisão antes da ação</b><p>Cada peça, cada preço, cada fornecedor com critério.</p></div>
 </div></div></section>
 
-<section><div class="wrap">
-<div class="head"><span class="eyebrow">Para marcas de moda · Serviços</span>
-<h2>Três formas de trabalhar <em>a tua marca.</em></h2>
-<p class="lead">Escolhe por onde entras. Eu faço o resto: estrutura, critério e decisão.</p></div>
-<div class="services">
-<div class="svc"><span class="tag">Análise · 30 min</span><h3>Diagnóstico Alinhavar</h3>
-<p>Identifica o bloqueio que trava a marca: produto, margem, posicionamento ou decisão.</p>
-<ul><li>Leitura do estado atual da marca</li><li>O gargalo real, nomeado</li><li>O que decidir primeiro</li></ul>
-<a class="btn ghost" href="/diagnostico-alinhavar/">Saber mais</a></div>
-<div class="svc main"><span class="badge">Programa principal</span><span class="tag">Acompanhamento · 6 meses</span><h3>Método FIBRA</h3>
-<p>Estrutura estratégica 1:1 para marcas que querem crescer com direção e consistência.</p>
-<ul><li>Coleção e lógica de produto</li><li>Preço e margem</li><li>Posicionamento e comunicação</li><li>Mentalidade de decisão</li></ul>
-<a class="btn light" href="/metodo-fibra/">Conhecer o FIBRA</a></div>
-<div class="svc"><span class="tag">Consultoria · 2h + 1h</span><h3>Consultoria Tafetá 360</h3>
-<p>Intervenção para marcas com base criada que precisam de afinar produto, margem e estratégia comercial.</p>
-<ul><li>Sessão estratégica de 2 horas</li><li>Plano de correção</li><li>Seguimento de 1 hora ao fim de um mês</li></ul>
-<a class="btn ghost" href="/consultoria-tafeta-360/">Saber mais</a></div>
-</div>
-<p style="margin-top:28px;color:var(--muted)">Precisas só da informação certa? A <a class="link" href="/lista-estrategica-de-fornecedores/">Lista Estratégica de Fornecedores</a> reúne contactos do setor têxtil para revenda e produção própria.</p>
-</div></section>
+<section class="journeys"><div class="wrap">
+<div class="head" style="text-align:center;margin:0 auto clamp(30px,4vw,50px)"><span class="eyebrow">Para marcas de moda · Serviços</span><h2>Quatro caminhos. <em>Cada um resolve um problema.</em></h2>
+<p class="lead" style="margin:0 auto">Juntos, formam <span class="ring-word">a estrutura completa</span> de uma marca de moda.</p></div>
+<div class="jps"><article class="jp" data-j="0" tabindex="0" aria-expanded="false">
+<div class="jp-bg">{pic("tania-silveira-amostras-tecido", "", sizes="(max-width:860px) 92vw, 60vw")}</div>
+<span class="jp-n">I</span><span class="jp-v">Lista de Fornecedores</span>
+<div class="jp-body"><span class="tag">Começar</span><h3>Lista de Fornecedores</h3><p class="jq">Com quem produzo a minha marca?</p><p>Contactos do setor têxtil para revenda e para criar produto próprio, organizados por categoria. O ponto de partida para quem tem a ideia e falta o caminho.</p>
+<div class="jp-foot"><span class="jp-price">Desde 49 €</span><a class="btn light" href="/lista-estrategica-de-fornecedores/">Ver a lista</a></div></div></article><article class="jp" data-j="1" tabindex="0" aria-expanded="false">
+<div class="jp-bg">{pic("tania-silveira-estrategista-moda", "", sizes="(max-width:860px) 92vw, 60vw")}</div>
+<span class="jp-n">II</span><span class="jp-v">Diagnóstico Alinhavar</span>
+<div class="jp-body"><span class="tag">Análise · 30 min</span><h3>Diagnóstico Alinhavar</h3><p class="jq">O que está a travar a minha marca?</p><p>Uma sessão para nomear o gargalo real: produto, margem, posicionamento ou decisão. Sais a saber o que decidir primeiro.</p>
+<div class="jp-foot"><span class="jp-price">Por candidatura</span><a class="btn light" href="/diagnostico-alinhavar/">Pedir o diagnóstico</a></div></div></article><article class="jp" data-j="2" tabindex="0" aria-expanded="false">
+<div class="jp-bg">{pic("mostruario-tecidos-ficha-tecnica", "", sizes="(max-width:860px) 92vw, 60vw")}</div>
+<span class="jp-n">III</span><span class="jp-v">Consultoria Tafetá 360</span>
+<div class="jp-body"><span class="tag">Consultoria · 2h + 1h</span><h3>Consultoria Tafetá 360</h3><p class="jq">Onde afino para crescer com precisão?</p><p>Para marcas que já vendem. Duas horas para corrigir falhas de produto, margem e estratégia comercial, e uma hora de seguimento ao fim de um mês.</p>
+<div class="jp-foot"><span class="jp-price">2 sessões</span><a class="btn light" href="/consultoria-tafeta-360/">Conhecer a Tafetá 360</a></div></div></article><article class="jp on" data-j="3" tabindex="0" aria-expanded="true">
+<div class="jp-bg">{pic("moodboard-colecao-moda", "", sizes="(max-width:860px) 92vw, 60vw")}</div>
+<span class="jp-n">IV</span><span class="jp-v">Método FIBRA</span>
+<div class="jp-body"><span class="tag">Programa principal · 6 meses</span><h3>Método FIBRA</h3><p class="jq">Como estruturo a marca inteira?</p><p>Doze sessões 1:1 durante seis meses. Mentalidade, produto e digital a funcionar como um só sistema, lado a lado comigo.</p>
+<div class="jp-foot"><span class="jp-price">Por candidatura</span><a class="btn light" href="/metodo-fibra/">Conhecer o FIBRA</a></div></div></article></div></div></section>
 
 <section class="dark" id="empresas-home"><div class="wrap split top">
 <div><span class="eyebrow">Para empresas têxteis</span><h2>Fábricas, confeções e empresas têxteis. <em>Começa por uma consultoria.</em></h2>
@@ -626,7 +637,7 @@ def service_page(path, nome, titulo_seo, desc, eyebrow, h1, lead, resumo, cta_la
 </div></section>
 <div class="wrap narrow"><div class="tldr"><strong>Em resumo</strong>{resumo}</div></div>
 {blocos}
-<section class="alt"><div class="wrap narrow"><div class="head"><span class="eyebrow">Perguntas frequentes</span><h2>O que me <em>perguntam.</em></h2></div>{f_h}</div></section>
+<section class="alt"><div class="wrap narrow"><div class="head"><span class="eyebrow">Perguntas frequentes</span><h2>Antes de <em>fazer parte.</em></h2></div>{f_h}</div></section>
 <section class="dark final"><div class="wrap"><h2>Bora fazer <em>acontecer?</em></h2>
 <div class="btns"><a class="btn light" href="{cta_href}"{' target="_blank" rel="noopener"' if cta_href.startswith('http') else ''}>{cta_label}</a></div></div></section>
 """ + FOOT
@@ -701,6 +712,7 @@ service_page("/metodo-fibra/", "Método FIBRA",
 <p class="offer-price">O investimento é apresentado na conversa, depois de eu ler a tua candidatura. Só aceito marcas onde sei que posso fazer diferença.</p>
 <a class="btn" href="{LINKS['fibra']}" target="_blank" rel="noopener">Candidatar-me ao Método FIBRA</a>
 <p class="offer-note">Somos uma parceria. Mas a liderança do teu negócio é tua.</p>
+<div class="offer-sig"><span>Vai ser um prazer ter-te comigo.</span><b>Tânia Silveira</b></div>
 </div></div></div></section>
 <div class="stickybar" id="stickybar" hidden><div><b>Método FIBRA · candidaturas abertas</b><span>6 meses · 12 sessões 1:1 · entrada por candidatura</span></div><a class="btn" href="{LINKS['fibra']}" target="_blank" rel="noopener">Candidatar-me</a></div>
 <section><div class="wrap split top">
@@ -725,6 +737,11 @@ service_page("/metodo-fibra/", "Método FIBRA",
 </div></section>
 <section><div class="wrap"><div class="head"><span class="eyebrow">Casos reais</span><h2>O que muda <em>com estrutura.</em></h2></div>{casos_html()}</div></section>
 {feedbacks_html()}
+<section class="seal-sec"><div class="wrap"><div class="seal-card">
+<div class="seal" aria-hidden="true"><span>TS</span></div>
+<div><span class="eyebrow">O meu compromisso</span>
+<p class="seal-t">Antes de aceitares, leio a tua candidatura e falamos. <mark>Se o FIBRA não for para a tua marca, digo-te</mark>, e indico-te o caminho certo, mesmo que não seja comigo.</p></div>
+</div></div></section>
 <section class="chat-sec"><div class="wrap">
 <div class="head" style="text-align:center;margin:0 auto clamp(30px,4vw,48px)"><span class="eyebrow">◆ Da Tânia</span><h2>As perguntas que <em>mais oiço.</em></h2></div>
 <div class="chat"><div class="cm they"><p>Preciso de ter muitos seguidores para isto resultar?</p></div><div class="cm me"><img src="/assets/img/tania-silveira-avatar.webp" alt="" width="40" height="40"><p>Não. Já tive uma cliente com muitos seguidores e investimento forte em comunicação. Parecia um problema de vendas. A pergunta real era se as peças podiam ser produzidas em Portugal. Alcance nunca substitui estrutura.</p></div><div class="cm they"><p>Já fiz cursos e mentorias e não mudou nada.</p></div><div class="cm me"><img src="/assets/img/tania-silveira-avatar.webp" alt="" width="40" height="40"><p>Um curso ensina uma peça. Uma marca cresce com três: mentalidade, produto e digital, a funcionar como um só sistema. É isso que trabalhamos no FIBRA, aplicado à tua marca e não a um caso genérico.</p></div><blockquote class="cq"><p>“Tânia, o teu Método FIBRA ficou-me na cabeça: estrutura, margem e estratégia.”</p><footer><b>Cliente</b><span>Mensagem no WhatsApp</span></footer></blockquote><div class="cm they"><p>Não tenho tempo para mais nada.</p></div><div class="cm me"><img src="/assets/img/tania-silveira-avatar.webp" alt="" width="40" height="40"><p>Tens tempo para apagar fogos todos os dias. O FIBRA são duas sessões por mês. O trabalho começa antes de cada sessão, e é esse trabalho que te devolve o tempo.</p></div><blockquote class="cq"><p>“Quero ter o compromisso de, de 15 em 15 dias, reunir contigo.”</p><footer><b>Cliente</b><span>Antes de entrar no método</span></footer></blockquote><div class="cm they"><p>E se não for para mim?</p></div><div class="cm me"><img src="/assets/img/tania-silveira-avatar.webp" alt="" width="40" height="40"><p>Então digo-te. Faz o <a href='/autodiagnostico/'>autodiagnóstico</a> ou pede o <a href='/diagnostico-alinhavar/'>Diagnóstico Alinhavar</a>. Prefiro perder uma venda a aceitar uma marca onde não posso fazer diferença.</p></div><div class="chat-sig"><b>Tânia Silveira</b><span>Criadora do Método FIBRA</span></div></div>
@@ -1073,16 +1090,26 @@ p += f"""<section class="page-head"><div class="wrap split">
 <div class="ph rise"><span class="n">03</span><h3>Cresci e virei o gargalo.</h3><p>A marca vende, mas depende de ti para tudo. Precisas de estrutura para escalar sem perder o controlo.</p>
 <p class="rec"><b>Começa por:</b> <a href="/metodo-fibra/">Método FIBRA</a>, 6 meses lado a lado</p></div>
 </div></div></section>
-<section><div class="wrap">
-<div class="head"><span class="eyebrow">Serviços para marcas</span><h2>Três formas de trabalhar <em>a tua marca.</em></h2></div>
-<div class="services">
-<div class="svc"><span class="tag">Análise · 30 min</span><h3>Diagnóstico Alinhavar</h3><p>Identifica o bloqueio que trava a marca: produto, margem, posicionamento ou decisão.</p>
-<ul><li>Leitura do estado atual da marca</li><li>O gargalo real, nomeado</li><li>O que decidir primeiro</li></ul><a class="btn ghost" href="/diagnostico-alinhavar/">Saber mais</a></div>
-<div class="svc main"><span class="badge">Programa principal</span><span class="tag">Acompanhamento · 6 meses</span><h3>Método FIBRA</h3><p>Estrutura estratégica 1:1 para marcas que querem crescer com direção e consistência.</p>
-<ul><li>Coleção e lógica de produto</li><li>Preço e margem</li><li>Posicionamento e comunicação</li><li>Mentalidade de decisão</li></ul><a class="btn light" href="/metodo-fibra/">Conhecer o FIBRA</a></div>
-<div class="svc"><span class="tag">Consultoria · 2h + 1h</span><h3>Consultoria Tafetá 360</h3><p>Para marcas com base criada que precisam de afinar produto, margem e estratégia comercial.</p>
-<ul><li>Sessão estratégica de 2 horas</li><li>Plano de correção</li><li>Seguimento de 1 hora ao fim de um mês</li></ul><a class="btn ghost" href="/consultoria-tafeta-360/">Saber mais</a></div>
-</div></div></section>
+<section class="journeys"><div class="wrap">
+<div class="head" style="text-align:center;margin:0 auto clamp(30px,4vw,50px)"><span class="eyebrow">Para marcas de moda · Serviços</span><h2>Quatro caminhos. <em>Cada um resolve um problema.</em></h2>
+<p class="lead" style="margin:0 auto">Juntos, formam <span class="ring-word">a estrutura completa</span> de uma marca de moda.</p></div>
+<div class="jps"><article class="jp" data-j="0" tabindex="0" aria-expanded="false">
+<div class="jp-bg">{pic("tania-silveira-amostras-tecido", "", sizes="(max-width:860px) 92vw, 60vw")}</div>
+<span class="jp-n">I</span><span class="jp-v">Lista de Fornecedores</span>
+<div class="jp-body"><span class="tag">Começar</span><h3>Lista de Fornecedores</h3><p class="jq">Com quem produzo a minha marca?</p><p>Contactos do setor têxtil para revenda e para criar produto próprio, organizados por categoria. O ponto de partida para quem tem a ideia e falta o caminho.</p>
+<div class="jp-foot"><span class="jp-price">Desde 49 €</span><a class="btn light" href="/lista-estrategica-de-fornecedores/">Ver a lista</a></div></div></article><article class="jp" data-j="1" tabindex="0" aria-expanded="false">
+<div class="jp-bg">{pic("tania-silveira-estrategista-moda", "", sizes="(max-width:860px) 92vw, 60vw")}</div>
+<span class="jp-n">II</span><span class="jp-v">Diagnóstico Alinhavar</span>
+<div class="jp-body"><span class="tag">Análise · 30 min</span><h3>Diagnóstico Alinhavar</h3><p class="jq">O que está a travar a minha marca?</p><p>Uma sessão para nomear o gargalo real: produto, margem, posicionamento ou decisão. Sais a saber o que decidir primeiro.</p>
+<div class="jp-foot"><span class="jp-price">Por candidatura</span><a class="btn light" href="/diagnostico-alinhavar/">Pedir o diagnóstico</a></div></div></article><article class="jp" data-j="2" tabindex="0" aria-expanded="false">
+<div class="jp-bg">{pic("mostruario-tecidos-ficha-tecnica", "", sizes="(max-width:860px) 92vw, 60vw")}</div>
+<span class="jp-n">III</span><span class="jp-v">Consultoria Tafetá 360</span>
+<div class="jp-body"><span class="tag">Consultoria · 2h + 1h</span><h3>Consultoria Tafetá 360</h3><p class="jq">Onde afino para crescer com precisão?</p><p>Para marcas que já vendem. Duas horas para corrigir falhas de produto, margem e estratégia comercial, e uma hora de seguimento ao fim de um mês.</p>
+<div class="jp-foot"><span class="jp-price">2 sessões</span><a class="btn light" href="/consultoria-tafeta-360/">Conhecer a Tafetá 360</a></div></div></article><article class="jp on" data-j="3" tabindex="0" aria-expanded="true">
+<div class="jp-bg">{pic("moodboard-colecao-moda", "", sizes="(max-width:860px) 92vw, 60vw")}</div>
+<span class="jp-n">IV</span><span class="jp-v">Método FIBRA</span>
+<div class="jp-body"><span class="tag">Programa principal · 6 meses</span><h3>Método FIBRA</h3><p class="jq">Como estruturo a marca inteira?</p><p>Doze sessões 1:1 durante seis meses. Mentalidade, produto e digital a funcionar como um só sistema, lado a lado comigo.</p>
+<div class="jp-foot"><span class="jp-price">Por candidatura</span><a class="btn light" href="/metodo-fibra/">Conhecer o FIBRA</a></div></div></article></div></div></section>
 <section class="alt"><div class="wrap"><div class="head"><span class="eyebrow">Casos reais</span><h2>Marcas que <em>já passaram por cá.</em></h2></div>{casos_html()}</div></section>
 {feedbacks_html()}
 <section><div class="wrap narrow"><div class="head"><span class="eyebrow">Perguntas frequentes</span><h2>Antes de <em>avançares.</em></h2></div>{mf_h}</div></section>

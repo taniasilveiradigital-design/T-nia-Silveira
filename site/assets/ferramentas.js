@@ -221,3 +221,15 @@
     addEventListener('scroll', show, { passive: true }); show();
   }
 })();
+
+/* ---------- Quatro caminhos ---------- */
+(function () {
+  var ps = document.querySelectorAll('.jp');
+  if (!ps.length) return;
+  function open(p) { ps.forEach(function (x) { var on = x === p; x.classList.toggle('on', on); x.setAttribute('aria-expanded', on); }); }
+  ps.forEach(function (p) {
+    p.addEventListener('click', function (ev) { if (!p.classList.contains('on')) { ev.preventDefault(); open(p); } });
+    p.addEventListener('keydown', function (ev) { if ((ev.key === 'Enter' || ev.key === ' ') && !p.classList.contains('on')) { ev.preventDefault(); open(p); } });
+    if (matchMedia('(hover:hover)').matches) p.addEventListener('mouseenter', function () { open(p); });
+  });
+})();

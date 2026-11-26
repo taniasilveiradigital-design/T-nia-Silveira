@@ -555,3 +555,71 @@ body.has-bar .wa{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
 .chat-sig b{display:block;font:500 24px/1 var(--serif);color:#fff}
 .chat-sig span{font:600 10.5px/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--beige)}
 @media (max-width:600px){.cm.they,.cm.me{max-width:100%}.cq{margin-left:0;max-width:100%}}
+
+/* ---------- Comentários a circular ---------- */
+.cmts{overflow:hidden}
+.cmt-row{overflow:hidden;padding:8px 0;-webkit-mask:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.cmt-track{display:flex;width:max-content;animation:mq 60s linear infinite}
+.cmt-row.rev .cmt-track{animation-direction:reverse;animation-duration:70s}
+.cmt-row:hover .cmt-track{animation-play-state:paused}
+.cmt-dup{display:contents}
+.cmt{flex:0 0 auto;width:min(400px,80vw);margin:0 10px;background:#2b1c16;color:#f4e9df;border-radius:16px;padding:22px 24px;display:flex;flex-direction:column;gap:12px}
+.cmt figcaption{display:flex;align-items:center;gap:10px;font-size:14px}
+.cmt .av{width:34px;height:34px;border-radius:50%;background:#4a3529;display:grid;place-items:center;font:600 12px/1 var(--sans);color:#f4e9df;flex:none}
+.cmt figcaption b{font-weight:600;flex:1;min-width:0}
+.cmt figcaption em{font:600 10px/1 var(--sans);font-style:normal;letter-spacing:.16em;text-transform:uppercase;color:#d9a17e;white-space:nowrap}
+.cmt blockquote{margin:0;font-size:16px;line-height:1.55;color:#f4e9df}
+.cmt mark{background:none;color:inherit;text-decoration:underline;text-decoration-color:#d9a17e;text-decoration-thickness:3px;text-underline-offset:4px}
+@media (prefers-reduced-motion:reduce){.cmt-track{animation:none;flex-wrap:wrap;width:auto;justify-content:center;row-gap:16px}.cmt-dup{display:none}}
+
+/* ---------- Quatro caminhos (acordeão) ---------- */
+.ring-word{position:relative;font-weight:600;color:var(--brown);padding:2px 8px;white-space:nowrap}
+.ring-word::after{content:"";position:absolute;inset:-6px -4px;border:2px solid var(--terra);border-radius:50%;transform:rotate(-2deg)}
+.jps{display:flex;gap:12px;height:600px}
+.jp{position:relative;flex:1 1 0;min-width:0;border-radius:20px;overflow:hidden;background:#2b1c16;color:#f4e9df;cursor:pointer;transition:flex-grow .6s cubic-bezier(.2,.7,.2,1)}
+.jp.on{flex-grow:4.2;cursor:default}
+.jp:focus-visible{outline:3px solid var(--terra);outline-offset:3px}
+.jp-bg{position:absolute;inset:0}
+.jp-bg img,.jp-bg picture{width:100%;height:100%;object-fit:cover;display:block}
+.jp-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(43,28,22,.55),rgba(43,28,22,.82));transition:background .5s}
+.jp:not(.on) .jp-bg img{filter:sepia(.6) saturate(.6) brightness(.7)}
+.jp.on .jp-bg::after{background:linear-gradient(180deg,rgba(43,28,22,0) 25%,rgba(43,28,22,.75) 55%,#2b1c16 80%)}
+.jp-n{position:absolute;top:22px;left:24px;font:500 46px/1 var(--serif);color:#d9a17e;z-index:2}
+.jp-v{position:absolute;left:50%;bottom:30px;transform:translateX(-50%) rotate(180deg);writing-mode:vertical-rl;font:500 clamp(28px,2.6vw,38px)/1 var(--serif);color:#fff;white-space:nowrap;z-index:2;transition:opacity .3s}
+.jp.on .jp-v{opacity:0}
+.jp-body{position:absolute;left:0;right:0;bottom:0;padding:clamp(22px,3vw,34px);z-index:2;opacity:0;transform:translateY(16px);transition:opacity .4s .15s,transform .4s .15s;pointer-events:none}
+.jp.on .jp-body{opacity:1;transform:none;pointer-events:auto}
+.jp-body .tag{font:600 11px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:#d9a17e}
+.jp-body h3{color:#fff;font-size:clamp(34px,3.6vw,50px);margin:10px 0 6px}
+.jp-body .jq{font-size:18px;color:#fff;margin-bottom:8px}
+.jp-body p{color:#d6c1b1;max-width:520px;font-size:15.5px}
+.jp-foot{display:flex;align-items:center;gap:18px;flex-wrap:wrap;border-top:1px solid rgba(244,233,223,.18);padding-top:16px;margin-top:6px}
+.jp-price{font:500 22px/1 var(--serif);color:#fff}
+@media (max-width:860px){
+  .jps{flex-direction:column;height:auto}
+  .jp{flex:none;height:84px;transition:height .5s}
+  .jp.on{height:auto;min-height:520px}
+  .jp-v{writing-mode:horizontal-tb;transform:none;left:84px;bottom:auto;top:26px;font-size:26px}
+  .jp-n{top:20px;font-size:38px}
+  .jp-body{position:relative;padding-top:260px}
+  .jp:not(.on) .jp-body{display:none}
+}
+
+/* ---------- Selo de compromisso ---------- */
+.seal-sec{padding-bottom:0}
+.seal-card{max-width:900px;margin:0 auto;display:grid;grid-template-columns:200px 1fr;gap:clamp(24px,4vw,50px);align-items:center;background:#2b1c16;color:#f4e9df;border-radius:18px;padding:clamp(28px,4vw,48px);outline:1px solid rgba(244,233,223,.12);outline-offset:-8px;box-shadow:0 40px 80px -45px rgba(43,28,22,.7)}
+.seal{width:170px;height:170px;justify-self:center;border-radius:47% 53% 50% 50%/52% 48% 52% 48%;background:radial-gradient(circle at 35% 30%,#d9937a,#b26d47 45%,#8a4a32 100%);box-shadow:inset 0 0 0 10px rgba(0,0,0,.08),inset 0 0 0 12px rgba(255,255,255,.12),0 12px 24px -8px rgba(0,0,0,.6);display:grid;place-items:center;transform:rotate(-8deg)}
+.seal span{width:104px;height:104px;border-radius:50%;border:2px solid rgba(255,235,220,.45);display:grid;place-items:center;font:500 40px/1 var(--serif);color:rgba(255,240,230,.85);text-shadow:0 1px 0 rgba(0,0,0,.25)}
+.seal-card .eyebrow{color:var(--beige)}
+.seal-t{font:500 clamp(24px,2.6vw,32px)/1.25 var(--serif);color:#fff;margin:0}
+.seal-t mark{background:linear-gradient(transparent 55%,rgba(178,109,71,.6) 55%);color:#fff}
+@media (max-width:700px){.seal-card{grid-template-columns:1fr;text-align:center}}
+
+/* ---------- Assinatura no bloco de preço ---------- */
+.offer-sig{border-top:1px solid var(--beige);padding-top:16px}
+.offer-sig span{display:block;font:500 20px/1.2 var(--serif);color:var(--brown)}
+.offer-sig b{display:inline-block;font:400 44px/1 var(--script);color:var(--terra);margin-top:6px;border-bottom:2px solid var(--terra);padding-bottom:2px}
+@media (min-width:861px){
+  .jp{flex:0 0 150px;transition:flex-basis .6s cubic-bezier(.2,.7,.2,1)}
+  .jp.on{flex:0 0 calc(100% - 3 * 150px - 36px)}
+}
