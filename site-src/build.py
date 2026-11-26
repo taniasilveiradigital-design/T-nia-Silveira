@@ -18,9 +18,15 @@ LINKS = {
     "instagram": "https://www.instagram.com/taniasilveira.pt/",
     "linkedin": "https://www.linkedin.com/in/t%C3%A2nia-silveira-229848295",
 }
-# Testemunhos reais (só com autorização). Formato: ("frase da cliente", "Nome", "Marca")
-# Enquanto a lista estiver vazia, a secção não aparece no site.
-FEEDBACKS = []
+# Mensagens reais de clientes (WhatsApp), com nomes ocultados.
+# Formato: ("frase da cliente", "quem", "contexto"). Lista vazia = secção escondida.
+FEEDBACKS = [
+    ("Já temos data para gravação na RTP.", "Cliente em acompanhamento", "Marca a caminho da televisão"),
+    ("Já recebi o email da inscrição. Fomos selecionados. Aquela feira que supostamente tinha as inscrições fechadas: afinal fomos aceites.", "Cliente do Método FIBRA", "Seleção para uma feira"),
+    ("Ontem também me candidatei ao mercado e recebi o email agora. Fomos aceites. Para dia 30 e 31 de maio.", "Cliente em acompanhamento", "Candidatura aceite"),
+    ("O conteúdo está a ser produzido a todo o vapor. Tanto vídeos como fotografias.", "Cliente em acompanhamento", "Do plano à execução"),
+    ("Adorei todos, mas o primeiro está espetacular. Encheu o coração.", "Cliente", "Revisão do logótipo da marca"),
+]
 
 # Casos reais, do arquivo "Histórias de Clientes" da Tânia
 CASOS = [
@@ -53,7 +59,7 @@ def feedbacks_html():
     if not FEEDBACKS:
         return ""
     cards = "".join(f'<figure class="fb rise"><blockquote>“{e(q)}”</blockquote><figcaption><b>{e(n)}</b>{e(m)}</figcaption></figure>' for q, n, m in FEEDBACKS)
-    return f'''<section class="alt"><div class="wrap"><div class="head"><span class="eyebrow">O que dizem as clientes</span><h2>Palavra de quem <em>já passou por cá.</em></h2></div><div class="fbs">{cards}</div></div></section>'''
+    return f'''<section class="alt"><div class="wrap"><div class="head"><span class="eyebrow">Mensagens reais de clientes</span><h2>O que chega <em>ao meu WhatsApp.</em></h2><p class="lead">Feiras, mercados, televisão. Resultados contados pelas próprias clientes. Os nomes ficam de fora, por respeito.</p></div><div class="fbs">{cards}</div></div></section>'''
 
 def pic(name, alt, h=1650, lazy=True, sizes="(max-width:860px) 90vw, 40vw"):
     return (f'<picture><source type="image/webp" srcset="/assets/img/{name}-600.webp 600w, /assets/img/{name}-1100.webp 1100w" sizes="{sizes}">'
