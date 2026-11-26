@@ -447,3 +447,27 @@ section{padding:clamp(64px,9vw,120px) 0}
 .ph .rec{font-size:14px;border-top:1.5px dashed var(--line);padding-top:14px;margin:0;color:var(--ink)}
 .ph .rec a{color:var(--terra);font-weight:600}
 @media (max-width:860px){.phases{grid-template-columns:1fr}}
+
+/* ---------- O que está incluído (FIBRA) ---------- */
+.offer-wrap{padding-top:clamp(64px,8vw,110px)}
+.offer{display:grid;grid-template-columns:1.15fr .85fr;border-radius:18px;overflow:hidden;box-shadow:0 40px 80px -40px rgba(43,28,22,.55)}
+.offer-list{list-style:none;margin:0;padding:clamp(22px,3vw,40px);background:#2b1c16;color:#f4e9df}
+.offer-list li{display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:start;padding:16px 0;border-bottom:1px solid rgba(244,233,223,.1)}
+.offer-list li:last-child{border-bottom:0}
+.offer-list .rn{font:500 18px/1.3 var(--serif);color:#d9a17e;letter-spacing:.04em}
+.offer-list b{display:block;font:500 22px/1.15 var(--serif);color:#fff;margin-bottom:4px}
+.offer-list p{margin:0;font-size:14px;line-height:1.55;color:#cdb8a8}
+.offer-list em{font:600 10px/1 var(--sans);font-style:normal;letter-spacing:.14em;text-transform:uppercase;color:#e8d9cc;background:rgba(244,233,223,.1);padding:7px 10px;border-radius:999px;white-space:nowrap;margin-top:3px}
+.offer-side{background:#f1e7da;padding:clamp(28px,4vw,52px);display:flex;flex-direction:column;justify-content:center;text-align:center;gap:18px}
+.offer-side h3{font-size:clamp(28px,2.8vw,38px);margin:0}
+.offer-facts{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--beige);border-bottom:1px solid var(--beige)}
+.offer-facts div{padding:14px 6px;border-right:1px solid var(--line)}.offer-facts div:last-child{border-right:0}
+.offer-facts b{display:block;font:500 44px/1 var(--serif);color:var(--brown)}
+.offer-facts span{font:600 10px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.offer-status{margin:0;font:600 12px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--brown);display:flex;align-items:center;justify-content:center;gap:10px}
+.offer-status i{width:8px;height:8px;background:var(--terra);transform:rotate(45deg)}
+.offer-price{margin:0;color:var(--muted);font-size:15px}
+.offer-side .btn{justify-content:center;padding:20px;font-size:13px;background:var(--terra);border-color:var(--terra)}
+.offer-side .btn:hover{background:var(--brown);border-color:var(--brown)}
+.offer-note{margin:0;font-family:var(--serif);font-style:italic;font-size:19px;color:var(--brown)}
+@media (max-width:900px){.offer{grid-template-columns:1fr}.offer-list li{grid-template-columns:34px 1fr}.offer-list em{grid-column:2;justify-self:start;margin-top:6px}}
