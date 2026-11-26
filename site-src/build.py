@@ -95,10 +95,18 @@ BUSINESS = {
 }
 
 # ---------- moldura ----------
-THREAD = '<svg class="thread" viewBox="0 0 1200 24" preserveAspectRatio="none" aria-hidden="true"><path d="M0 12 C 150 2, 300 22, 450 12 S 750 2, 900 12 S 1100 22, 1200 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="7 6"/></svg>'
+class _Thread:
+    n = 0
+    def __format__(self, spec):
+        _Thread.n += 1
+        i = f"sw{_Thread.n}"
+        d = "M0 12 C 150 2, 300 22, 450 12 S 750 2, 900 12 S 1100 22, 1200 12"
+        return (f'<svg class="thread sew" viewBox="0 0 1200 24" preserveAspectRatio="none" aria-hidden="true">'
+                f'<defs><mask id="{i}" maskUnits="userSpaceOnUse" x="0" y="0" width="1200" height="24"><path class="reveal" d="{d}" pathLength="1" fill="none" stroke="#fff" stroke-width="6"/></mask></defs>'
+                f'<path d="{d}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="7 6" mask="url(#{i})"/></svg>')
+THREAD = _Thread()
 
-NAV = [("/metodo-fibra/", "Método FIBRA"), ("/servicos/", "Serviços"), ("/lista-estrategica-de-fornecedores/", "Fornecedores"),
-       ("/empresas/", "Empresas"), ("/guias/", "Guias"), ("/sobre/", "Sobre")]
+NAV = [("/metodo-fibra/", "Método FIBRA"), ("/servicos/", "Serviços"), ("/empresas/", "Empresas"), ("/ferramentas/", "Ferramentas"), ("/guias/", "Guias"), ("/sobre/", "Sobre")]
 
 def head(path, title, desc, schema, kind="website", noindex=False):
     url = SITE + path
@@ -138,7 +146,7 @@ def head(path, title, desc, schema, kind="website", noindex=False):
 <nav class="nav" id="nav" aria-label="Principal">
 {''.join(f'<a href="{h}"{" aria-current=page" if path.startswith(h) else ""}>{t}</a>' for h, t in NAV)}
 <a class="btn" href="/diagnostico-alinhavar/">Pedir diagnóstico</a>
-</nav></div></header>
+</nav></div><div id="sew-progress" aria-hidden="true"></div></header>
 <main id="conteudo">
 """
 
@@ -155,6 +163,7 @@ FOOT = f"""</main>
 <li><a href="/empresas/">Para empresas</a></li></ul></div>
 <div><h4>Conhecer</h4><ul>
 <li><a href="/sobre/">Sobre a Tânia</a></li>
+<li><a href="/ferramentas/">Ferramentas</a></li>
 <li><a href="/guias/">Guias</a></li>
 <li><a href="/perguntas-frequentes/">Perguntas frequentes</a></li>
 <li><a href="/contacto/">Contacto</a></li></ul></div>
@@ -165,6 +174,7 @@ FOOT = f"""</main>
 <div class="base"><span>© 2026 Tânia Silveira · Estratégia Têxtil</span><span><a href="/politica-de-privacidade/">Política de privacidade</a></span></div>
 </div></footer>
 <script src="/assets/site.js" defer></script>
+<script src="/assets/ferramentas.js" defer></script>
 </body></html>
 """
 
@@ -197,6 +207,7 @@ def write(path, content, prio="0.8"):
     d = os.path.join(ROOT, path.strip("/"))
     os.makedirs(d, exist_ok=True)
     fn = os.path.join(d, "index.html") if path.endswith("/") else os.path.join(ROOT, path.strip("/"))
+    content = content.replace('class="steps"', 'class="steps sew"')
     with open(fn, "w", encoding="utf-8") as f:
         f.write(content)
     if prio: PAGES.append((path, prio))
@@ -235,7 +246,7 @@ home += f"""
 <span class="eyebrow">Estratégia para marcas de moda &amp; negócios têxteis</span>
 <h1>Não és ignorada por falta de qualidade. <em>És ignorada por falta de posicionamento.</em></h1>
 <p class="lead">Sou a Tânia Silveira. Há {ANOS} anos no têxtil, do chão de fábrica ao produto. Ponho estrutura, margem e direção em marcas de moda que trabalham muito e crescem pouco.</p>
-<div class="btns"><a class="btn" href="/diagnostico-alinhavar/">Pedir o diagnóstico</a><a class="btn ghost" href="/metodo-fibra/">Conhecer o Método FIBRA</a></div>
+<div class="btns"><a class="btn" href="/diagnostico-alinhavar/">Pedir o diagnóstico</a><a class="btn ghost" href="/autodiagnostico/">Fazer o autodiagnóstico</a></div>
 <div class="proof"><span>{ANOS} anos na indústria têxtil</span><span>Produção, produto e planeamento</span><span>Guimarães · Portugal</span></div>
 </div>
 <figure class="portrait">
@@ -247,12 +258,32 @@ home += f"""
 <section><div class="wrap">
 <div class="head"><span class="eyebrow">Em que fase está a tua marca?</span>
 <h2>O problema muda de forma. <em>A raiz é a mesma.</em></h2>
-<p class="lead">Falta de estrutura, clareza e direção. Escolhe onde estás e eu digo-te por onde começar.</p></div>
+<p class="lead">Falta de estrutura, clareza e direção. Escolhe onde estás e eu digo-te por onde começar. Ou <a class="link" href="/autodiagnostico/">faz o autodiagnóstico em 2 minutos</a>.</p></div>
 <div class="paths">
 <a class="path rise" href="/lista-estrategica-de-fornecedores/"><span class="n">01</span><h3>Tenho a ideia, falta o caminho.</h3><p>Queres criar a marca ou começar a vender e não sabes por onde pegar: fornecedores, quantidades, preço. Começa com base, não com pressa.</p><span class="go">Começar certo →</span></a>
 <a class="path rise" href="/diagnostico-alinhavar/"><span class="n">02</span><h3>Já vendo, mas fica pouco.</h3><p>Trabalhas o dia inteiro, dependes de descontos e no fim do mês a conta não fecha. O problema está na margem ou no produto. Vamos encontrá-lo.</p><span class="go">Encontrar o gargalo →</span></a>
 <a class="path rise" href="/metodo-fibra/"><span class="n">03</span><h3>Cresci e virei o gargalo.</h3><p>A marca vende, mas depende de ti para tudo. Cresceu e ficou pesada. Precisas de estrutura para escalar sem perder o controlo.</p><span class="go">Estruturar para escalar →</span></a>
 </div></div></section>
+
+<section class="alt"><div class="wrap split">
+<div><span class="eyebrow">Faz a conta agora</span>
+<h2>Quanto ganhas, <em>de verdade</em>, em cada peça?</h2>
+<p class="lead">Mete o custo e o preço de uma peça tua. A conta faz-se à tua frente, sem IVA, que o IVA não é teu.</p>
+<p><a class="link" href="/calculadora-de-margem/">Fazer a conta completa, com portes, taxas e devoluções →</a></p></div>
+<form class="mini" id="mini-calc" onsubmit="return false" aria-label="Calculadora rápida de margem">
+<div class="mini-in">
+<label for="m-custo">Custo da peça<input id="m-custo" type="number" inputmode="decimal" min="0" step="0.5" value="22"><span>€</span></label>
+<label for="m-pvp">Preço de venda com IVA<input id="m-pvp" type="number" inputmode="decimal" min="0" step="1" value="69"><span>€</span></label>
+<label for="m-desc" class="range">Desconto médio <output id="m-desc-v">10%</output><input id="m-desc" type="range" min="0" max="60" step="5" value="10"></label>
+</div>
+<div class="mini-out" aria-live="polite">
+<div class="dial"><svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="52" class="track"/><circle cx="60" cy="60" r="52" class="val" pathLength="1"/></svg><b id="m-pct">0%</b></div>
+<p class="m-sub">margem bruta</p>
+<p id="m-eur" class="m-eur"></p>
+<div id="m-verdict" class="verdict"></div>
+</div>
+</form>
+</div></section>
 
 <section class="dark"><div class="wrap">
 <div class="head"><span class="eyebrow">Como penso</span>
@@ -395,6 +426,7 @@ guia("como-calcular-preco-e-margem-de-uma-peca-de-roupa",
 <tr><td>Preço sem IVA: 20 ÷ (1 − 0,65)</td><td>57,14 €</td></tr>
 <tr><td>Preço ao público com IVA (× 1,23)</td><td>70,29 €</td></tr></table>
 <p>Os valores são um exemplo para mostrar a conta. A margem certa para a tua marca sai da tua estrutura.</p>
+<p><a class="btn" href="/calculadora-de-margem/">Fazer a conta com os teus números</a></p>
 <h2>4. Se vendes também a lojas, faz a conta duas vezes</h2>
 <p>Uma loja multimarca compra-te a preço de revenda e aplica a margem dela. Se o teu preço ao público só funciona na tua loja online, não tens espaço para revenda. Define primeiro o preço ao público, depois o preço de revenda, e confirma que ainda tens margem nos dois.</p>
 <h2>5. Os erros que mais vejo</h2>
@@ -761,6 +793,138 @@ p += f"""<section class="page-head"><div class="wrap">{c_h}
 """ + FOOT
 write("/empresas/", p, "0.9")
 
+
+# =====================================================================
+# FERRAMENTAS
+# =====================================================================
+QUIZ = {
+    "stage": {"text": "Em que fase está a tua marca?", "options": [
+        {"value": "inicio", "label": "Ainda não lancei, ou lancei há pouco"},
+        {"value": "operacao", "label": "Já vendo, mas com muito esforço e pouca margem"},
+        {"value": "escala", "label": "Vendo bem, mas quero afinar e crescer com precisão"}]},
+    "statements": [
+        {"area": "produto", "text": "Crio peças novas porque gosto delas, não porque a coleção precisa delas."},
+        {"area": "margem", "text": "Defino o preço a olhar para a concorrência, não para os meus custos."},
+        {"area": "posicionamento", "text": "Se tapasse o logótipo, a minha marca podia ser confundida com outra."},
+        {"area": "decisao", "text": "Mudo de direção sempre que algo não vende como esperava."},
+        {"area": "produto", "text": "Não sei quais são as peças que realmente pagam a coleção."},
+        {"area": "margem", "text": "Faço descontos para conseguir vender."},
+        {"area": "posicionamento", "text": "Não consigo explicar numa frase para quem é a minha marca."},
+        {"area": "decisao", "text": "Tomo as decisões importantes por impulso, sem um critério definido."}],
+    "answers": [{"value": 2, "label": "Sim"}, {"value": 1, "label": "Às vezes"}, {"value": 0, "label": "Não"}],
+    "labels": {"produto": "Produto", "margem": "Margem", "posicionamento": "Posicionamento", "decisao": "Decisão"},
+    "services": {
+        "fibra": {"name": "Método FIBRA", "href": "/metodo-fibra/", "why": "O que encontraste aqui pede estrutura e acompanhamento, não um ajuste pontual."},
+        "tafeta": {"name": "Consultoria Tafetá 360", "href": "/consultoria-tafeta-360/", "why": "A base existe. Uma intervenção focada chega para corrigir e afinar."}},
+    "results": {
+        "produto": {"title": "O teu gargalo está no produto.", "text": "A coleção cresce por gosto, não por lógica. Há peças a ocupar stock e orçamento sem pagar o lugar que têm. Sem saber o que vende e porquê, cada coleção nova é uma aposta.",
+                    "actions": ["Lista as peças da última coleção por unidades vendidas e por margem. As de cima dizem-te onde está a marca.", "Define a função de cada peça antes de a desenhar: entrada, margem ou imagem.", "Corta o que não tem função. Menos referências, mais critério."]},
+        "margem": {"title": "O teu gargalo está na margem.", "text": "Vendes, mas o dinheiro não fica. Preço definido pela concorrência e descontos para escoar são sinal de que o custo real nunca foi feito até ao fim.",
+                   "actions": ["Faz a conta completa por peça: produção, aviamentos, amostras, portes, comissões e devoluções.", "Revê o preço a partir do custo real, não do que os outros cobram.", "Trava os descontos permanentes. Desconto sem estratégia ensina a cliente a esperar."]},
+        "posicionamento": {"title": "O teu gargalo está no posicionamento.", "text": "A marca existe, mas não se distingue. Quando a cliente não percebe porque és tu, a decisão dela passa a ser o preço.",
+                           "actions": ["Escreve numa frase: para quem é, que problema resolve, porque és tu. Se não cabe numa frase, ainda não está claro.", "Confirma que produto, preço e comunicação dizem a mesma coisa.", "Deixa de falar para toda a gente. Uma cliente bem definida vende mais do que um público largo."]},
+        "decisao": {"title": "O teu gargalo está na decisão.", "text": "Há esforço, mas não há critério. Mudar de direção a cada venda fraca não é flexibilidade. É falta de estrutura para decidir.",
+                    "actions": ["Define 3 critérios fixos para aprovar qualquer decisão de coleção, preço ou investimento.", "Dá tempo às decisões antes de as mudar. Uma coleção não se avalia em duas semanas.", "Separa o urgente do estrutural. Reserva tempo na semana só para o estrutural."]},
+        "solida": {"title": "A tua base está sólida.", "text": "Não há um gargalo evidente. O próximo passo é afinar com precisão para crescer sem perder margem nem controlo.",
+                   "actions": ["Confirma a margem real das tuas 5 peças mais vendidas.", "Revê se a coleção seguinte mantém a lógica que está a resultar.", "Identifica a próxima decisão estrutural e trata-a antes de ser urgente."]}},
+}
+
+def tool_schema(path, name, desc):
+    return {"@type": "WebApplication", "name": name, "url": SITE + path, "description": desc, "applicationCategory": "BusinessApplication",
+            "operatingSystem": "Web", "inLanguage": "pt-PT", "isAccessibleForFree": True,
+            "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "author": {"@id": SITE + "/#tania"}}
+
+# Calculadora
+c_h, c_s = crumbs([("Ferramentas", "/ferramentas/"), ("Calculadora de margem", "/calculadora-de-margem/")])
+calc_faq = [("Como se calcula a margem de uma peça de roupa?", "Margem = (preço recebido sem IVA − custo total) ÷ preço recebido sem IVA. O custo total inclui produção, aviamentos, amostras divididas pelas unidades, portes, taxas de pagamento, comissões e devoluções."),
+            ("Que margem deve ter uma marca de roupa?", "A calculadora usa 60% como referência de trabalho para venda direta à cliente final. Venda por grosso, consignação e marketplaces têm outra conta. A margem certa é a que paga a estrutura da tua marca.")]
+f_h, f_s = faq_block(calc_faq)
+CF = [("Custo da peça", [("producao", "Produção por peça", "Tecido + confeção", "€", "0.1", 18), ("aviamentos", "Aviamentos e embalagem", "Etiquetas, botões, saco, caixa", "€", "0.1", 2.5),
+                         ("amostras", "Amostras e desenvolvimento", "Total gasto neste modelo", "€", "10", 600), ("unidades", "Unidades produzidas", "Para dividir o desenvolvimento", "un.", "1", 200)]),
+      ("Custos de vender", [("portes", "Portes por envio", "O que pagas tu, não a cliente", "€", "0.1", 4.5), ("taxas", "Taxas de pagamento", "Stripe, MB Way, PayPal…", "%", "0.1", 2.5),
+                            ("comissoes", "Comissões", "Marketplace, loja, afiliados", "%", "1", 0), ("devolucoes", "Taxa de devoluções", "Em cada 100 vendas, quantas voltam", "%", "1", 8)]),
+      ("Preço", [("pvp", "PVP com IVA", "O preço que a cliente vê", "€", "1", 79), ("desconto", "Desconto médio", "Média real, com saldos e códigos", "%", "1", 10), ("iva", "IVA", "23% no continente", "%", "1", 23)])]
+fields = "".join(f'<fieldset class="cgroup"><legend>{g}</legend><div class="cgrid">' + "".join(
+    f'<div><label for="c-{k}">{lab}</label><div class="cin"><input id="c-{k}" data-k="{k}" type="number" inputmode="decimal" min="0" step="{st}" value="{dv}" aria-describedby="c-{k}-h"><span>{suf}</span></div><small id="c-{k}-h">{h}</small></div>'
+    for k, lab, h, suf, st, dv in fs) + '</div></fieldset>' for g, fs in CF)
+p = head("/calculadora-de-margem/", "Calculadora de margem para marcas de roupa · Tânia Silveira",
+         "Calcula a margem real de uma peça de roupa: produção, aviamentos, amostras, portes, taxas, devoluções, descontos e IVA. Grátis, feita por uma estrategista têxtil.",
+         [tool_schema("/calculadora-de-margem/", "Calculadora de margem para marcas de roupa", "Calcula a margem real por peça de roupa, com IVA, descontos, portes, taxas e devoluções."), c_s, f_s])
+p += f"""<section class="page-head"><div class="wrap">{c_h}
+<span class="eyebrow">Ferramenta grátis</span><h1>Calculadora de <em>margem real.</em></h1>
+<p class="lead">A margem que pensas que tens e a que tens de facto raramente são a mesma. Mete os números de uma peça e vê para onde vai o dinheiro.</p></div></section>
+<section style="padding-top:0"><div class="wrap calc" id="calc">
+<form class="cform" onsubmit="return false" aria-label="Dados da peça">{fields}</form>
+<div class="cres" aria-live="polite">
+<div class="cbig"><span class="eyebrow">Margem real por peça</span>
+<div class="gauge" id="r-gauge"><i></i></div>
+<b id="r-pct" class="big">0%</b><p id="r-eur"></p>
+<dl><div><dt>Recebes de facto</dt><dd id="r-recebes"></dd></div><div><dt>Custa-te de facto</dt><dd id="r-custa"></dd></div>
+<div><dt>PVP ÷ custo da peça</dt><dd id="r-mult"></dd></div><div><dt>PVP para 60% de margem</dt><dd id="r-alvo"></dd></div></dl></div>
+<div id="r-verdict" class="verdict"></div>
+<div class="cbox"><b>Para onde vai o dinheiro</b><ul id="r-bars" class="bars"></ul><small>Em percentagem do que recebes por peça, sem IVA e com o desconto médio.</small></div>
+<div class="cbox"><p>Os 60% são uma referência de trabalho para venda direta à cliente final. A calculadora mostra os números. A decisão sobre o que fazer com eles é estratégica.</p>
+<a class="btn" href="/consultoria-tafeta-360/">Rever preço e margem comigo</a></div>
+</div></div></section>
+<section class="alt"><div class="wrap narrow"><div class="head"><span class="eyebrow">Perguntas frequentes</span><h2>Sobre <em>margem.</em></h2></div>{f_h}
+<p style="margin-top:24px"><a class="link" href="/guias/como-calcular-preco-e-margem-de-uma-peca-de-roupa/">Ler o guia completo de preço e margem →</a></p></div></section>
+""" + FOOT
+write("/calculadora-de-margem/", p, "0.9")
+
+# Autodiagnóstico
+c_h, c_s = crumbs([("Ferramentas", "/ferramentas/"), ("Autodiagnóstico", "/autodiagnostico/")])
+p = head("/autodiagnostico/", "Autodiagnóstico para marcas de moda · Tânia Silveira",
+         "9 perguntas, 2 minutos. Descobre se o que trava a tua marca de moda é o produto, a margem, o posicionamento ou a decisão, e o que fazer primeiro.",
+         [tool_schema("/autodiagnostico/", "Autodiagnóstico para marcas de moda", "Questionário de 9 perguntas que identifica o gargalo de uma marca de moda."), c_s])
+p += f"""<section class="page-head"><div class="wrap narrow">{c_h}
+<span class="eyebrow">Ferramenta grátis · 2 minutos</span><h1>Onde está o <em>gargalo</em> da tua marca?</h1>
+<p class="lead">9 perguntas. Responde com verdade, não com o que gostavas que fosse. No fim, vês o que está a travar a marca e os primeiros 3 passos.</p></div></section>
+<section style="padding-top:0"><div class="wrap narrow">
+<div id="quiz" class="quiz">
+<div class="qtop"><span id="quiz-count">Pergunta 1 de 9</span><button type="button" id="quiz-back" class="linkbtn" hidden>← Voltar</button></div>
+<div class="qbar"><i id="quiz-bar"></i></div>
+<div id="quiz-box" class="qbox"><noscript>Ativa o JavaScript para fazer o autodiagnóstico.</noscript></div>
+</div>
+<div id="quiz-result" hidden>
+<div class="qcard"><span class="eyebrow">O teu resultado</span><h2 id="qr-title"></h2><p id="qr-text" class="lead"></p><ul id="qr-bars" class="bars big"></ul>
+<small>Quanto maior a barra, maior o peso dessa área no que está a travar a marca.</small></div>
+<div class="qcard"><h3>Os teus primeiros 3 passos</h3><ol id="qr-actions" class="qsteps"></ol>
+<p id="qr-margem" hidden><a class="btn ghost" href="/calculadora-de-margem/">Calcular a margem real</a></p>
+<p class="note">Este diagnóstico aponta a direção. Não decide por ti. Quem decide é quem conhece o negócio por dentro.</p></div>
+<div class="qcard dark"><span class="eyebrow">Recomendo</span><h2 id="qr-svc"></h2><p id="qr-why"></p>
+<div class="btns"><a id="qr-link" class="btn light" href="/metodo-fibra/">Ver</a><a class="btn light" href="/diagnostico-alinhavar/">Pedir o Diagnóstico Alinhavar</a></div></div>
+<form class="qcard form" id="qr-form" name="autodiagnostico" method="POST" data-netlify="true" netlify-honeypot="bot-field" style="max-width:none">
+<input type="hidden" name="form-name" value="autodiagnostico"><input type="hidden" name="fase"><input type="hidden" name="gargalo"><input type="hidden" name="servico_recomendado"><input type="hidden" name="pontuacoes">
+<p class="hp"><label>Não preencher <input name="bot-field"></label></p>
+<h3>Queres falar sobre este resultado?</h3><p>Deixa os teus dados. Recebo o teu diagnóstico e respondo por email.</p>
+<div><label for="q-nome">Nome</label><input id="q-nome" name="nome" required autocomplete="name"></div>
+<div><label for="q-email">Email</label><input id="q-email" name="email" type="email" required autocomplete="email"></div>
+<div><label for="q-marca">Marca (nome ou Instagram)</label><input id="q-marca" name="marca"></div>
+<label class="chk"><input type="checkbox" name="consentimento" value="sim" required><span>Aceito que os meus dados sejam usados para responder a este pedido, conforme a <a href="/politica-de-privacidade/">política de privacidade</a>.</span></label>
+<div class="btns"><button class="btn" type="submit">Enviar o meu diagnóstico</button><button class="btn ghost" type="button" id="qr-restart">Refazer</button></div>
+<p id="qr-msg" role="status" style="color:var(--terra);margin:0"></p>
+</form></div>
+<script type="application/json" id="quiz-data">{json.dumps(QUIZ, ensure_ascii=False)}</script>
+</div></section>
+""" + FOOT
+write("/autodiagnostico/", p, "0.9")
+
+# Ferramentas hub
+c_h, c_s = crumbs([("Ferramentas", "/ferramentas/")])
+p = head("/ferramentas/", "Ferramentas para marcas de moda · Tânia Silveira",
+         "Ferramentas para marcas de moda: calculadora de margem real, autodiagnóstico da marca e lista estratégica de fornecedores têxteis em Portugal.",
+         [c_s, {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": SITE + u} for i, u in enumerate(["/calculadora-de-margem/", "/autodiagnostico/", "/lista-estrategica-de-fornecedores/"])]}])
+p += f"""<section class="page-head"><div class="wrap">{c_h}
+<span class="eyebrow">Ferramentas</span><h1>Decide com <em>números,</em> não com palpites.</h1>
+<p class="lead">Duas ferramentas grátis e uma lista paga. Para usares sozinha, quando quiseres.</p></div></section>
+<section style="padding-top:0"><div class="wrap"><div class="cards">
+<a class="card" href="/calculadora-de-margem/"><span class="tag">Grátis · 2 minutos</span><h3>Calculadora de margem real</h3><p>Produção, aviamentos, portes, taxas, devoluções, descontos e IVA. Vês quanto ganhas de facto por peça e o preço certo para 60% de margem.</p><span class="go">Fazer a conta →</span></a>
+<a class="card" href="/autodiagnostico/"><span class="tag">Grátis · 9 perguntas</span><h3>Autodiagnóstico da marca</h3><p>Produto, margem, posicionamento ou decisão: descobre o que está a travar a tua marca e os primeiros 3 passos.</p><span class="go">Começar →</span></a>
+<a class="card" href="/lista-estrategica-de-fornecedores/"><span class="tag">Desde 49 €</span><h3>Lista Estratégica de Fornecedores</h3><p>Contactos do setor têxtil para revenda e para criar produto próprio, organizados por categoria.</p><span class="go">Ver a lista →</span></a>
+</div></div></section>
+{final_cta()}""" + FOOT
+write("/ferramentas/", p, "0.8")
+
 # =====================================================================
 # SOBRE
 # =====================================================================
@@ -904,6 +1068,8 @@ Língua: português de Portugal. Atende marcas de todo o país, online e presenc
 - [Método FIBRA]({SITE}/metodo-fibra/): acompanhamento estratégico 1:1 de 6 meses para marcas de moda. Pilares: Mentalidade, Produto, Digital. Inclui coleção, lógica de produto, margem, posicionamento e mentalidade de decisão.
 - [Consultoria Tafetá 360]({SITE}/consultoria-tafeta-360/): sessão estratégica de 2 horas + seguimento de 1 hora ao fim de um mês, para marcas que já vendem e precisam de afinar produto, margem e estratégia comercial.
 - [Consultoria para empresas]({SITE}/empresas/): para fábricas, confeções, empresas têxteis e marcas de moda com equipa. Começa sempre por uma consultoria; a partir dela é apresentado um plano à medida.
+- [Calculadora de margem]({SITE}/calculadora-de-margem/): ferramenta gratuita que calcula a margem real de uma peça de roupa, com IVA, descontos, portes, taxas e devoluções.
+- [Autodiagnóstico]({SITE}/autodiagnostico/): 9 perguntas que identificam o gargalo de uma marca de moda (produto, margem, posicionamento ou decisão) e o serviço indicado.
 - [Lista Estratégica de Fornecedores]({SITE}/lista-estrategica-de-fornecedores/): contactos de fornecedores têxteis em Portugal para revenda e para marca própria. Acesso digital de 6 meses.
 
 ## Guias

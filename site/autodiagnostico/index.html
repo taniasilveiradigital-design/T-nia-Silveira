@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Autodiagnóstico para marcas de moda · Tânia Silveira</title>
+<meta name="description" content="9 perguntas, 2 minutos. Descobre se o que trava a tua marca de moda é o produto, a margem, o posicionamento ou a decisão, e o que fazer primeiro.">
+<link rel="canonical" href="https://taniasilveira.pt/autodiagnostico/">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Tânia Silveira">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_PT">
+<meta property="og:site_name" content="Tânia Silveira">
+<meta property="og:title" content="Autodiagnóstico para marcas de moda · Tânia Silveira">
+<meta property="og:description" content="9 perguntas, 2 minutos. Descobre se o que trava a tua marca de moda é o produto, a margem, o posicionamento ou a decisão, e o que fazer primeiro.">
+<meta property="og:url" content="https://taniasilveira.pt/autodiagnostico/">
+<meta property="og:image" content="https://taniasilveira.pt/assets/img/og.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#faf6f1">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/img/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Raleway:wght@400;500;600&family=Dr+Sugiyama&display=swap">
+<link rel="stylesheet" href="/assets/site.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "name": "Autodiagnóstico para marcas de moda", "url": "https://taniasilveira.pt/autodiagnostico/", "description": "Questionário de 9 perguntas que identifica o gargalo de uma marca de moda.", "applicationCategory": "BusinessApplication", "operatingSystem": "Web", "inLanguage": "pt-PT", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "author": {"@id": "https://taniasilveira.pt/#tania"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Início", "item": "https://taniasilveira.pt/"}, {"@type": "ListItem", "position": 2, "name": "Ferramentas", "item": "https://taniasilveira.pt/ferramentas/"}, {"@type": "ListItem", "position": 3, "name": "Autodiagnóstico", "item": "https://taniasilveira.pt/autodiagnostico/"}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#conteudo">Saltar para o conteúdo</a>
+<header class="mast"><div class="wrap">
+<a class="brand" href="/" aria-label="Tânia Silveira, página inicial">Tânia Silveira<small>Estratégia para marcas de moda</small></a>
+<button class="burger" id="burger" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav"><span></span><span></span><span></span></button>
+<nav class="nav" id="nav" aria-label="Principal">
+<a href="/metodo-fibra/">Método FIBRA</a><a href="/servicos/">Serviços</a><a href="/empresas/">Empresas</a><a href="/ferramentas/">Ferramentas</a><a href="/guias/">Guias</a><a href="/sobre/">Sobre</a>
+<a class="btn" href="/diagnostico-alinhavar/">Pedir diagnóstico</a>
+</nav></div><div id="sew-progress" aria-hidden="true"></div></header>
+<main id="conteudo">
+<section class="page-head"><div class="wrap narrow"><nav class="crumbs" aria-label="Caminho"><a href="/">Início</a> / <a href="/ferramentas/">Ferramentas</a> / <span>Autodiagnóstico</span></nav>
+<span class="eyebrow">Ferramenta grátis · 2 minutos</span><h1>Onde está o <em>gargalo</em> da tua marca?</h1>
+<p class="lead">9 perguntas. Responde com verdade, não com o que gostavas que fosse. No fim, vês o que está a travar a marca e os primeiros 3 passos.</p></div></section>
+<section style="padding-top:0"><div class="wrap narrow">
+<div id="quiz" class="quiz">
+<div class="qtop"><span id="quiz-count">Pergunta 1 de 9</span><button type="button" id="quiz-back" class="linkbtn" hidden>← Voltar</button></div>
+<div class="qbar"><i id="quiz-bar"></i></div>
+<div id="quiz-box" class="qbox"><noscript>Ativa o JavaScript para fazer o autodiagnóstico.</noscript></div>
+</div>
+<div id="quiz-result" hidden>
+<div class="qcard"><span class="eyebrow">O teu resultado</span><h2 id="qr-title"></h2><p id="qr-text" class="lead"></p><ul id="qr-bars" class="bars big"></ul>
+<small>Quanto maior a barra, maior o peso dessa área no que está a travar a marca.</small></div>
+<div class="qcard"><h3>Os teus primeiros 3 passos</h3><ol id="qr-actions" class="qsteps"></ol>
+<p id="qr-margem" hidden><a class="btn ghost" href="/calculadora-de-margem/">Calcular a margem real</a></p>
+<p class="note">Este diagnóstico aponta a direção. Não decide por ti. Quem decide é quem conhece o negócio por dentro.</p></div>
+<div class="qcard dark"><span class="eyebrow">Recomendo</span><h2 id="qr-svc"></h2><p id="qr-why"></p>
+<div class="btns"><a id="qr-link" class="btn light" href="/metodo-fibra/">Ver</a><a class="btn light" href="/diagnostico-alinhavar/">Pedir o Diagnóstico Alinhavar</a></div></div>
+<form class="qcard form" id="qr-form" name="autodiagnostico" method="POST" data-netlify="true" netlify-honeypot="bot-field" style="max-width:none">
+<input type="hidden" name="form-name" value="autodiagnostico"><input type="hidden" name="fase"><input type="hidden" name="gargalo"><input type="hidden" name="servico_recomendado"><input type="hidden" name="pontuacoes">
+<p class="hp"><label>Não preencher <input name="bot-field"></label></p>
+<h3>Queres falar sobre este resultado?</h3><p>Deixa os teus dados. Recebo o teu diagnóstico e respondo por email.</p>
+<div><label for="q-nome">Nome</label><input id="q-nome" name="nome" required autocomplete="name"></div>
+<div><label for="q-email">Email</label><input id="q-email" name="email" type="email" required autocomplete="email"></div>
+<div><label for="q-marca">Marca (nome ou Instagram)</label><input id="q-marca" name="marca"></div>
+<label class="chk"><input type="checkbox" name="consentimento" value="sim" required><span>Aceito que os meus dados sejam usados para responder a este pedido, conforme a <a href="/politica-de-privacidade/">política de privacidade</a>.</span></label>
+<div class="btns"><button class="btn" type="submit">Enviar o meu diagnóstico</button><button class="btn ghost" type="button" id="qr-restart">Refazer</button></div>
+<p id="qr-msg" role="status" style="color:var(--terra);margin:0"></p>
+</form></div>
+<script type="application/json" id="quiz-data">{"stage": {"text": "Em que fase está a tua marca?", "options": [{"value": "inicio", "label": "Ainda não lancei, ou lancei há pouco"}, {"value": "operacao", "label": "Já vendo, mas com muito esforço e pouca margem"}, {"value": "escala", "label": "Vendo bem, mas quero afinar e crescer com precisão"}]}, "statements": [{"area": "produto", "text": "Crio peças novas porque gosto delas, não porque a coleção precisa delas."}, {"area": "margem", "text": "Defino o preço a olhar para a concorrência, não para os meus custos."}, {"area": "posicionamento", "text": "Se tapasse o logótipo, a minha marca podia ser confundida com outra."}, {"area": "decisao", "text": "Mudo de direção sempre que algo não vende como esperava."}, {"area": "produto", "text": "Não sei quais são as peças que realmente pagam a coleção."}, {"area": "margem", "text": "Faço descontos para conseguir vender."}, {"area": "posicionamento", "text": "Não consigo explicar numa frase para quem é a minha marca."}, {"area": "decisao", "text": "Tomo as decisões importantes por impulso, sem um critério definido."}], "answers": [{"value": 2, "label": "Sim"}, {"value": 1, "label": "Às vezes"}, {"value": 0, "label": "Não"}], "labels": {"produto": "Produto", "margem": "Margem", "posicionamento": "Posicionamento", "decisao": "Decisão"}, "services": {"fibra": {"name": "Método FIBRA", "href": "/metodo-fibra/", "why": "O que encontraste aqui pede estrutura e acompanhamento, não um ajuste pontual."}, "tafeta": {"name": "Consultoria Tafetá 360", "href": "/consultoria-tafeta-360/", "why": "A base existe. Uma intervenção focada chega para corrigir e afinar."}}, "results": {"produto": {"title": "O teu gargalo está no produto.", "text": "A coleção cresce por gosto, não por lógica. Há peças a ocupar stock e orçamento sem pagar o lugar que têm. Sem saber o que vende e porquê, cada coleção nova é uma aposta.", "actions": ["Lista as peças da última coleção por unidades vendidas e por margem. As de cima dizem-te onde está a marca.", "Define a função de cada peça antes de a desenhar: entrada, margem ou imagem.", "Corta o que não tem função. Menos referências, mais critério."]}, "margem": {"title": "O teu gargalo está na margem.", "text": "Vendes, mas o dinheiro não fica. Preço definido pela concorrência e descontos para escoar são sinal de que o custo real nunca foi feito até ao fim.", "actions": ["Faz a conta completa por peça: produção, aviamentos, amostras, portes, comissões e devoluções.", "Revê o preço a partir do custo real, não do que os outros cobram.", "Trava os descontos permanentes. Desconto sem estratégia ensina a cliente a esperar."]}, "posicionamento": {"title": "O teu gargalo está no posicionamento.", "text": "A marca existe, mas não se distingue. Quando a cliente não percebe porque és tu, a decisão dela passa a ser o preço.", "actions": ["Escreve numa frase: para quem é, que problema resolve, porque és tu. Se não cabe numa frase, ainda não está claro.", "Confirma que produto, preço e comunicação dizem a mesma coisa.", "Deixa de falar para toda a gente. Uma cliente bem definida vende mais do que um público largo."]}, "decisao": {"title": "O teu gargalo está na decisão.", "text": "Há esforço, mas não há critério. Mudar de direção a cada venda fraca não é flexibilidade. É falta de estrutura para decidir.", "actions": ["Define 3 critérios fixos para aprovar qualquer decisão de coleção, preço ou investimento.", "Dá tempo às decisões antes de as mudar. Uma coleção não se avalia em duas semanas.", "Separa o urgente do estrutural. Reserva tempo na semana só para o estrutural."]}, "solida": {"title": "A tua base está sólida.", "text": "Não há um gargalo evidente. O próximo passo é afinar com precisão para crescer sem perder margem nem controlo.", "actions": ["Confirma a margem real das tuas 5 peças mais vendidas.", "Revê se a coleção seguinte mantém a lógica que está a resultar.", "Identifica a próxima decisão estrutural e trata-a antes de ser urgente."]}}}</script>
+</div></section>
+</main>
+<footer class="foot"><div class="wrap">
+<div class="grid">
+<div><a class="brand" href="/">Tânia Silveira<small>Estratégia para marcas de moda</small></a>
+<p style="margin-top:22px;max-width:320px">Estrutura, margem e estratégia para marcas de moda crescerem com previsibilidade. Guimarães, Portugal. Trabalho com marcas de todo o país, presencial e online.</p></div>
+<div><h4>Serviços</h4><ul>
+<li><a href="/diagnostico-alinhavar/">Diagnóstico Alinhavar</a></li>
+<li><a href="/metodo-fibra/">Método FIBRA</a></li>
+<li><a href="/consultoria-tafeta-360/">Consultoria Tafetá 360</a></li>
+<li><a href="/lista-estrategica-de-fornecedores/">Lista de Fornecedores</a></li>
+<li><a href="/empresas/">Para empresas</a></li></ul></div>
+<div><h4>Conhecer</h4><ul>
+<li><a href="/sobre/">Sobre a Tânia</a></li>
+<li><a href="/ferramentas/">Ferramentas</a></li>
+<li><a href="/guias/">Guias</a></li>
+<li><a href="/perguntas-frequentes/">Perguntas frequentes</a></li>
+<li><a href="/contacto/">Contacto</a></li></ul></div>
+<div><h4>Seguir</h4><ul>
+<li><a href="https://www.instagram.com/taniasilveira.pt/" rel="me noopener" target="_blank">Instagram</a></li>
+<li><a href="https://www.linkedin.com/in/t%C3%A2nia-silveira-229848295" rel="me noopener" target="_blank">LinkedIn</a></li></ul></div>
+</div>
+<div class="base"><span>© 2026 Tânia Silveira · Estratégia Têxtil</span><span><a href="/politica-de-privacidade/">Política de privacidade</a></span></div>
+</div></footer>
+<script src="/assets/site.js" defer></script>
+<script src="/assets/ferramentas.js" defer></script>
+</body></html>
