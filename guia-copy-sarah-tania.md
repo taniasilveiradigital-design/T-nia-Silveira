@@ -15,6 +15,18 @@ Fonte: o Trello "Plano de Escalada" completo (abril a novembro 2026). São 307 c
 - Palavra proibida: "estrutura". CTA variado (a Sarah não quer o mesmo em todos): DIAGNÓSTICO no máximo 1 a 2 vezes por semana, mensagem com a foto da peça, guardar e partilhar, pergunta.
 - Reels que ensinam: até 1:30, no modelo da Sarah (secção 0.1). Reels de opinião ou bastidores: 30 a 45 segundos. Sempre em conversa corrida, sem listas.
 
+## 0.0 O que os dados dizem (relatório de 26/11)
+
+- O alcance caiu em abril de 2026 e não voltou (2025: nunca abaixo de 10 mil visualizações por mês; desde abril de 2026, no máximo 9963; novembro vai em 4669 com 20 posts, 2 comentários e 0 partilhas). O ritmo manteve-se; mudou o tipo de conteúdo.
+- O que dá alcance são histórias reais de pessoas e marcas, contadas como um acontecimento na primeira linha: "Designer de Torres Vedras estreou-se na Paris Fashion Week." (10.434, 52 partilhas), "4€ foi esse o lucro do meu primeiro mês…" (9308), "Adiou abertura do showroom. Não havia data." (6607), "Não foi um acaso." (5182), "Max Alexander não foi para a Paris Fashion Week porque coseu melhor." (1291), "A ROMEO adiava." (969).
+- Gancho que resulta: frase curta que conta um facto de uma pessoa ou marca real (quem + o que aconteceu), sem explicar. Opinião e conselho genérico ("A tua marca de moda…", "Faz diferente…") ficam nas 200 a 400 visualizações.
+- Casos de clientes geram conversa: o caso da Susana teve 20 comentários, o da Carolina 13 (média: 2,1). Sem nome de cliente quando a Tânia não quiser: identifica pela descrição (cidade, tipo de marca, o que aconteceu), como "Designer de Torres Vedras".
+- Pelo menos 2 histórias reais por semana. No máximo 1 em cada 4 posts a vender (em novembro, 8 de 14 vendiam a Lista de Fornecedores).
+- Nunca publicar o mesmo Reels duas vezes (a 19 de novembro saíram 3 em 15 minutos; a cópia ficou nas 86 visualizações).
+- Reels para chegar a gente nova (alcance médio 419), carrossel para quem já segue (266 de alcance, mais guardados).
+- Publicar às 21h (pico de seguidores online, segunda a quinta) ou às 13h.
+- Público atual: 68% mulheres, 35 a 54 anos; as cidades do topo são a rede pessoal (Guimarães, Chaves, Carrazedo). Falar para empresários sem afastar quem já cá está.
+
 ## 0.1 Ganchos e Reels que ensinam (regras da Sarah)
 
 - Um bom gancho tem 4 coisas ao mesmo tempo:
