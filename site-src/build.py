@@ -105,7 +105,7 @@ def agenda_html(key, titulo, duracao, fallback):
     widget = f"""<div class="bk" data-agenda="{key}" data-api="{api}" data-email="{EMAIL_AGENDA}">
 <ol class="bk-prog" aria-hidden="true"><li class="on">Dia</li><li>Hora</li><li>Dados</li><li>Feito</li></ol>
 <div class="bk-step"><div class="bk-top"><button type="button" class="bk-prev" aria-label="Mês anterior">‹</button><b class="bk-mes"></b><button type="button" class="bk-next" aria-label="Mês seguinte">›</button></div>
-<div class="bk-grid"></div><p class="bk-tz">Horas de Lisboa · os dias a escuro têm horas livres</p></div>
+<div class="bk-grid"></div><p class="bk-tz">Horas de Lisboa · marcação com 2 semanas de antecedência · os dias a escuro têm horas livres</p></div>
 <div class="bk-step" hidden><button type="button" class="bk-back" data-back="0">‹ Mudar o dia</button><p class="bk-lbl">Escolhe a hora</p><b class="bk-dia"></b><div class="bk-hs"></div></div>
 <div class="bk-step" hidden><button type="button" class="bk-back" data-back="1">‹ Mudar a hora</button><p class="bk-lbl">A tua marcação</p><b class="bk-res"></b>
 <form class="bk-form" name="marcacao" method="POST" data-netlify="true" netlify-honeypot="bot-field">
@@ -118,13 +118,13 @@ def agenda_html(key, titulo, duracao, fallback):
 <label class="chk"><input type="checkbox" name="consentimento" value="sim" required><span>Aceito a <a href="/politica-de-privacidade/">política de privacidade</a>.</span></label>
 <button class="btn" type="submit">Confirmar marcação</button><p class="bk-msg" role="status"></p></form></div>
 <div class="bk-step bk-done" hidden><span class="bk-ok" aria-hidden="true">✓</span><b>Está marcado.</b><p class="bk-res"></p>
-<p>Vais receber a confirmação de <b>{EMAIL_AGENDA}</b> com o link da videochamada. Até lá, junta os números da tua marca.</p></div>
+<p>Vais receber a confirmação de <b>{EMAIL_AGENDA}</b> com o link da videochamada. Nos próximos dias chega também o formulário de preparação: responde até uma semana antes da sessão.</p></div>
 </div>
 <script type="application/json" id="agenda-cfg">{json.dumps(cfg, ensure_ascii=False)}</script>"""
     return f"""<section class="agenda" id="agendar"><div class="wrap"><div class="ag">
 <div class="ag-info"><span class="eyebrow">Agendar</span><h2>{titulo}</h2>
-<ul class="ag-facts"><li><b>Duração</b><span>{duracao}</span></li><li><b>Formato</b><span>Online, por Google Meet</span></li><li><b>Confirmação</b><span>Por email, de {EMAIL_AGENDA}</span></li></ul>
-<div class="ag-prep"><b>Antes da sessão</b><p>Traz os números da tua marca: custos de uma peça, preços, vendas dos últimos meses. O trabalho começa antes de entrares.</p></div>
+<ul class="ag-facts"><li><b>Duração</b><span>{duracao}</span></li><li><b>Formato</b><span>Online, por Google Meet</span></li><li><b>Confirmação</b><span>Por email, de {EMAIL_AGENDA}</span></li><li><b>Antecedência</b><span>Marcação com pelo menos 2 semanas</span></li></ul>
+<div class="ag-prep"><b>Porquê duas semanas</b><p>Depois de marcares, recebes um formulário sobre a tua marca. Respondes, eu estudo as respostas e preparo a consultoria. Chegas à sessão com trabalho já feito.</p></div>
 <p class="ag-mail">Dúvidas? <a href="mailto:{EMAIL_AGENDA}">{EMAIL_AGENDA}</a></p></div>
 <div class="ag-right">{widget}</div>
 </div></div></section>"""

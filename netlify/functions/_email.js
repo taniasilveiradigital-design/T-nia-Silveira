@@ -29,7 +29,7 @@ function confirmacaoCliente(m) {
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${linha('Sessão', esc(m.evento))}${linha('Quando', esc(m.quando) + ' (hora de Lisboa)')}${linha('Onde', 'Google Meet')}</table>
 ${meet}
 <div style="background:#faf6f1;border-left:2px solid #ba8166;padding:14px 18px;margin:8px 0 20px">
-<b style="font:400 18px Georgia,serif;color:#5c3b2e">Antes da sessão</b><br>Traz os números da tua marca: custos de uma peça, preços, vendas dos últimos meses. O trabalho começa antes de entrares.</div>
+<b style="font:400 18px Georgia,serif;color:#5c3b2e">O próximo passo</b><br>Nos próximos dias envio-te o formulário de preparação sobre a tua marca. Responde até uma semana antes da sessão: é com essas respostas que preparo a consultoria.</div>
 <p style="margin:0">Se precisares de mudar a hora, responde a este email com pelo menos 72 horas de antecedência.</p>
 <p style="margin:18px 0 0">Bora fazer acontecer.</p>`);
 }
