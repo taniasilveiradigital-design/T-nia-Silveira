@@ -682,3 +682,5 @@ body.has-bar .wa{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
 .bk-done>b{display:block;font:500 34px/1 var(--serif);color:var(--brown);margin-bottom:8px}
 .bk-done .bk-res{font-size:20px}
 .bk-done p{color:var(--muted)}
+.ag-steps{margin:6px 0 0;padding-left:20px;color:#cdb8a8;font-size:14.5px}
+.ag-steps li{margin-bottom:6px}.ag-steps b{display:inline;font:600 14.5px var(--sans);color:#f4e9df}

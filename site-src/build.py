@@ -118,13 +118,13 @@ def agenda_html(key, titulo, duracao, fallback):
 <label class="chk"><input type="checkbox" name="consentimento" value="sim" required><span>Aceito a <a href="/politica-de-privacidade/">política de privacidade</a>.</span></label>
 <button class="btn" type="submit">Confirmar marcação</button><p class="bk-msg" role="status"></p></form></div>
 <div class="bk-step bk-done" hidden><span class="bk-ok" aria-hidden="true">✓</span><b>Está marcado.</b><p class="bk-res"></p>
-<p>Vais receber a confirmação de <b>{EMAIL_AGENDA}</b> com o link da videochamada. Nos próximos dias chega também o formulário de preparação: responde até uma semana antes da sessão.</p></div>
+<p>Vais receber a confirmação de <b>{EMAIL_AGENDA}</b> com o link da videochamada. A seguir envio-te o formulário sobre a tua marca. Respondes, eu preparo a consultoria e reunimos.</p></div>
 </div>
 <script type="application/json" id="agenda-cfg">{json.dumps(cfg, ensure_ascii=False)}</script>"""
     return f"""<section class="agenda" id="agendar"><div class="wrap"><div class="ag">
 <div class="ag-info"><span class="eyebrow">Agendar</span><h2>{titulo}</h2>
 <ul class="ag-facts"><li><b>Duração</b><span>{duracao}</span></li><li><b>Formato</b><span>Online, por Google Meet</span></li><li><b>Confirmação</b><span>Por email, de {EMAIL_AGENDA}</span></li><li><b>Antecedência</b><span>Marcação com pelo menos 2 semanas</span></li></ul>
-<div class="ag-prep"><b>Porquê duas semanas</b><p>Depois de marcares, recebes um formulário sobre a tua marca. Respondes, eu estudo as respostas e preparo a consultoria. Chegas à sessão com trabalho já feito.</p></div>
+<div class="ag-prep"><b>Como funciona</b><ol class="ag-steps"><li><b>Marcas</b> o dia e a hora aqui.</li><li><b>Envio-te o formulário</b> sobre a tua marca. Respondes.</li><li><b>Reunimos</b> com a consultoria já preparada a partir das tuas respostas.</li></ol></div>
 <p class="ag-mail">Dúvidas? <a href="mailto:{EMAIL_AGENDA}">{EMAIL_AGENDA}</a></p></div>
 <div class="ag-right">{widget}</div>
 </div></div></section>"""
