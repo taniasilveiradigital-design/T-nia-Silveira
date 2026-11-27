@@ -233,3 +233,16 @@
     if (matchMedia('(hover:hover)').matches) p.addEventListener('mouseenter', function () { open(p); });
   });
 })();
+
+/* ---------- Agenda Cal.com (só quando há link configurado) ---------- */
+(function () {
+  var els = document.querySelectorAll('.ag-cal[data-cal]');
+  if (!els.length) return;
+  (function (C, A, L) { var p = function (a, ar) { a.q.push(ar); }; var d = C.document; C.Cal = C.Cal || function () { var cal = C.Cal; var ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement('script')).src = A; cal.loaded = true; } if (ar[0] === L) { var api = function () { p(api, arguments); }; var namespace = ar[1]; api.q = api.q || []; if (typeof namespace === 'string') { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ['initNamespace', namespace]); } else p(cal, ar); return; } p(cal, ar); }; })(window, 'https://app.cal.com/embed/embed.js', 'init');
+  els.forEach(function (el, i) {
+    var ns = 'ts' + i;
+    Cal('init', ns, { origin: 'https://cal.com' });
+    Cal.ns[ns]('inline', { elementOrSelector: '#' + el.id, calLink: el.dataset.cal, config: { layout: 'month_view', theme: 'light' } });
+    Cal.ns[ns]('ui', { theme: 'light', hideEventTypeDetails: true, layout: 'month_view', cssVarsPerTheme: { light: { 'cal-brand': '#5c3b2e', 'cal-bg': '#faf6f1', 'cal-bg-emphasis': '#f3ebe2', 'cal-text': '#33221b', 'cal-border': '#e2d4c7' } } });
+  });
+})();

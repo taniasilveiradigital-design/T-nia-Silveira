@@ -51,6 +51,11 @@ CASOS = [
 WHATSAPP = "351936582165"
 GUIA_PDF = "/assets/guia-10-perguntas-antes-de-produzir.pdf"
 
+# Agenda (Cal.com). Quando a conta estiver criada com contacto@taniasilveira.pt,
+# põe aqui o link do evento, ex.: "taniasilveira/tafeta-360". Vazio = usa o link do Google.
+CAL = {"tafeta": ""}
+EMAIL_AGENDA = "contacto@taniasilveira.pt"
+
 CLIENTES = ["Nicau Couture", "ROMEO", "DOMPURE", "Hosmos.co", "LEFKOT", "Traços D'Amor"]
 OG = SITE + "/assets/img/og.jpg"
 FOTO = SITE + "/assets/img/tania-silveira-fita-metrica.jpg"
@@ -91,6 +96,23 @@ def marquee_html():
     row = "".join(f'<span>{e(c)}</span><i aria-hidden="true">🧵</i>' for c in CLIENTES)
     return ('<section class="mq" aria-label="Marcas com quem já trabalhei"><p class="mq-t">Marcas com quem já trabalhei</p>'
             f'<div class="mq-track"><div class="mq-row">{row}</div><div class="mq-row" aria-hidden="true">{row}</div></div></section>')
+
+def agenda_html(key, titulo, duracao, fallback):
+    cal = CAL.get(key, "")
+    if cal:
+        right = (f'<div class="ag-cal" id="ag-{key}" data-cal="{cal}" aria-label="Escolher dia e hora"></div>'
+                 f'<noscript><a class="btn" href="https://cal.com/{cal}">Abrir a agenda</a></noscript>')
+    else:
+        right = (f'<div class="ag-empty"><span class="ag-ico" aria-hidden="true">◷</span><b>Escolhe o dia e a hora</b>'
+                 f'<p>Vês as horas livres e marcas em menos de um minuto. A confirmação chega ao teu email com o link da videochamada.</p>'
+                 f'<a class="btn" href="{fallback}" target="_blank" rel="noopener">Ver horas disponíveis</a></div>')
+    return f'''<section class="agenda" id="agendar"><div class="wrap"><div class="ag">
+<div class="ag-info"><span class="eyebrow">Agendar</span><h2>{titulo}</h2>
+<ul class="ag-facts"><li><b>Duração</b><span>{duracao}</span></li><li><b>Formato</b><span>Online, por videochamada</span></li><li><b>Confirmação</b><span>No teu email, com o link da sessão</span></li></ul>
+<div class="ag-prep"><b>Antes da sessão</b><p>Traz os números da tua marca: custos de uma peça, preços, vendas dos últimos meses. O trabalho começa antes de entrares.</p></div>
+<p class="ag-mail">Dúvidas? <a href="mailto:{EMAIL_AGENDA}">{EMAIL_AGENDA}</a></p></div>
+<div class="ag-right">{right}</div>
+</div></div></section>'''
 
 def pic(name, alt, h=1650, lazy=True, sizes="(max-width:860px) 90vw, 40vw"):
     return (f'<picture><source type="image/webp" srcset="/assets/img/{name}-600.webp 600w, /assets/img/{name}-1100.webp 1100w" sizes="{sizes}">'
@@ -760,8 +782,8 @@ service_page("/consultoria-tafeta-360/", "Consultoria Tafetá 360",
     "Para quem já tem a marca a funcionar <em>e quer afinar com precisão.</em>",
     "Uma intervenção estratégica para marcas com base criada. Corrigimos falhas estruturais, afinamos produto e margem e definimos uma direção comercial clara.",
     "<p>A Consultoria Tafetá 360 é uma sessão estratégica de 2 horas, seguida de uma sessão de seguimento de 1 hora ao fim de um mês. É para marcas de moda que já vendem e precisam de impacto sem o compromisso de um acompanhamento de 6 meses. Foco em produto, margem, falhas estruturais e estratégia comercial.</p>",
-    "Agendar a Tafetá 360", LINKS["tafeta"],
-    """<section><div class="wrap split top">
+    "Agendar a Tafetá 360", "#agendar",
+    agenda_html("tafeta", "Consultoria Tafetá 360", "Sessão estratégica de 2 horas + seguimento de 1 hora ao fim de um mês", LINKS["tafeta"]) + """<section><div class="wrap split top">
 <div><span class="eyebrow">O que trabalhamos</span><h2>Visão 360. <em>Decisões concretas.</em></h2></div>
 <div><ol class="steps">
 <li><div><b>Sessão estratégica de 2 horas</b><p>Olhamos para a marca inteira: produto, margem, posicionamento, operação comercial.</p></div></li>
