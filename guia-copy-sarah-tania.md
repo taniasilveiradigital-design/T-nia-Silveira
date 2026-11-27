@@ -67,6 +67,7 @@ Fonte: o Trello "Plano de Escalada" completo (abril a novembro 2026). São 307 c
 
 ## 0.3 Funil num só conteúdo (aula Vinci)
 
+- Prioridade (Tânia, 27 de novembro): primeiro o briefing da Sarah, à letra (frase de abertura que ela dá, os pontos que lista, pela ordem dela, e o tom que pede). Só depois o formato da Vinci e os dados, por cima. Se a Sarah dá a frase de abertura, o gancho é essa frase; a história real entra como prova no interesse.
 - Cada post começa aberto e afunila. Não é um papel por dia (segunda alcançar, quarta engajar, sexta vender): é o funil inteiro em cada post.
 - 1. ATENÇÃO, para quem ainda não segue a Tânia. Capa ou 3 primeiros segundos. Gancho largo, sem jargão e sem precisar de contexto: qualquer empresário com uma marca de moda ou uma confeção se revê. Promessa clara do que vai ganhar (ex. da Vinci: "Copie as estratégias das marcas que escalam receita a custo quase zero"). Cara da Tânia sempre que der. Usa os 4 pontos de gancho da Sarah.
 - 2. INTERESSE, para aprofundar quem já segue. Prova concreta, um ponto de cada vez: caso real da Tânia, número, comparação lado a lado, frase de fábrica (ex. da Vinci: "Tamanho não é documento" com a tabela micro vs macro). É aqui que entra o chão de fábrica. Nunca inventar casos nem números.
