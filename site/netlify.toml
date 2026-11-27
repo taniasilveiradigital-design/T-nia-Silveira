@@ -1,5 +1,6 @@
 [build]
   publish = "."
+  functions = "../netlify/functions"
 
 # URLs antigos do WordPress → páginas novas (mantém o valor do Google)
 [[redirects]]

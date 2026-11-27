@@ -55,6 +55,8 @@ GUIA_PDF = "/assets/guia-10-perguntas-antes-de-produzir.pdf"
 # põe aqui o link do evento, ex.: "taniasilveira/tafeta-360". Vazio = usa o link do Google.
 CAL = {"tafeta": ""}
 EMAIL_AGENDA = "contacto@taniasilveira.pt"
+# Vazio = os pedidos chegam por formulário e confirmas tu. "/.netlify/functions" = automático com o Google.
+AGENDA_API = ""
 
 CLIENTES = ["Nicau Couture", "ROMEO", "DOMPURE", "Hosmos.co", "LEFKOT", "Traços D'Amor"]
 OG = SITE + "/assets/img/og.jpg"
@@ -98,21 +100,34 @@ def marquee_html():
             f'<div class="mq-track"><div class="mq-row">{row}</div><div class="mq-row" aria-hidden="true">{row}</div></div></section>')
 
 def agenda_html(key, titulo, duracao, fallback):
-    cal = CAL.get(key, "")
-    if cal:
-        right = (f'<div class="ag-cal" id="ag-{key}" data-cal="{cal}" aria-label="Escolher dia e hora"></div>'
-                 f'<noscript><a class="btn" href="https://cal.com/{cal}">Abrir a agenda</a></noscript>')
-    else:
-        right = (f'<div class="ag-empty"><span class="ag-ico" aria-hidden="true">◷</span><b>Escolhe o dia e a hora</b>'
-                 f'<p>Vês as horas livres e marcas em menos de um minuto. A confirmação chega ao teu email com o link da videochamada.</p>'
-                 f'<a class="btn" href="{fallback}" target="_blank" rel="noopener">Ver horas disponíveis</a></div>')
-    return f'''<section class="agenda" id="agendar"><div class="wrap"><div class="ag">
+    cfg = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "netlify", "functions", "_agenda.json"), encoding="utf-8"))
+    api = AGENDA_API
+    widget = f"""<div class="bk" data-agenda="{key}" data-api="{api}" data-email="{EMAIL_AGENDA}">
+<ol class="bk-prog" aria-hidden="true"><li class="on">Dia</li><li>Hora</li><li>Dados</li><li>Feito</li></ol>
+<div class="bk-step"><div class="bk-top"><button type="button" class="bk-prev" aria-label="Mês anterior">‹</button><b class="bk-mes"></b><button type="button" class="bk-next" aria-label="Mês seguinte">›</button></div>
+<div class="bk-grid"></div><p class="bk-tz">Horas de Lisboa · os dias a escuro têm horas livres</p></div>
+<div class="bk-step" hidden><button type="button" class="bk-back" data-back="0">‹ Mudar o dia</button><p class="bk-lbl">Escolhe a hora</p><b class="bk-dia"></b><div class="bk-hs"></div></div>
+<div class="bk-step" hidden><button type="button" class="bk-back" data-back="1">‹ Mudar a hora</button><p class="bk-lbl">A tua marcação</p><b class="bk-res"></b>
+<form class="bk-form" name="marcacao" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+<input type="hidden" name="form-name" value="marcacao"><input type="hidden" name="evento" value="{key}"><input type="hidden" name="data"><input type="hidden" name="hora"><input type="hidden" name="quando">
+<p class="hp"><label>Não preencher <input name="bot-field"></label></p>
+<label for="bk-nome-{key}">Nome<input id="bk-nome-{key}" name="nome" required autocomplete="name"></label>
+<label for="bk-email-{key}">Email<input id="bk-email-{key}" name="email" type="email" required autocomplete="email"></label>
+<label for="bk-marca-{key}">Marca (nome ou Instagram)<input id="bk-marca-{key}" name="marca"></label>
+<label for="bk-msg-{key}">O que queres trabalhar na sessão?<textarea id="bk-msg-{key}" name="mensagem" rows="3"></textarea></label>
+<label class="chk"><input type="checkbox" name="consentimento" value="sim" required><span>Aceito a <a href="/politica-de-privacidade/">política de privacidade</a>.</span></label>
+<button class="btn" type="submit">Confirmar marcação</button><p class="bk-msg" role="status"></p></form></div>
+<div class="bk-step bk-done" hidden><span class="bk-ok" aria-hidden="true">✓</span><b>Está marcado.</b><p class="bk-res"></p>
+<p>Vais receber a confirmação de <b>{EMAIL_AGENDA}</b> com o link da videochamada. Até lá, junta os números da tua marca.</p></div>
+</div>
+<script type="application/json" id="agenda-cfg">{json.dumps(cfg, ensure_ascii=False)}</script>"""
+    return f"""<section class="agenda" id="agendar"><div class="wrap"><div class="ag">
 <div class="ag-info"><span class="eyebrow">Agendar</span><h2>{titulo}</h2>
-<ul class="ag-facts"><li><b>Duração</b><span>{duracao}</span></li><li><b>Formato</b><span>Online, por videochamada</span></li><li><b>Confirmação</b><span>No teu email, com o link da sessão</span></li></ul>
+<ul class="ag-facts"><li><b>Duração</b><span>{duracao}</span></li><li><b>Formato</b><span>Online, por Google Meet</span></li><li><b>Confirmação</b><span>Por email, de {EMAIL_AGENDA}</span></li></ul>
 <div class="ag-prep"><b>Antes da sessão</b><p>Traz os números da tua marca: custos de uma peça, preços, vendas dos últimos meses. O trabalho começa antes de entrares.</p></div>
 <p class="ag-mail">Dúvidas? <a href="mailto:{EMAIL_AGENDA}">{EMAIL_AGENDA}</a></p></div>
-<div class="ag-right">{right}</div>
-</div></div></section>'''
+<div class="ag-right">{widget}</div>
+</div></div></section>"""
 
 def pic(name, alt, h=1650, lazy=True, sizes="(max-width:860px) 90vw, 40vw"):
     return (f'<picture><source type="image/webp" srcset="/assets/img/{name}-600.webp 600w, /assets/img/{name}-1100.webp 1100w" sizes="{sizes}">'
@@ -230,6 +245,7 @@ FOOT = f"""</main>
 <a class="wa" href="https://wa.me/{WHATSAPP}?text=Ol%C3%A1%20T%C3%A2nia%2C%20vim%20pelo%20site." target="_blank" rel="noopener" aria-label="Falar com a Tânia no WhatsApp"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 3C9 3 3.3 8.6 3.3 15.6c0 2.4.7 4.7 1.9 6.7L3 29l6.9-2.1c1.9 1 4 1.6 6.1 1.6 7 0 12.7-5.7 12.7-12.7S23 3 16 3zm0 23.2c-1.9 0-3.8-.5-5.4-1.5l-.4-.2-4.1 1.2 1.2-4-.3-.4a10.4 10.4 0 1 1 9 4.9zm5.7-7.8c-.3-.2-1.9-.9-2.2-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7.1a8.5 8.5 0 0 1-4.2-3.7c-.3-.5.3-.5.9-1.6.1-.2 0-.4 0-.5l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4s-1.2 1.1-1.2 2.7 1.2 3.2 1.4 3.4 2.4 3.6 5.7 5c2.1.9 2.9 1 4 .8.6-.1 1.9-.8 2.2-1.5s.3-1.4.2-1.5-.3-.2-.6-.3z"/></svg><span>WhatsApp</span></a>
 <script src="/assets/site.js" defer></script>
 <script src="/assets/ferramentas.js" defer></script>
+<script src="/assets/agenda.js" defer></script>
 </body></html>
 """
 

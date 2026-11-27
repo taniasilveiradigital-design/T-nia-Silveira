@@ -1,0 +1,14 @@
+{
+  "fuso": "Europe/Lisbon",
+  "antecedencia_horas": 48,
+  "dias_a_mostrar": 45,
+  "horario": {
+    "2": ["10:00", "14:30"],
+    "3": ["10:00", "14:30"],
+    "4": ["10:00", "14:30"]
+  },
+  "bloqueados": [],
+  "eventos": {
+    "tafeta": { "nome": "Consultoria Tafetá 360", "duracao": 120 }
+  }
+}
